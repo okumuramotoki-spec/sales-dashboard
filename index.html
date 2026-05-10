@@ -100,10 +100,41 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
 .tip-open{display:inline-block;margin-top:8px;font-size:10px;background:#378ADD;color:#fff;padding:2px 8px;border-radius:999px;}
 .empty{text-align:center;padding:60px 24px;color:var(--t3);font-size:13px;}
 .empty svg{width:40px;height:40px;stroke:var(--t3);fill:none;stroke-width:1.5;stroke-linecap:round;margin:0 auto 12px;display:block;}
+
+/* ── PASSWORD SCREEN ── */
+#pw-screen{position:fixed;inset:0;z-index:99999;background:#0C447C;display:flex;align-items:center;justify-content:center;}
+#pw-screen.hidden{display:none;}
+.pw-box{background:#fff;border-radius:14px;padding:40px 36px;width:340px;max-width:90vw;box-shadow:0 24px 64px rgba(0,0,0,.3);}
+.pw-logo{font-size:16px;font-weight:700;color:#1a1916;margin-bottom:4px;}.pw-logo span{color:#378ADD;}
+.pw-sub{font-size:12px;color:#9a9892;margin-bottom:28px;}
+.pw-label{font-size:11px;font-weight:600;color:#5f5e5a;margin-bottom:6px;}
+.pw-input{width:100%;padding:10px 14px;border:1.5px solid rgba(0,0,0,.14);border-radius:8px;font-size:14px;outline:none;transition:border-color .15s;}
+.pw-input:focus{border-color:#378ADD;}
+.pw-input.error{border-color:#A32D2D;animation:shake .3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.pw-btn{width:100%;margin-top:14px;padding:11px;background:#0C447C;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;}
+.pw-btn:hover{background:#378ADD;}
+.pw-err{font-size:11px;color:#A32D2D;margin-top:8px;min-height:16px;text-align:center;}
+.pw-hint{font-size:10px;color:#9a9892;margin-top:20px;padding-top:16px;border-top:.5px solid rgba(0,0,0,.08);text-align:center;line-height:1.6;}
+
 select{font-size:11px;padding:4px 8px;border-radius:var(--rs);border:.5px solid var(--bd2);background:var(--sur);color:var(--t1);}
 </style>
 </head>
 <body>
+
+<!-- PASSWORD SCREEN -->
+<div id="pw-screen">
+  <div class="pw-box">
+    <div class="pw-logo">営業<span>ちゃんと化</span>ダッシュボード</div>
+    <div class="pw-sub">353億円達成プロジェクト</div>
+    <div class="pw-label">パスワード</div>
+    <input class="pw-input" type="password" id="pwInput" placeholder="パスワードを入力" onkeydown="if(event.key==='Enter')checkPW()">
+    <button class="pw-btn" onclick="checkPW()">ログイン</button>
+    <div class="pw-err" id="pwErr"></div>
+    <div class="pw-hint">このページは社内限定です。<br>パスワードは管理者にお問い合わせください。</div>
+  </div>
+</div>
+
 <div class="tip-box" id="winTip"></div>
 <div class="hdr">
   <div style="display:flex;align-items:center;gap:12px;">
@@ -366,6 +397,43 @@ function renderInsight(){
   ].filter(i=>i.title);
   document.getElementById('insightCards').innerHTML=ins.map(i=>`<div style="display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:.5px solid var(--bd);"><div style="width:30px;height:30px;border-radius:var(--rs);background:${i.ic};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;">${i.em}</div><div><div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:3px;">${i.title}<span class="bdg ${i.tc}" style="margin-left:6px;">${i.tag}</span></div><div style="font-size:11px;color:var(--t2);line-height:1.7;">${i.desc}</div></div></div>`).join('');
 }
+</script>
+
+
+<script>
+// ── パスワード認証 ──
+// パスワードを変更する場合はここを編集してください
+const _PW_HASH = 'ee69b44a5aa93873430f741510523bd1081f5838d42af08af509e5602b786a3e'; // "eigyochantoka" のSHA-256
+
+async function hashStr(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function checkPW() {
+  const val = document.getElementById('pwInput').value;
+  const input = document.getElementById('pwInput');
+  const err   = document.getElementById('pwErr');
+  if (!val) { err.textContent = 'パスワードを入力してください'; return; }
+  const h = await hashStr(val);
+  if (h === _PW_HASH) {
+    sessionStorage.setItem('dash_auth', '1');
+    document.getElementById('pw-screen').classList.add('hidden');
+    err.textContent = '';
+  } else {
+    input.classList.add('error');
+    err.textContent = 'パスワードが正しくありません';
+    setTimeout(() => input.classList.remove('error'), 400);
+    input.value = '';
+    input.focus();
+  }
+}
+
+// セッション維持（タブを閉じるまで再入力不要）
+if (sessionStorage.getItem('dash_auth') === '1') {
+  document.getElementById('pw-screen').classList.add('hidden');
+}
+document.getElementById('pwInput').focus();
 </script>
 
 </body>
