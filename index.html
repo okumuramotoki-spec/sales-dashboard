@@ -111,8 +111,8 @@ select{font-size:11px;padding:4px 8px;border-radius:var(--rs);border:.5px solid 
     <div class="pw-logo">営業<span>ちゃんと化</span>ダッシュボード</div>
     <div class="pw-sub">353億円達成プロジェクト</div>
     <div class="pw-label">パスワード</div>
-    <input class="pw-input" type="password" id="pwInput" placeholder="パスワードを入力" onkeydown="if(event.key==='Enter')checkPW()">
-    <button class="pw-btn" onclick="checkPW()">ログイン</button>
+    <input class="pw-input" type="password" id="pwInput" placeholder="パスワードを入力">
+    <button class="pw-btn" id="pwBtn">ログイン</button>
     <div class="pw-err" id="pwErr"></div>
     <div class="pw-hint">このページは社内限定です。<br>パスワードは管理者にお問い合わせください。</div>
   </div>
@@ -245,27 +245,45 @@ function buildGauges(acts){
 }
 buildGauges({"メディカル・グラライ": {"visit": 301, "case": 131, "pitch": 20, "win": 9}, "コントラクト": {"visit": 162, "case": 93, "pitch": 57, "win": 34}, "保育給食": {"visit": 139, "case": 22, "pitch": 16, "win": 10}});
 
-function checkPW(){
-  const val=document.getElementById('pwInput').value;
-  const inp=document.getElementById('pwInput');
-  const err=document.getElementById('pwErr');
-  if(!val){err.textContent='パスワードを入力してください';return;}
-  if(val==='eigyochantoka'){
-    sessionStorage.setItem('dash_auth','1');
-    document.getElementById('pw-screen').classList.add('hidden');
-    err.textContent='';
-  } else {
-    inp.classList.add('error');
-    err.textContent='パスワードが正しくありません';
-    setTimeout(()=>inp.classList.remove('error'),400);
-    inp.value='';
-    inp.focus();
+// パスワード認証
+(function() {
+  var PASS = 'eigyochantoka';
+
+  function unlock() {
+    try { sessionStorage.setItem('dash_auth', '1'); } catch(e) {}
+    var scr = document.getElementById('pw-screen');
+    if (scr) scr.style.display = 'none';
   }
-}
-if(sessionStorage.getItem('dash_auth')==='1'){
-  document.getElementById('pw-screen').classList.add('hidden');
-}
-document.getElementById('pwInput').focus();
+
+  function checkPW() {
+    var val = document.getElementById('pwInput').value;
+    var err = document.getElementById('pwErr');
+    if (!val) { if(err) err.textContent = 'パスワードを入力してください'; return; }
+    if (val === PASS) {
+      unlock();
+    } else {
+      var inp = document.getElementById('pwInput');
+      if (err) err.textContent = 'パスワードが正しくありません';
+      if (inp) { inp.style.borderColor = '#A32D2D'; inp.value = ''; inp.focus(); setTimeout(function(){ inp.style.borderColor = ''; }, 600); }
+    }
+  }
+
+  // ボタンとEnterキーにイベントを設定
+  window.addEventListener('DOMContentLoaded', function() {
+    var btn = document.getElementById('pwBtn');
+    var inp = document.getElementById('pwInput');
+    var scr = document.getElementById('pw-screen');
+    if (btn) btn.addEventListener('click', checkPW);
+    if (inp) {
+      inp.addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPW(); });
+      inp.focus();
+    }
+    // セッション維持
+    var authed = false;
+    try { authed = sessionStorage.getItem('dash_auth') === '1'; } catch(e) {}
+    if (authed && scr) scr.style.display = 'none';
+  });
+})();
 
 const dz=document.getElementById('dropZone'),fi=document.getElementById('fileInput');
 window.addEventListener('DOMContentLoaded',()=>{
