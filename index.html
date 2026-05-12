@@ -245,45 +245,39 @@ function buildGauges(acts){
 }
 buildGauges({"メディカル・グラライ": {"visit": 301, "case": 131, "pitch": 20, "win": 9}, "コントラクト": {"visit": 162, "case": 93, "pitch": 57, "win": 34}, "保育給食": {"visit": 139, "case": 22, "pitch": 16, "win": 10}});
 
-// パスワード認証
+
+// PW認証
 (function() {
   var PASS = 'eigyochantoka';
-
   function unlock() {
-    try { sessionStorage.setItem('dash_auth', '1'); } catch(e) {}
-    var scr = document.getElementById('pw-screen');
-    if (scr) scr.style.display = 'none';
+    try { sessionStorage.setItem('dash_auth','1'); } catch(e){}
+    var s = document.getElementById('pw-screen');
+    if(s) s.style.display = 'none';
   }
-
-  function checkPW() {
-    var val = document.getElementById('pwInput').value;
-    var err = document.getElementById('pwErr');
-    if (!val) { if(err) err.textContent = 'パスワードを入力してください'; return; }
-    if (val === PASS) {
-      unlock();
-    } else {
-      var inp = document.getElementById('pwInput');
-      if (err) err.textContent = 'パスワードが正しくありません';
-      if (inp) { inp.style.borderColor = '#A32D2D'; inp.value = ''; inp.focus(); setTimeout(function(){ inp.style.borderColor = ''; }, 600); }
+  window.checkPW = function() {
+    var v = document.getElementById('pwInput').value;
+    var e = document.getElementById('pwErr');
+    if(!v){ if(e) e.textContent='パスワードを入力してください'; return; }
+    if(v === PASS){ unlock(); }
+    else {
+      var i = document.getElementById('pwInput');
+      if(e) e.textContent='パスワードが正しくありません';
+      if(i){ i.style.borderColor='#A32D2D'; i.value=''; i.focus();
+             setTimeout(function(){ i.style.borderColor=''; },600); }
     }
-  }
-
-  // ボタンとEnterキーにイベントを設定
-  window.addEventListener('DOMContentLoaded', function() {
-    var btn = document.getElementById('pwBtn');
-    var inp = document.getElementById('pwInput');
-    var scr = document.getElementById('pw-screen');
-    if (btn) btn.addEventListener('click', checkPW);
-    if (inp) {
-      inp.addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPW(); });
-      inp.focus();
-    }
-    // セッション維持
-    var authed = false;
-    try { authed = sessionStorage.getItem('dash_auth') === '1'; } catch(e) {}
-    if (authed && scr) scr.style.display = 'none';
+  };
+  window.addEventListener('load', function() {
+    var btn=document.getElementById('pwBtn');
+    var inp=document.getElementById('pwInput');
+    var scr=document.getElementById('pw-screen');
+    if(btn) btn.onclick = window.checkPW;
+    if(inp) inp.onkeydown = function(ev){ if(ev.key==='Enter') window.checkPW(); };
+    var ok=false; try{ ok=sessionStorage.getItem('dash_auth')==='1'; }catch(e){}
+    if(ok && scr) scr.style.display='none';
+    else if(inp) inp.focus();
   });
 })();
+
 
 const dz=document.getElementById('dropZone'),fi=document.getElementById('fileInput');
 window.addEventListener('DOMContentLoaded',()=>{
