@@ -106,15 +106,21 @@ select{font-size:11px;padding:4px 8px;border-radius:var(--rs);border:.5px solid 
 </style>
 </head>
 <body>
-<div id="pw-screen">
-  <div class="pw-box">
-    <div class="pw-logo">営業<span>ちゃんと化</span>ダッシュボード</div>
-    <div class="pw-sub">353億円達成プロジェクト</div>
-    <div class="pw-label">パスワード</div>
-    <input class="pw-input" type="password" id="pwInput" placeholder="パスワードを入力">
-    <button class="pw-btn" id="pwBtn">ログイン</button>
-    <div class="pw-err" id="pwErr"></div>
-    <div class="pw-hint">このページは社内限定です。<br>パスワードは管理者にお問い合わせください。</div>
+<div id="pw-screen" style="position:fixed;inset:0;z-index:99999;background:#0C447C;display:flex;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:14px;padding:40px 36px;width:340px;max-width:90vw;box-shadow:0 24px 64px rgba(0,0,0,.3);">
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px;">営業<span style="color:#378ADD;">ちゃんと化</span>ダッシュボード</div>
+    <div style="font-size:12px;color:#9a9892;margin-bottom:28px;">353億円達成プロジェクト</div>
+    <div style="font-size:11px;font-weight:600;color:#5f5e5a;margin-bottom:6px;">パスワード</div>
+    <form id="pwForm" style="margin:0;" action="javascript:void(0);" onsubmit="doPW()">
+      <input id="pwInput" type="password" placeholder="パスワードを入力"
+        style="width:100%;padding:10px 14px;border:1.5px solid rgba(0,0,0,.14);border-radius:8px;font-size:14px;outline:none;display:block;margin-bottom:10px;">
+      <button type="submit"
+        style="width:100%;padding:11px;background:#0C447C;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">
+        ログイン
+      </button>
+    </form>
+    <div id="pwErr" style="font-size:11px;color:#A32D2D;margin-top:8px;min-height:16px;text-align:center;"></div>
+    <div style="font-size:10px;color:#9a9892;margin-top:16px;text-align:center;line-height:1.6;">このページは社内限定です。<br>パスワードは管理者にお問い合わせください。</div>
   </div>
 </div>
 <div class="tip-box" id="winTip"></div>
@@ -237,24 +243,27 @@ function buildGauges(acts){
     const hc=wp>=100?'#3B6D11':wp>=70?'#854F0B':'#A32D2D',hbg=wp>=100?'#EAF3DE':wp>=70?'#FAEEDA':'#FCEBEB';
     const rows=SGAUGE.map(sg=>{
       const pv=p[sg.key]||1,av=a[sg.key]||0,pc=Math.min(Math.round(av/pv*100),100),over=av>=pv;
-      const bc=over?'#1D9E75':pc>=70?'#EF9F27':sg.col,tc=over?'#3B6D11':pc>=70?'#854F0B':'#A32D2D';
-      return`<div class="sr"><div class="sl">${sg.lbl}</div><div class="st"><div class="sb" style="width:${pc}%;background:${bc};"></div></div><div class="sn">${av.toLocaleString()} / ${pv.toLocaleString()}</div><div class="sp" style="color:${tc};">${over?'✓':pc+'%'}</div></div>`;
-    }).join('');
-    return`<div class="team-card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><div class="team-name">${team}</div><div style="font-size:11px;font-weight:700;color:${hc};background:${hbg};padding:3px 10px;border-radius:999px;">獲得 ${wp>=100?'超過':wp+'%'}</div></div>${rows}</div>`;
-  }).join('');
-}
-buildGauges({"メディカル・グラライ": {"visit": 301, "case": 131, "pitch": 20, "win": 9}, "コントラクト": {"visit": 162, "case": 93, "pitch": 57, "win": 34}, "保育給食": {"visit": 139, "case": 22, "pitch": 16, "win": 10}});
-
-
-// PW認証
-(function() {
-  var PASS = 'eigyochantoka';
-  function unlock() {
-    try { sessionStorage.setItem('dash_auth','1'); } catch(e){}
-    var s = document.getElementById('pw-screen');
-    if(s) s.style.display = 'none';
+      const bc=// PW認証
+function doPW() {
+  var v = document.getElementById('pwInput').value || '';
+  var e = document.getElementById('pwErr');
+  var s = document.getElementById('pw-screen');
+  if (v === 'eigyochantoka') {
+    try { sessionStorage.setItem('dash_auth','1'); } catch(ex) {}
+    if (s) s.style.display = 'none';
+  } else {
+    if (e) e.textContent = v ? 'パスワードが正しくありません' : 'パスワードを入力してください';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
   }
-  window.checkPW = function() {
+}
+// セッション維持チェック
+try {
+  if (sessionStorage.getItem('dash_auth') === '1') {
+    var s = document.getElementById('pw-screen');
+    if (s) s.style.display = 'none';
+  }
+} catch(e) {}ion() {
     var v = document.getElementById('pwInput').value;
     var e = document.getElementById('pwErr');
     if(!v){ if(e) e.textContent='パスワードを入力してください'; return; }
