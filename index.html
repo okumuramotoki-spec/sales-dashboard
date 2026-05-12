@@ -8,17 +8,17 @@
 :root{--bg:#f7f6f3;--sur:#fff;--bd:rgba(0,0,0,.08);--bd2:rgba(0,0,0,.14);--t1:#1a1916;--t2:#5f5e5a;--t3:#9a9892;--blue:#378ADD;--bluel:#E6F1FB;--blued:#0C447C;--green:#3B6D11;--greenl:#EAF3DE;--amber:#BA7517;--amberl:#FAEEDA;--red:#A32D2D;--redl:#FCEBEB;--r:10px;--rs:6px;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;background:var(--bg);color:var(--t1);font-size:13px;line-height:1.5;}
-#pw-screen{position:fixed;inset:0;z-index:99999;background:#0C447C;display:flex;align-items:center;justify-content:center;}
-#pw-screen.hidden{display:none;}
-.pw-box{background:#fff;border-radius:14px;padding:40px 36px;width:340px;max-width:90vw;box-shadow:0 24px 64px rgba(0,0,0,.3);}
-.pw-logo{font-size:16px;font-weight:700;margin-bottom:4px;}.pw-logo span{color:#378ADD;}
-.pw-sub{font-size:12px;color:#9a9892;margin-bottom:28px;}.pw-label{font-size:11px;font-weight:600;color:#5f5e5a;margin-bottom:6px;}
-.pw-input{width:100%;padding:10px 14px;border:1.5px solid rgba(0,0,0,.14);border-radius:8px;font-size:14px;outline:none;transition:border-color .15s;}
-.pw-input:focus{border-color:#378ADD;}.pw-input.error{border-color:#A32D2D;animation:shake .3s;}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-.pw-btn{width:100%;margin-top:14px;padding:11px;background:#0C447C;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;}
-.pw-btn:hover{background:#378ADD;}.pw-err{font-size:11px;color:#A32D2D;margin-top:8px;min-height:16px;text-align:center;}
-.pw-hint{font-size:10px;color:#9a9892;margin-top:20px;padding-top:16px;border-top:.5px solid rgba(0,0,0,.08);text-align:center;line-height:1.6;}
+
+
+
+
+
+
+
+25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+
+
 .hdr{background:var(--sur);border-bottom:.5px solid var(--bd2);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
 .logo{font-size:14px;font-weight:700;letter-spacing:-.02em;}.logo span{color:var(--blue);}
 .lupd{font-size:11px;color:var(--t3);background:var(--bg);padding:3px 10px;border-radius:999px;}
@@ -106,23 +106,7 @@ select{font-size:11px;padding:4px 8px;border-radius:var(--rs);border:.5px solid 
 </style>
 </head>
 <body>
-<div id="pw-screen" style="position:fixed;inset:0;z-index:99999;background:#0C447C;display:flex;align-items:center;justify-content:center;">
-  <div style="background:#fff;border-radius:14px;padding:40px 36px;width:340px;max-width:90vw;box-shadow:0 24px 64px rgba(0,0,0,.3);">
-    <div style="font-size:16px;font-weight:700;margin-bottom:4px;">営業<span style="color:#378ADD;">ちゃんと化</span>ダッシュボード</div>
-    <div style="font-size:12px;color:#9a9892;margin-bottom:28px;">353億円達成プロジェクト</div>
-    <div style="font-size:11px;font-weight:600;color:#5f5e5a;margin-bottom:6px;">パスワード</div>
-    <form id="pwForm" style="margin:0;" action="javascript:void(0);" onsubmit="doPW()">
-      <input id="pwInput" type="password" placeholder="パスワードを入力"
-        style="width:100%;padding:10px 14px;border:1.5px solid rgba(0,0,0,.14);border-radius:8px;font-size:14px;outline:none;display:block;margin-bottom:10px;">
-      <button type="submit"
-        style="width:100%;padding:11px;background:#0C447C;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">
-        ログイン
-      </button>
-    </form>
-    <div id="pwErr" style="font-size:11px;color:#A32D2D;margin-top:8px;min-height:16px;text-align:center;"></div>
-    <div style="font-size:10px;color:#9a9892;margin-top:16px;text-align:center;line-height:1.6;">このページは社内限定です。<br>パスワードは管理者にお問い合わせください。</div>
-  </div>
-</div>
+
 <div class="tip-box" id="winTip"></div>
 <div class="hdr">
   <div style="display:flex;align-items:center;gap:12px;">
@@ -243,49 +227,17 @@ function buildGauges(acts){
     const hc=wp>=100?'#3B6D11':wp>=70?'#854F0B':'#A32D2D',hbg=wp>=100?'#EAF3DE':wp>=70?'#FAEEDA':'#FCEBEB';
     const rows=SGAUGE.map(sg=>{
       const pv=p[sg.key]||1,av=a[sg.key]||0,pc=Math.min(Math.round(av/pv*100),100),over=av>=pv;
-      const bc=// PW認証
-function doPW() {
-  var v = document.getElementById('pwInput').value || '';
-  var e = document.getElementById('pwErr');
-  var s = document.getElementById('pw-screen');
-  if (v === 'eigyochantoka') {
-    try { sessionStorage.setItem('dash_auth','1'); } catch(ex) {}
-    if (s) s.style.display = 'none';
-  } else {
-    if (e) e.textContent = v ? 'パスワードが正しくありません' : 'パスワードを入力してください';
-    document.getElementById('pwInput').value = '';
-    document.getElementById('pwInput').focus();
-  }
-}
-// セッション維持チェック
-try {
-  if (sessionStorage.getItem('dash_auth') === '1') {
-    var s = document.getElementById('pw-screen');
-    if (s) s.style.display = 'none';
-  }
-} catch(e) {}ion() {
-    var v = document.getElementById('pwInput').value;
-    var e = document.getElementById('pwErr');
+      const bc=ion() {
     if(!v){ if(e) e.textContent='パスワードを入力してください'; return; }
     if(v === PASS){ unlock(); }
     else {
-      var i = document.getElementById('pwInput');
       if(e) e.textContent='パスワードが正しくありません';
       if(i){ i.style.borderColor='#A32D2D'; i.value=''; i.focus();
              setTimeout(function(){ i.style.borderColor=''; },600); }
     }
   };
-  window.addEventListener('load', function() {
-    var btn=document.getElementById('pwBtn');
-    var inp=document.getElementById('pwInput');
-    var scr=document.getElementById('pw-screen');
-    if(btn) btn.onclick = window.checkPW;
-    if(inp) inp.onkeydown = function(ev){ if(ev.key==='Enter') window.checkPW(); };
-    var ok=false; try{ ok=sessionStorage.getItem('dash_auth')==='1'; }catch(e){}
-    if(ok && scr) scr.style.display='none';
-    else if(inp) inp.focus();
-  });
-})();
+  
+
 
 
 const dz=document.getElementById('dropZone'),fi=document.getElementById('fileInput');
