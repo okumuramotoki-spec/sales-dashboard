@@ -251,11 +251,19 @@ function readF(f){var r=new FileReader();r.onload=function(e){parseCSV(new TextD
 // ===== CSV解析 =====
 var SM={'H':1,'G':1,'F':2,'D':2,'C':3,'B':3,'A':4};
 function gOrd(v){return SM[((v||'').trim().split(',')[0].trim())]||0}
-function nDiv(v){if(!v)return'';if(/メディカル|グランドライフ|グラライ|SFM\/G|SFG/.test(v))return 'メディカル・グラライ';if(/コントラクト|SCF/.test(v))return 'コントラクト';if(/保育/.test(v))return '保育給食';return''}
+function nDiv(v){
+  if(!v)return'';
+  var s=['メディカル','グランドライフ','グラライ','SFM/G','SFG'];
+  for(var i=0;i<s.length;i++){if(v.indexOf(s[i])>=0)return 'メディカル・グラライ';}
+  if(v.indexOf('コントラクト')>=0||v.indexOf('SCF')>=0)return 'コントラクト';
+  if(v.indexOf('保育')>=0)return '保育給食';
+  return'';
+}
 function splitL(ln){var r=[],c='',q=false;for(var i=0;i<ln.length;i++){var ch=ln[i];if(ch==='"'){q=!q}else if(ch===','&&!q){r.push(c);c=''}else c+=ch}r.push(c);return r}
 
 function parseCSV(text,fn){
-  var lines=text.split(/?
+  var lines=text.split(/
+?
 /);if(lines.length<2)return;
   var hdr=splitL(lines[0]),ci={},pc2=[];
   for(var i=0;i<hdr.length;i++){var h=hdr[i].trim();
