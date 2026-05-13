@@ -1,472 +1,430 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>営業ちゃんと化ダッシュボード</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-:root{--bg:#f7f6f3;--sur:#fff;--bd:rgba(0,0,0,.08);--bd2:rgba(0,0,0,.14);--t1:#1a1916;--t2:#5f5e5a;--t3:#9a9892;--blue:#378ADD;--bluel:#E6F1FB;--blued:#0C447C;--green:#3B6D11;--greenl:#EAF3DE;--amber:#BA7517;--amberl:#FAEEDA;--red:#A32D2D;--redl:#FCEBEB;--r:10px;--rs:6px;}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;background:var(--bg);color:var(--t1);font-size:13px;line-height:1.5;}
-
-
-
-
-
-
-
-25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-
-
-
-.hdr{background:var(--sur);border-bottom:.5px solid var(--bd2);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.logo{font-size:14px;font-weight:700;letter-spacing:-.02em;}.logo span{color:var(--blue);}
-.lupd{font-size:11px;color:var(--t3);background:var(--bg);padding:3px 10px;border-radius:999px;}
-.mission{background:#0C447C;color:#fff;padding:18px 24px 0;}
-.mi{max-width:1200px;margin:0 auto;}.mt{display:flex;align-items:flex-start;gap:16px;margin-bottom:14px;flex-wrap:wrap;}
-.mlbl{font-size:11px;font-weight:700;opacity:.5;letter-spacing:.06em;padding-top:2px;white-space:nowrap;}
-.mtxt{font-size:13px;font-weight:500;line-height:1.75;flex:1;min-width:200px;}
-.gs{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));border-top:1px solid rgba(255,255,255,.15);}
-.gi{padding:10px 16px 10px 0;border-right:1px solid rgba(255,255,255,.12);}
-.gi:last-child{border-right:none;padding-left:16px;}
-.gn{font-size:9px;opacity:.45;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;}.gt{font-size:11px;line-height:1.6;}
-.gauge-sec{background:#fff;border-bottom:.5px solid rgba(0,0,0,.1);padding:20px 24px 24px;}
-.gauge-inner{max-width:1200px;margin:0 auto;}
-.gauge-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
-.gauge-title{font-size:10px;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px;}
-.gauge-sub{font-size:11px;color:var(--t2);}.gauge-note{font-size:10px;color:var(--t3);background:var(--bg);padding:4px 10px;border-radius:999px;}
-.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:4px;}
-.team-card{border:.5px solid rgba(0,0,0,.1);border-radius:var(--r);padding:16px 18px;}
-.team-name{font-size:13px;font-weight:700;margin-bottom:12px;}
-.sr{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.sl{font-size:10px;color:var(--t2);width:36px;flex-shrink:0;text-align:right;}
-.st{flex:1;background:#f0ede6;border-radius:4px;height:10px;overflow:hidden;}
-.sb{height:100%;border-radius:4px;transition:width .8s ease;}
-.sn{font-size:10px;color:var(--t2);width:80px;text-align:right;flex-shrink:0;white-space:nowrap;}
-.sp{width:34px;text-align:right;flex-shrink:0;font-size:10px;font-weight:700;}
-.drop-zone{margin:16px 24px;border:1.5px dashed var(--bd2);border-radius:var(--r);padding:16px 20px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .15s;background:var(--sur);}
-.drop-zone:hover,.drop-zone.drag-over{border-color:var(--blue);background:var(--bluel);}
-.dicon{width:36px;height:36px;border-radius:var(--rs);background:var(--bluel);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.dicon svg{width:18px;height:18px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round;}
-.dtxt p{font-size:13px;font-weight:500;}.dtxt span{font-size:11px;color:var(--t3);}
-.dbtn{margin-left:auto;font-size:12px;padding:6px 14px;border-radius:var(--rs);border:.5px solid var(--bd2);background:transparent;color:var(--t2);cursor:pointer;flex-shrink:0;white-space:nowrap;}
-#fileInput{display:none;}
-.tab-wrap{display:flex;border-bottom:.5px solid var(--bd2);padding:0 24px;background:var(--sur);}
-.tab{font-size:12px;padding:10px 16px;cursor:pointer;border:none;border-bottom:2px solid transparent;color:var(--t2);background:transparent;white-space:nowrap;margin-bottom:-1px;transition:all .12s;}
-.tab.on{color:var(--t1);border-bottom-color:var(--blue);font-weight:600;}
-.main{padding:20px 24px;max-width:1200px;}.pane{display:none;}.pane.on{display:block;}
-.slbl{font-size:10px;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;margin-top:1.5rem;}.slbl:first-child{margin-top:0;}
-.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;}
-.fbtn{font-size:11px;padding:4px 12px;border-radius:999px;border:.5px solid var(--bd2);background:transparent;color:var(--t2);cursor:pointer;transition:all .1s;white-space:nowrap;}
-.fbtn.on{background:var(--bluel);border-color:var(--blue);color:var(--blued);font-weight:600;}
-.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:1.25rem;}
-.kc{background:var(--bg);border-radius:var(--rs);padding:10px 12px;}
-.kv{font-size:20px;font-weight:700;line-height:1.2;}.kl{font-size:10px;color:var(--t2);margin-top:2px;}.ks{font-size:10px;margin-top:2px;}
-.up{color:var(--green);}.dn{color:var(--red);}.neu{color:var(--t3);}
-.card{background:var(--sur);border:.5px solid var(--bd);border-radius:var(--r);padding:14px 16px;margin-bottom:12px;}
-.card-t{font-size:11px;color:var(--t2);margin-bottom:10px;font-weight:600;}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
-.fn-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
-.fn-lbl{font-size:11px;color:var(--t2);width:56px;text-align:right;flex-shrink:0;}
-.fn-bg{flex:1;background:var(--bg);border-radius:5px;height:24px;overflow:hidden;}
-.fn-bar{height:100%;border-radius:5px;display:flex;align-items:center;padding:0 8px;transition:width .5s cubic-bezier(.4,0,.2,1);}
-.fn-bar span{font-size:11px;font-weight:600;color:#fff;}
-.fn-n{font-size:11px;color:var(--t2);width:28px;text-align:right;flex-shrink:0;}
-.fn-r{font-size:10px;width:62px;text-align:right;flex-shrink:0;}
-.tbl-wrap{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;font-size:11px;}
-th{font-size:10px;font-weight:600;color:var(--t2);padding:5px 7px;border-bottom:.5px solid var(--bd2);text-align:right;white-space:nowrap;}
-th:first-child{text-align:left;}
-td{padding:5px 7px;border-bottom:.5px solid var(--bd);text-align:right;white-space:nowrap;}
-td:first-child{text-align:left;font-weight:500;}
-tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
-.bdg{display:inline-block;font-size:9px;padding:2px 7px;border-radius:999px;font-weight:600;}
-.bg{background:var(--greenl);color:var(--green);}.bb{background:var(--bluel);color:var(--blued);}
-.bo{background:var(--amberl);color:var(--amber);}.br{background:var(--redl);color:var(--red);}
-.rank-row{display:flex;align-items:center;gap:7px;margin-bottom:6px;}
-.rank-n{font-size:10px;color:var(--t3);width:14px;flex-shrink:0;}
-.rank-name{font-size:11px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.rank-bg{flex:2;background:var(--bg);border-radius:3px;height:5px;overflow:hidden;}
-.rank-fill{height:5px;border-radius:3px;}.rank-val{font-size:11px;color:var(--t2);width:36px;text-align:right;flex-shrink:0;}
-.route-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.rc{border:.5px solid var(--bd2);border-radius:var(--r);padding:14px 16px;position:relative;background:var(--sur);}
-.rc-name{font-size:12px;font-weight:600;margin-bottom:8px;padding-right:80px;}.rc-badge{position:absolute;top:12px;right:12px;}
-.win-dot{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#D4537E;color:#fff;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0;transition:transform .15s;}
-.win-dot:hover{transform:scale(1.25);background:#A32D2D;}.wdw{display:flex;gap:4px;flex-wrap:wrap;}
-.tip-box{display:none;position:fixed;z-index:9999;background:#1a1916;color:#f7f6f3;border-radius:10px;padding:14px 16px;width:300px;box-shadow:0 8px 32px rgba(0,0,0,.35);pointer-events:none;font-size:11px;line-height:1.6;}
-.tip-box.show{display:block;}.tip-fac{font-size:13px;font-weight:600;color:#fff;margin-bottom:8px;line-height:1.4;}
-.tip-row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:.5px solid rgba(255,255,255,.1);}
-.tip-row:last-of-type{border-bottom:none;}.tip-lbl{color:rgba(255,255,255,.5);}.tip-val{color:#fff;font-weight:500;text-align:right;}
-.tip-open{display:inline-block;margin-top:8px;font-size:10px;background:#378ADD;color:#fff;padding:2px 8px;border-radius:999px;}
-.def-box{background:var(--bluel);border-radius:var(--rs);padding:10px 14px;margin-bottom:1rem;font-size:11px;color:var(--blued);line-height:1.8;}
-.def-box strong{font-weight:600;}
-.empty{text-align:center;padding:60px 24px;color:var(--t3);font-size:13px;}
-.empty svg{width:40px;height:40px;stroke:var(--t3);fill:none;stroke-width:1.5;stroke-linecap:round;margin:0 auto 12px;display:block;}
-select{font-size:11px;padding:4px 8px;border-radius:var(--rs);border:.5px solid var(--bd2);background:var(--sur);color:var(--t1);}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;background:#f7f6f3;color:#1a1916;font-size:13px;line-height:1.5}
+.hdr{background:#fff;border-bottom:1px solid #e0ddd6;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.logo{font-size:15px;font-weight:700}.logo b{color:#378ADD}
+.upd{font-size:11px;color:#9a9892;background:#f7f6f3;padding:3px 10px;border-radius:99px}
+.mission{background:#0C447C;color:#fff;padding:16px 20px 0}
+.mission-inner{max-width:1100px;margin:0 auto}
+.mission-row{display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.mission-lbl{font-size:11px;font-weight:700;opacity:.5;white-space:nowrap;padding-top:2px}
+.mission-txt{font-size:12px;line-height:1.7;flex:1}
+.goals{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(255,255,255,.15);gap:0}
+.goal{padding:10px 0 10px 0;border-right:1px solid rgba(255,255,255,.12);padding-right:12px}
+.goal:last-child{border:none;padding-left:12px}
+.goal:not(:first-child){padding-left:12px}
+.goal-n{font-size:9px;opacity:.4;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.goal-t{font-size:11px;line-height:1.5}
+.gauge-wrap{background:#fff;border-bottom:1px solid #e0ddd6;padding:18px 20px}
+.gauge-inner{max-width:1100px;margin:0 auto}
+.gauge-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:6px}
+.gauge-ttl{font-size:10px;color:#9a9892;text-transform:uppercase;letter-spacing:.06em}
+.gauge-sub{font-size:11px;color:#5f5e5a}
+.gauge-note{font-size:10px;color:#9a9892;background:#f7f6f3;padding:3px 10px;border-radius:99px}
+.gauge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.g-card{border:1px solid #e0ddd6;border-radius:10px;padding:14px 16px}
+.g-name{font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.g-badge{font-size:10px;font-weight:700;padding:2px 10px;border-radius:99px}
+.g-row{display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.g-lbl{font-size:10px;color:#5f5e5a;width:32px;text-align:right;flex-shrink:0}
+.g-track{flex:1;height:9px;background:#ede9e1;border-radius:4px;overflow:hidden}
+.g-fill{height:100%;border-radius:4px;transition:width .7s ease}
+.g-nums{font-size:10px;color:#5f5e5a;width:76px;text-align:right;flex-shrink:0;white-space:nowrap}
+.g-pct{font-size:10px;font-weight:700;width:30px;text-align:right;flex-shrink:0}
+.drop{margin:14px 20px;border:1.5px dashed #ccc;border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;background:#fff;transition:all .15s}
+.drop:hover,.drop.over{border-color:#378ADD;background:#E6F1FB}
+.drop-ico{width:34px;height:34px;border-radius:8px;background:#E6F1FB;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.drop-ico svg{width:17px;height:17px;stroke:#378ADD;fill:none;stroke-width:1.8;stroke-linecap:round}
+.drop-txt p{font-size:13px;font-weight:500}.drop-txt small{font-size:11px;color:#9a9892}
+.drop-btn{margin-left:auto;font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid #ccc;background:transparent;color:#5f5e5a;cursor:pointer;flex-shrink:0;white-space:nowrap}
+.tabs{display:flex;border-bottom:1px solid #e0ddd6;padding:0 20px;background:#fff}
+.tab{font-size:12px;padding:9px 14px;cursor:pointer;border:none;border-bottom:2px solid transparent;color:#5f5e5a;background:transparent;white-space:nowrap;margin-bottom:-1px;transition:all .12s}
+.tab.on{color:#1a1916;border-bottom-color:#378ADD;font-weight:700}
+.main{padding:18px 20px;max-width:1100px}
+.pane{display:none}.pane.on{display:block}
+.sec{font-size:10px;color:#9a9892;letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px;margin-top:1.25rem}
+.sec:first-child{margin-top:0}
+.def{background:#E6F1FB;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#0C447C;line-height:1.8}
+.def b{font-weight:700}
+.filters{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.fbtn{font-size:11px;padding:4px 11px;border-radius:99px;border:1px solid #ccc;background:transparent;color:#5f5e5a;cursor:pointer;white-space:nowrap;transition:all .1s}
+.fbtn.on{background:#E6F1FB;border-color:#378ADD;color:#0C447C;font-weight:700}
+.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:14px}
+.kc{background:#fff;border:1px solid #e0ddd6;border-radius:8px;padding:10px 12px}
+.kv{font-size:20px;font-weight:700;line-height:1.2}.kl{font-size:10px;color:#5f5e5a;margin-top:2px}.ks{font-size:10px;margin-top:2px}
+.up{color:#3B6D11}.dn{color:#A32D2D}
+.card{background:#fff;border:1px solid #e0ddd6;border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.card-t{font-size:11px;color:#5f5e5a;margin-bottom:10px;font-weight:700}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.fn-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.fn-lbl{font-size:11px;color:#5f5e5a;width:52px;text-align:right;flex-shrink:0}
+.fn-bg{flex:1;background:#f0ede6;border-radius:5px;height:22px;overflow:hidden}
+.fn-bar{height:100%;border-radius:5px;display:flex;align-items:center;padding:0 7px;transition:width .5s}
+.fn-bar span{font-size:11px;font-weight:700;color:#fff}
+.fn-n{font-size:11px;color:#5f5e5a;width:26px;text-align:right;flex-shrink:0}
+.fn-r{font-size:10px;width:60px;text-align:right;flex-shrink:0}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{font-size:10px;font-weight:700;color:#5f5e5a;padding:5px 7px;border-bottom:1px solid #e0ddd6;text-align:right;white-space:nowrap}
+th:first-child{text-align:left}
+td{padding:5px 7px;border-bottom:1px solid #f0ede6;text-align:right;white-space:nowrap}
+td:first-child{text-align:left;font-weight:600}
+tr:last-child td{border:none}tr:hover td{background:#faf9f6}
+.bdg{display:inline-block;font-size:9px;padding:2px 7px;border-radius:99px;font-weight:700}
+.S{background:#EAF3DE;color:#3B6D11}.A{background:#E6F1FB;color:#0C447C}
+.B{background:#FAEEDA;color:#854F0B}.C{background:#FCEBEB;color:#A32D2D}
+.rr{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.rn{font-size:10px;color:#9a9892;width:14px;flex-shrink:0}
+.rnm{font-size:11px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rbg{flex:2;background:#f0ede6;border-radius:3px;height:5px;overflow:hidden}
+.rf{height:5px;border-radius:3px}
+.rv{font-size:11px;color:#5f5e5a;width:34px;text-align:right;flex-shrink:0}
+.wdot{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#D4537E;color:#fff;font-size:10px;font-weight:700;cursor:pointer;transition:transform .15s}
+.wdot:hover{transform:scale(1.3);background:#A32D2D}
+.wdots{display:flex;gap:4px;flex-wrap:wrap}
+.tip{display:none;position:fixed;z-index:9999;background:#1a1916;color:#f7f6f3;border-radius:10px;padding:13px 15px;width:290px;box-shadow:0 8px 30px rgba(0,0,0,.35);pointer-events:none;font-size:11px;line-height:1.6}
+.tip.on{display:block}
+.tip-h{font-size:13px;font-weight:700;margin-bottom:7px;line-height:1.4}
+.tr{display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.tr:last-of-type{border:none}
+.tl{color:rgba(255,255,255,.5)}.tv{font-weight:600}
+.tip-open{display:inline-block;margin-top:7px;font-size:10px;background:#378ADD;color:#fff;padding:2px 8px;border-radius:99px}
+.empty{text-align:center;padding:50px;color:#9a9892;font-size:13px}
+select{font-size:11px;padding:3px 7px;border-radius:7px;border:1px solid #ccc;background:#fff;color:#1a1916}
+@media(max-width:700px){.gauge-grid,.two,.goals{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+<div class="tip" id="tip"></div>
 
-<div class="tip-box" id="winTip"></div>
 <div class="hdr">
-  <div style="display:flex;align-items:center;gap:12px;">
-    <div class="logo">営業<span>ちゃんと化</span>ダッシュボード</div>
-    <div class="lupd" id="lastUpdate">データ未読込</div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="logo">営業<b>ちゃんと化</b>ダッシュボード</div>
+    <div class="upd" id="upd">データ未読込</div>
   </div>
-  <div style="font-size:11px;color:var(--t3);">353億円達成プロジェクト</div>
+  <div style="font-size:11px;color:#9a9892">353億円達成プロジェクト</div>
 </div>
+
 <div class="mission">
-  <div class="mi">
-    <div class="mt"><div class="mlbl">目的</div><div class="mtxt">353億円達成に向けた「営業活動のちゃんと化」。計画と実績のGAPを常時可視化し、PDCAを回せる組織に変える。<br><span style="opacity:.6;font-size:11px;">仕組みが行動を変え、行動がマインドを変える。</span></div></div>
-    <div class="gs">
-      <div class="gi"><div class="gn">Goal 1</div><div class="gt">計画と実績のGAPがリアルタイムで見える</div></div>
-      <div class="gi" style="padding-left:16px;"><div class="gn">Goal 2</div><div class="gt">同じDBを見て会話が成立している<br><span style="opacity:.55;font-size:10px;">更新・閲覧しないと会話が成立しない状態へ</span></div></div>
-      <div class="gi" style="padding-left:16px;"><div class="gn">Goal 3</div><div class="gt">コントロールできる指標だけを管理している</div></div>
-      <div class="gi" style="padding-left:16px;"><div class="gn">Goal 4</div><div class="gt">成功ノウハウが振り返りMtg・1on1で横展されている</div></div>
+  <div class="mission-inner">
+    <div class="mission-row">
+      <div class="mission-lbl">目的</div>
+      <div class="mission-txt">353億円達成に向けた「営業活動のちゃんと化」。計画と実績のGAPを常時可視化し、PDCAを回せる組織に変える。<br><span style="opacity:.6;font-size:11px">仕組みが行動を変え、行動がマインドを変える。</span></div>
+    </div>
+    <div class="goals">
+      <div class="goal"><div class="goal-n">Goal 1</div><div class="goal-t">計画と実績のGAPがリアルタイムで見える</div></div>
+      <div class="goal"><div class="goal-n">Goal 2</div><div class="goal-t">同じDBを見て会話が成立している<br><span style="opacity:.55;font-size:10px">更新・閲覧しないと会話が成立しない状態へ</span></div></div>
+      <div class="goal"><div class="goal-n">Goal 3</div><div class="goal-t">コントロールできる指標だけを管理している</div></div>
+      <div class="goal"><div class="goal-n">Goal 4</div><div class="goal-t">成功ノウハウが振り返りMtg・1on1で横展されている</div></div>
     </div>
   </div>
 </div>
-<div class="gauge-sec">
+
+<div class="gauge-wrap">
   <div class="gauge-inner">
     <div class="gauge-hdr">
-      <div><div class="gauge-title">1Q 計画 vs 実績 ― 訪問 / 案件 / 試合 / 獲得（全ステージ）</div><div class="gauge-sub">計画: FY26獲得計画シート CQ列1Q合計 ／ 実績: e-Sales Manager Rawdata</div></div>
-      <div class="gauge-note" id="planNote">実績: 4月データ（随時更新）</div>
+      <div>
+        <div class="gauge-ttl">1Q 計画 vs 実績 — 全ステージ</div>
+        <div class="gauge-sub">計画: FY26獲得計画シート 1Q合計 ／ 実績: e-Sales Manager Rawdata</div>
+      </div>
+      <div class="gauge-note" id="gnote">実績: 最新データ</div>
     </div>
-    <div class="team-grid" id="teamGauges"></div>
+    <div class="gauge-grid" id="gauges"></div>
   </div>
 </div>
-<div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
-  <div class="dicon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg></div>
-  <div class="dtxt"><p id="dropLabel">e-Sales Manager RawdataをここにドラッグするかCSVを選択</p><span id="dropSub">Shift-JIS対応 ・ data.csvを同フォルダに置くと自動読み込み</span></div>
-  <button class="dbtn" onclick="event.stopPropagation();document.getElementById('fileInput').click()">CSVを選択</button>
-  <input type="file" id="fileInput" accept=".csv">
+
+<div class="drop" id="drop" onclick="document.getElementById('fi').click()">
+  <div class="drop-ico"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg></div>
+  <div class="drop-txt"><p id="dlbl">e-Sales Manager RawdataをここにドラッグするかCSVを選択</p><small id="dsub">Shift-JIS対応 / data.csvを同フォルダに置くと自動読み込み</small></div>
+  <button class="drop-btn" onclick="event.stopPropagation();document.getElementById('fi').click()">CSVを選択</button>
+  <input type="file" id="fi" accept=".csv" style="display:none">
 </div>
-<div class="tab-wrap">
-  <button class="tab on" onclick="showTab('funnel',this)">ファネル概要</button>
-  <button class="tab" onclick="showTab('person',this)">個人横比較</button>
-  <button class="tab" onclick="showTab('route',this)">紹介経路別</button>
-  <button class="tab" onclick="showTab('insight',this)">インサイト</button>
+
+<div class="tabs">
+  <button class="tab on" onclick="ST('funnel',this)">ファネル概要</button>
+  <button class="tab" onclick="ST('person',this)">個人横比較</button>
+  <button class="tab" onclick="ST('insight',this)">インサイト</button>
 </div>
+
 <div class="main">
+
 <div id="pane-funnel" class="pane on">
-  <div id="funnel-empty" class="empty"><svg viewBox="0 0 24 24"><path d="M9 17H5a2 2 0 00-2 2v2M15 17h4a2 2 0 012 2v2M3 3h18M9 3v4a6 6 0 006 0V3"/></svg>CSVをアップロードするとファネルが表示されます</div>
-  <div id="funnel-content" style="display:none;">
-    <div class="def-box"><strong>📌 指標定義</strong>｜<strong>訪問</strong>: 初回訪問（H/G）　<strong>案件化</strong>: 概算見積（F/D）　<strong>試合化</strong>: 本見積提出（C/B）　<strong>獲得</strong>: 成約内定（A）<br><strong>案件化率</strong>: 訪問→案件化の転換率　<strong>試合化率</strong>: 案件化→試合化の転換率　<strong>成約率</strong>: 試合化→獲得の転換率　<strong>訪問成約率</strong>: 訪問全体に対する獲得の割合<br><strong>獲得数の定義</strong>: 成約内定（Aコード）に到達したリードを担当者×顧客単位で重複排除してカウント。2026年4月のRawdataから集計。</div>
-    <div class="slbl">部門フィルター</div><div class="filter-bar" id="divFilter"></div>
-    <div class="slbl">全体KPI</div><div class="krow" id="kpiRow"></div>
+  <div id="fe" class="empty">CSVをアップロードするとデータが表示されます</div>
+  <div id="fc" style="display:none">
+    <div class="def"><b>📌 指標定義</b>｜<b>訪問</b>: 初回訪問(H/G)　<b>案件化</b>: 概算見積(F/D)　<b>試合化</b>: 本見積提出(C/B)　<b>獲得</b>: 成約内定(A)<br><b>案件化率</b>: 訪問→案件化　<b>試合化率</b>: 案件化→試合化　<b>成約率</b>: 試合化→獲得　<b>訪問成約率</b>: 訪問→獲得<br><b>獲得数</b>: 成約内定(A)に到達したリードを担当者×顧客単位で重複排除してカウント</div>
+    <div class="sec">部門フィルター</div><div class="filters" id="df"></div>
+    <div class="sec">KPI</div><div class="krow" id="kpi"></div>
     <div class="two">
-      <div><div class="slbl">ファネル進捗（リード累積）</div><div id="funnelViz"></div></div>
-      <div class="card" style="margin-bottom:0;"><div class="card-t">獲得数ランキング TOP10<span style="font-size:9px;color:var(--t3);font-weight:400;margin-left:6px;">成約内定(A)リードの累積カウント ※丸にマウスオーバーで案件詳細</span></div><div id="winRanking"></div></div>
+      <div><div class="sec">ファネル進捗</div><div id="fviz"></div></div>
+      <div class="card" style="margin:0"><div class="card-t">獲得数 TOP10　<small style="font-weight:400;color:#9a9892">※丸にマウスオーバーで案件詳細</small></div><div id="wrank"></div></div>
     </div>
     <div class="two">
-      <div class="card" style="margin-bottom:0;"><div class="card-t">部門別ファネル効率（案件化率・試合化率・成約率）</div><div style="position:relative;height:200px;"><canvas id="divChart"></canvas></div></div>
-      <div class="card" style="margin-bottom:0;"><div class="card-t">訪問成約率ランキング TOP10<span style="font-size:9px;color:var(--t3);font-weight:400;margin-left:6px;">（訪問5件以上）</span></div><div id="rateRanking"></div></div>
+      <div class="card" style="margin:0"><div class="card-t">部門別ファネル効率</div><div style="position:relative;height:190px"><canvas id="dchart"></canvas></div></div>
+      <div class="card" style="margin:0"><div class="card-t">訪問成約率 TOP10　<small style="font-weight:400;color:#9a9892">訪問5件以上</small></div><div id="rrank"></div></div>
     </div>
   </div>
 </div>
+
 <div id="pane-person" class="pane">
-  <div id="person-empty" class="empty"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>CSVをアップロードすると個人比較が表示されます</div>
-  <div id="person-content" style="display:none;">
-    <div class="def-box"><strong>📌 評価グレード定義</strong>（訪問成約率ベース）｜<span class="bdg bg">S</span> 40%以上　<span class="bdg bb">A</span> 20〜39%　<span class="bdg bo">B</span> 8〜19%　<span class="bdg br">C</span> 7%以下<br><strong>訪問成約率</strong> = 獲得数 ÷ 訪問数 × 100　※訪問リードのうち最終的に成約に至った割合（集計期間: 2026年4月）</div>
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-      <div><div class="slbl" style="margin:0 0 4px;">部門フィルター</div><div class="filter-bar" id="personFilter" style="margin-bottom:0;"></div></div>
-      <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:10px;color:var(--t2);">並び替え</span>
-        <select id="personSort" onchange="renderPersonTable()">
+  <div id="pe" class="empty">CSVをアップロードするとデータが表示されます</div>
+  <div id="pc" style="display:none">
+    <div class="def"><b>📌 評価グレード</b>（訪問成約率）｜<span class="bdg S">S</span> 40%以上　<span class="bdg A">A</span> 20〜39%　<span class="bdg B">B</span> 8〜19%　<span class="bdg C">C</span> 7%以下</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+      <div class="filters" id="pf"></div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:10px;color:#5f5e5a">並び替え</span>
+        <select id="psort" onchange="renderPT()">
           <option value="win">獲得数順</option>
           <option value="visit">訪問数順</option>
           <option value="rate">訪問成約率順</option>
         </select>
       </div>
     </div>
-    <div class="slbl">個人別ファネル詳細</div>
-    <div class="card"><div class="tbl-wrap" id="personTable"></div></div>
-    <div class="two">
-      <div class="card" style="margin-bottom:0;"><div class="card-t">高訪問×低効率（要改善）</div><div id="lowEff"></div></div>
-      <div class="card" style="margin-bottom:0;"><div class="card-t">低訪問×高効率（ノウハウ源泉）</div><div id="highEff"></div></div>
-    </div>
+    <div class="card"><div class="tbl" id="ptbl"></div></div>
   </div>
 </div>
-<div id="pane-route" class="pane">
-  <div id="route-empty" class="empty"><svg viewBox="0 0 24 24"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7M9 20l6-3M9 20V7m6 13l4.553 2.276A1 1 0 0021 21.382V10.618a1 1 0 00-.553-.894L15 7m0 13V7M9 7l6-3"/></svg>CSVをアップロードすると経路分析が表示されます</div>
-  <div id="route-content" style="display:none;">
-    <div class="def-box"><strong>📌 経路定義</strong>｜<strong>既存顧客紹介（G）</strong>: グループ会社・系列・関係法人からの紹介。親密度が高く成約率が全経路最高（コントラクト42%）。<strong>既存顧客紹介（その他）</strong>: G以外の既存顧客からの口コミ・個人紹介。<br><strong>未決着率</strong>: 訪問済みリードのうち獲得・失注未確定の割合。高い＝改善余地あり（理由次第）。低い＝案件が進んでいるか早期に結論が出ている。</div>
-    <div class="slbl">セグメントフィルター</div><div class="filter-bar" id="routeDivFilter"></div>
-    <div class="slbl">経路別 優先度マトリクス</div>
-    <div class="card"><div class="tbl-wrap" id="routeTable"></div></div>
-    <div class="slbl">経路別ファネルカード</div><div class="route-grid" id="routeCards"></div>
-    <div class="slbl" style="margin-top:1.5rem;">訪問数 vs 獲得数 vs 未決着数（経路別）</div>
-    <div class="card"><div style="position:relative;height:240px;"><canvas id="routeBarChart"></canvas></div></div>
-  </div>
-</div>
+
 <div id="pane-insight" class="pane">
-  <div id="insight-empty" class="empty"><svg viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3M6.343 6.343l-.707-.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>CSVをアップロードするとインサイトが生成されます</div>
-  <div id="insight-content" style="display:none;">
-    <div class="slbl">インサイト（自動生成）</div>
-    <div class="card" id="insightCards"></div>
-  </div>
+  <div id="ie" class="empty">CSVをアップロードするとインサイトが表示されます</div>
+  <div id="ic" style="display:none"><div class="card" id="ins"></div></div>
 </div>
+
 </div>
+
 <script>
-const SLABELS=['訪問','案件化','試合化','獲得'];
-const SKEYS=['visit','case','pitch','win'];
-const SCOLORS=['#378ADD','#1D9E75','#BA7517','#D4537E'];
-const PLAN={"メディカル・グラライ": {"visit": 1080, "case": 365, "pitch": 125, "win": 46}, "コントラクト": {"visit": 337, "case": 129, "pitch": 51, "win": 30}, "保育給食": {"visit": 1161, "case": 635, "pitch": 128, "win": 60}};
-const ROUTE_DIV_DATA={"DM（郵送）": {"コントラクト": {"v": 5, "c": 3, "p": 2, "w": 1, "u": 4}, "メディカル・グラライ": {"v": 86, "c": 13, "p": 0, "w": 0, "u": 86}, "保育給食": {"v": 5, "c": 0, "p": 0, "w": 0, "u": 5}}, "テレアポ": {"コントラクト": {"v": 45, "c": 19, "p": 6, "w": 3, "u": 42}, "メディカル・グラライ": {"v": 33, "c": 17, "p": 5, "w": 0, "u": 33}, "保育給食": {"v": 15, "c": 5, "p": 3, "w": 1, "u": 14}}, "問い合わせ（Web）": {"コントラクト": {"v": 19, "c": 12, "p": 8, "w": 6, "u": 13}, "メディカル・グラライ": {"v": 6, "c": 5, "p": 1, "w": 0, "u": 6}, "保育給食": {"v": 5, "c": 5, "p": 5, "w": 5, "u": 0}}, "問い合わせ（受電）": {"コントラクト": {"v": 6, "c": 6, "p": 4, "w": 1, "u": 5}, "メディカル・グラライ": {"v": 8, "c": 8, "p": 1, "w": 0, "u": 8}, "保育給食": {"v": 1, "c": 1, "p": 0, "w": 0, "u": 1}}, "既存顧客紹介（G：グループ/系列）": {"コントラクト": {"v": 31, "c": 25, "p": 18, "w": 13, "u": 18}, "メディカル・グラライ": {"v": 6, "c": 6, "p": 6, "w": 4, "u": 2}, "保育給食": {"v": 1, "c": 1, "p": 0, "w": 0, "u": 1}}, "既存顧客紹介（その他）": {"コントラクト": {"v": 6, "c": 4, "p": 4, "w": 1, "u": 5}, "メディカル・グラライ": {"v": 2, "c": 2, "p": 1, "w": 0, "u": 2}, "保育給食": {"v": 2, "c": 2, "p": 1, "w": 0, "u": 2}}, "顧客HPへ問い合わせ": {"コントラクト": {"v": 9, "c": 6, "p": 2, "w": 1, "u": 8}, "メディカル・グラライ": {"v": 6, "c": 4, "p": 0, "w": 0, "u": 6}, "保育給食": {"v": 1, "c": 0, "p": 0, "w": 0, "u": 1}}, "飛び込み": {"コントラクト": {"v": 6, "c": 2, "p": 0, "w": 0, "u": 6}, "メディカル・グラライ": {"v": 139, "c": 68, "p": 3, "w": 2, "u": 137}, "保育給食": {"v": 99, "c": 2, "p": 2, "w": 1, "u": 98}}, "その他/未入力": {"コントラクト": {"v": 10, "c": 6, "p": 3, "w": 3, "u": 7}, "メディカル・グラライ": {"v": 13, "c": 6, "p": 1, "w": 1, "u": 12}, "保育給食": {"v": 10, "c": 8, "p": 7, "w": 4, "u": 6}}};
-const WIN_DETAILS={"田中航": [{"facility": "日本テレビ17F食堂", "client": "日本テレビ放送汐留新社屋", "headcount": "5000", "sales": "12,438,300", "profit": "369,552", "profit_rate": "3.0", "annual": "149,259,600", "open_date": "2026-04-01"}], "土田秀俊": [{"facility": "塩野フィネス株式会社福井事業所", "client": "塩野フィネス株式会社福井事業所", "headcount": "110", "sales": "1,351,000", "profit": "108,600", "profit_rate": "8.0", "annual": "16,212,000", "open_date": "2026-06-15"}], "山下雄大": [{"facility": "オリエンタルモーター鶴岡中央社員食堂", "client": "オリエンタルモーター(株)鶴岡カンパニー", "headcount": "302", "sales": "1,890,800", "profit": "158,314", "profit_rate": "8.4", "annual": "22,689,600", "open_date": "2026-04-01"}, {"facility": "東北職業能力大学校東北ポリテク寮食堂", "client": "東北職業能力開発大学校東北ポリテクカレッジ", "headcount": "700", "sales": "5,938,771", "profit": "478,633", "profit_rate": "8.1", "annual": "71,265,252", "open_date": "2026-04-01"}, {"facility": "セコム工業本社工場社員食堂", "client": "セコム工業本社工場", "headcount": "317", "sales": "3,046,539", "profit": "272,412", "profit_rate": "8.9", "annual": "36,558,468", "open_date": "2026-04-01"}], "渡邊勇": [{"facility": "特別養護老人ホームリビエラテラス鎌倉", "client": "社会福祉法人桜栄福祉会", "headcount": "80", "sales": "4,570,000", "profit": "220,000", "profit_rate": "4.8", "annual": "54,840,000", "open_date": "2026-09-01"}, {"facility": "障がい者支援施設第三上田ひもろ木園", "client": "社会福祉法人りんどうの会", "headcount": "30", "sales": "2,291,144", "profit": "232,293", "profit_rate": "10.1", "annual": "27,493,728", "open_date": "2026-06-01"}], "松井茂夫": [{"facility": "極東製薬工業高萩工場食堂", "client": "極東製薬工業株式会社", "headcount": "170", "sales": "1,592,000", "profit": "128,000", "profit_rate": "8.0", "annual": "19,104,000", "open_date": "2026-09-01"}, {"facility": "プリマハム茨城工場食堂", "client": "プリマハム茨城工場", "headcount": "500", "sales": "4,237,487", "profit": "338,999", "profit_rate": "8.0", "annual": "50,849,844", "open_date": "2026-07-01"}], "藤田謙介": [{"facility": "プリマハム茨城工場食堂", "client": "プリマハム茨城工場", "headcount": "500", "sales": "4,237,487", "profit": "338,999", "profit_rate": "8.0", "annual": "50,849,844", "open_date": "2026-07-01"}, {"facility": "新潟国際大学食堂", "client": "国際大学", "headcount": "400", "sales": "3,348,117", "profit": "267,850", "profit_rate": "8.0", "annual": "40,177,404", "open_date": "2026-09-01"}, {"facility": "長岡技術大学新食堂", "client": "長岡技術科学大学", "headcount": "2500", "sales": "4,994,750", "profit": "399,580", "profit_rate": "8.0", "annual": "59,937,000", "open_date": "2027-04-01"}, {"facility": "国分第二本社食堂", "client": "国分", "headcount": "518", "sales": "4,092,417", "profit": "279,416", "profit_rate": "6.8", "annual": "49,109,004", "open_date": "2027-01-11"}], "荒木豊": [{"facility": "東洋鋼鈑下松事業所社員食堂", "client": "東洋鋼鈑株式会社", "headcount": "1500", "sales": "1,876,976", "profit": "93,849", "profit_rate": "5.0", "annual": "22,523,712", "open_date": "2026-09-24"}, {"facility": "王子製紙米子工場尚志會館", "client": "王子製紙", "headcount": "1500", "sales": "4,103,795", "profit": "350,621", "profit_rate": "8.5", "annual": "49,245,540", "open_date": "2026-07-01"}, {"facility": "御国色素新本社食堂", "client": "御国色素株式会社", "headcount": "300", "sales": "2,326,372", "profit": "186,310", "profit_rate": "8.0", "annual": "27,916,464", "open_date": "2026-08-17"}, {"facility": "カルビー関西びわ湖第二工場社員食堂", "client": "カルビー湖南", "headcount": "200", "sales": "1,769,550", "profit": "114,877", "profit_rate": "6.5", "annual": "21,234,600", "open_date": "2026-06-01"}, {"facility": "愛知県消防学校食堂", "client": "前田建設工業", "headcount": "467", "sales": "10,941,993", "profit": "709,142", "profit_rate": "6.5", "annual": "131,303,916", "open_date": "2029-04-02"}, {"facility": "鳴門渦潮高校学生寮・食堂", "client": "徳島県立鳴門渦潮高校", "headcount": "72", "sales": "4,757,767", "profit": "77,486", "profit_rate": "1.6", "annual": "57,093,204", "open_date": "2026-04-04"}], "相澤新歌": [{"facility": "保育園アルペジオ昭島中神町園", "client": "株式会社アルペジオ", "headcount": "30", "sales": "1,248,310", "profit": "124,000", "profit_rate": "9.9", "annual": "14,979,720", "open_date": "2026-05-01"}, {"facility": "おともだち保育園分園こまつなぎ", "client": "社会福祉法人日本フレンズ奉仕団", "headcount": "19", "sales": "903,444", "profit": "90,000", "profit_rate": "10.0", "annual": "10,841,328", "open_date": "2026-09-01"}, {"facility": "おともだち保育園", "client": "社会福祉法人日本フレンズ奉仕団", "headcount": "90", "sales": "2,386,977", "profit": "238,000", "profit_rate": "10.0", "annual": "28,643,724", "open_date": "2026-09-01"}, {"facility": "向丘はなみずき保育園", "client": "社会福祉法人子の神福祉会", "headcount": "124", "sales": "2,334,085", "profit": "117,000", "profit_rate": "5.0", "annual": "28,009,020", "open_date": "2026-04-01"}, {"facility": "杉の子育英幼稚園", "client": "学校法人須賀学園", "headcount": "290", "sales": "2,705,809", "profit": "136,666", "profit_rate": "5.1", "annual": "32,469,708", "open_date": "2026-04-01"}], "磯川岳士": [{"facility": "東海大学柔星塾食堂", "client": "東海大学(湘南)", "headcount": "90", "sales": "3,532,550", "profit": "178,338", "profit_rate": "5.0", "annual": "42,390,600", "open_date": "2026-05-07"}, {"facility": "ヤマト運輸銀座ビル食堂", "client": "ヤマト運輸本社", "headcount": "397", "sales": "3,049,455", "profit": "104,302", "profit_rate": "3.4", "annual": "36,593,460", "open_date": "2026-02-02"}, {"facility": "國學院大學ラグビー部寮", "client": "國學院大學(たまプラーザ)", "headcount": "80", "sales": "4,559,800", "profit": "365,464", "profit_rate": "8.0", "annual": "54,717,600", "open_date": "2026-04-01"}], "大榮幸一": [{"facility": "愛知県消防学校食堂", "client": "前田建設工業", "headcount": "467", "sales": "10,941,993", "profit": "709,142", "profit_rate": "6.5", "annual": "131,303,916", "open_date": "2029-04-02"}, {"facility": "扶桑薬品工業", "client": "扶桑薬品工業", "headcount": "200", "sales": "2,282,091", "profit": "182,811", "profit_rate": "8.0", "annual": "27,385,092", "open_date": "2026-10-01"}, {"facility": "株式会社五光工業新設食堂", "client": "株式会社五光工業", "headcount": "100", "sales": "929,182", "profit": "100,537", "profit_rate": "10.8", "annual": "11,150,184", "open_date": "2026-09-01"}, {"facility": "九州フジパン福岡工場食堂", "client": "九州フジパン福岡工場", "headcount": "371", "sales": "1,952,262", "profit": "156,278", "profit_rate": "8.0", "annual": "23,427,144", "open_date": "2026-04-02"}], "渡辺泰": [{"facility": "アジア競技大会選手宿泊施設食堂", "client": "公益財団法人愛知・名古屋アジア競技大会組織委員会", "headcount": "20000", "sales": "23,835,614", "profit": "3,575,341", "profit_rate": "15.0", "annual": "286,027,368", "open_date": "2026-09-10"}, {"facility": "カルビー清原工場食堂", "client": "カルビー清原工場", "headcount": "280", "sales": "1,884,808", "profit": "79,083", "profit_rate": "4.2", "annual": "22,617,696", "open_date": "2026-07-01"}, {"facility": "あぶらや清助商店富山大学寮", "client": "株式会社あぶらや清助商店", "headcount": "270", "sales": "1,842,500", "profit": "147,400", "profit_rate": "8.0", "annual": "22,110,000", "open_date": "2026-10-01"}], "荘司琢磨": [{"facility": "日本オーチス・エレベータ芝山工場食堂", "client": "日本オーチス・エレベータ株式会社", "headcount": "500", "sales": "2,913,909", "profit": "278,143", "profit_rate": "9.5", "annual": "34,966,908", "open_date": "2026-07-01"}, {"facility": "宮地エンジニアリング千葉工場食堂", "client": "宮地エンジニアリング千葉工場", "headcount": "370", "sales": "2,796,997", "profit": "140,103", "profit_rate": "5.0", "annual": "33,563,964", "open_date": "2027-06-01"}, {"facility": "日本テレビ17F食堂", "client": "日本テレビ放送汐留新社屋", "headcount": "5000", "sales": "12,438,300", "profit": "369,552", "profit_rate": "3.0", "annual": "149,259,600", "open_date": "2026-04-01"}, {"facility": "國學院大學ラグビー部寮", "client": "國學院大學(たまプラーザ)", "headcount": "80", "sales": "4,559,800", "profit": "365,464", "profit_rate": "8.0", "annual": "54,717,600", "open_date": "2026-04-01"}], "平元将博": [{"facility": "今治造船西条工場新食堂", "client": "今治造船株式会社西条工場", "headcount": "2500", "sales": "10,258,350", "profit": "412,880", "profit_rate": "4.0", "annual": "123,100,200", "open_date": "2027-04-01"}], "古東久典": [{"facility": "テクノ工業甲府第三工場食堂", "client": "テクノ工業", "headcount": "50", "sales": "1,269,442", "profit": "151,330", "profit_rate": "11.9", "annual": "15,233,304", "open_date": "2026-06-01"}], "蘇武里佳": [{"facility": "東北職業能力大学校東北ポリテク寮食堂", "client": "東北職業能力開発大学校東北ポリテクカレッジ", "headcount": "700", "sales": "5,938,771", "profit": "478,633", "profit_rate": "8.1", "annual": "71,265,252", "open_date": "2026-04-01"}], "吉田睦": [{"facility": "小曽根幼稚園", "client": "学校法人小曽根学院", "headcount": "166", "sales": "2,879,380", "profit": "289,000", "profit_rate": "10.0", "annual": "34,552,560", "open_date": "2028-04-01"}, {"facility": "岡山紫雲こどもみらい園", "client": "社会福祉法人紫雲会", "headcount": "190", "sales": "2,766,920", "profit": "180,000", "profit_rate": "6.5", "annual": "33,203,040", "open_date": "2026-04-01"}], "笹岡圭三": [{"facility": "高師東こども園", "client": "社会福祉法人高師東保育園", "headcount": "225", "sales": "3,053,938", "profit": "237,000", "profit_rate": "7.8", "annual": "36,647,256", "open_date": "2026-04-01"}, {"facility": "高松西保育園", "client": "社会福祉法人高松南福祉会", "headcount": "130", "sales": "2,258,800", "profit": "225,000", "profit_rate": "10.0", "annual": "27,105,600", "open_date": "2026-04-01"}], "若槻正吾": [{"facility": "ココファン高松西宝町", "client": "株式会社学研ココファン", "headcount": "108", "sales": "3,486,120", "profit": "176,000", "profit_rate": "5.0", "annual": "41,833,440", "open_date": "2026-05-01"}, {"facility": "ツクイポピルスガーデン福山", "client": "株式会社ツクイ", "headcount": "44", "sales": "3,079,280", "profit": "216,000", "profit_rate": "7.0", "annual": "36,951,360", "open_date": "2026-04-01"}], "池田季蓉子": [{"facility": "特養ヒルズ鎌倉", "client": "社会福祉法人桜栄福祉会", "headcount": "100", "sales": "5,333,760", "profit": "190,000", "profit_rate": "3.6", "annual": "64,005,120", "open_date": "2026-06-01"}], "臼井瞭太": [{"facility": "特養ヒルズ鎌倉", "client": "社会福祉法人桜栄福祉会", "headcount": "100", "sales": "5,333,760", "profit": "190,000", "profit_rate": "3.6", "annual": "64,005,120", "open_date": "2026-06-01"}], "木村有秀": [{"facility": "老健みやびの里", "client": "医療法人社団誠恵会", "headcount": "150", "sales": "7,814,052", "profit": "544,664", "profit_rate": "7.0", "annual": "93,768,624", "open_date": "2026-10-01"}], "緒方義広": [{"facility": "医療法人仁愛会横山病院", "client": "医療法人仁愛会横山病院", "headcount": "47", "sales": "2,400,000", "profit": "125,000", "profit_rate": "5.2", "annual": "28,800,000", "open_date": "2026-04-01"}], "今野純一": [{"facility": "ユトリアケアセンターなりさわ", "client": "社会福祉法人ユトリア会", "headcount": "29", "sales": "1,363", "profit": "163", "profit_rate": "12.0", "annual": "16,356", "open_date": "2025-12-19"}], "杉浦威友": [{"facility": "あずさ保育園", "client": "社会福祉法人杏樹会", "headcount": "130", "sales": "2,724,595", "profit": "480,000", "profit_rate": "17.6", "annual": "32,695,140", "open_date": "2026-04-01"}]};
+// ===== データ =====
+var PERSONS = [{"name": "西村純彦", "div": "保育給食", "visit": 1, "case": 0, "pitch": 0, "win": 0, "tm": 0, "na": 1}, {"name": "松井茂夫", "div": "コントラクト", "visit": 19, "case": 7, "pitch": 3, "win": 2, "tm": 11040, "na": 98}, {"name": "吉田睦", "div": "保育給食", "visit": 21, "case": 10, "pitch": 5, "win": 2, "tm": 14950, "na": 74}, {"name": "笹岡圭三", "div": "コントラクト", "visit": 147, "case": 4, "pitch": 2, "win": 2, "tm": 6195, "na": 164}, {"name": "藤田謙介", "div": "コントラクト", "visit": 20, "case": 13, "pitch": 9, "win": 4, "tm": 10800, "na": 119}, {"name": "門田賢一", "div": "メディカル・グラライ", "visit": 111, "case": 35, "pitch": 1, "win": 0, "tm": 20555, "na": 259}, {"name": "加藤剛", "div": "メディカル・グラライ", "visit": 29, "case": 17, "pitch": 2, "win": 0, "tm": 2385, "na": 40}, {"name": "古東久典", "div": "コントラクト", "visit": 11, "case": 4, "pitch": 1, "win": 1, "tm": 10755, "na": 49}, {"name": "蘇武里佳", "div": "コントラクト", "visit": 35, "case": 7, "pitch": 2, "win": 1, "tm": 17575, "na": 81}, {"name": "今野純一", "div": "メディカル・グラライ", "visit": 134, "case": 18, "pitch": 1, "win": 1, "tm": 15315, "na": 224}, {"name": "池田季蓉子", "div": "コントラクト", "visit": 17, "case": 8, "pitch": 2, "win": 1, "tm": 11700, "na": 52}, {"name": "渡辺泰", "div": "コントラクト", "visit": 13, "case": 7, "pitch": 5, "win": 3, "tm": 13355, "na": 63}, {"name": "戸高杏", "div": "保育給食", "visit": 15, "case": 4, "pitch": 2, "win": 0, "tm": 12765, "na": 61}, {"name": "戸田賢悟", "div": "メディカル・グラライ", "visit": 20, "case": 15, "pitch": 3, "win": 0, "tm": 14395, "na": 75}, {"name": "荒木豊", "div": "コントラクト", "visit": 12, "case": 9, "pitch": 8, "win": 6, "tm": 19220, "na": 64}, {"name": "越村寧々", "div": "メディカル・グラライ", "visit": 31, "case": 4, "pitch": 0, "win": 0, "tm": 10815, "na": 55}, {"name": "磯川岳士", "div": "コントラクト", "visit": 14, "case": 12, "pitch": 6, "win": 3, "tm": 12165, "na": 74}, {"name": "若槻正吾", "div": "メディカル・グラライ", "visit": 10, "case": 6, "pitch": 3, "win": 2, "tm": 2775, "na": 20}, {"name": "平野奨", "div": "メディカル・グラライ", "visit": 18, "case": 9, "pitch": 1, "win": 0, "tm": 650, "na": 22}, {"name": "大榮幸一", "div": "コントラクト", "visit": 14, "case": 10, "pitch": 9, "win": 4, "tm": 15690, "na": 56}, {"name": "和田潔", "div": "メディカル・グラライ", "visit": 2, "case": 2, "pitch": 2, "win": 2, "tm": 510, "na": 3}, {"name": "荘司琢磨", "div": "コントラクト", "visit": 9, "case": 6, "pitch": 5, "win": 4, "tm": 16815, "na": 64}, {"name": "山下雄大", "div": "コントラクト", "visit": 5, "case": 4, "pitch": 4, "win": 3, "tm": 13640, "na": 43}, {"name": "土田秀俊", "div": "コントラクト", "visit": 8, "case": 4, "pitch": 3, "win": 1, "tm": 11145, "na": 51}, {"name": "平元将博", "div": "コントラクト", "visit": 12, "case": 8, "pitch": 3, "win": 1, "tm": 13505, "na": 43}, {"name": "田中航", "div": "コントラクト", "visit": 6, "case": 3, "pitch": 3, "win": 1, "tm": 15965, "na": 45}, {"name": "宇垣亮", "div": "メディカル・グラライ", "visit": 8, "case": 5, "pitch": 1, "win": 0, "tm": 20245, "na": 42}, {"name": "国米彰", "div": "コントラクト", "visit": 17, "case": 2, "pitch": 0, "win": 0, "tm": 8125, "na": 37}, {"name": "相澤新歌", "div": "保育給食", "visit": 7, "case": 6, "pitch": 6, "win": 5, "tm": 11335, "na": 62}, {"name": "臼井瞭太", "div": "メディカル・グラライ", "visit": 8, "case": 7, "pitch": 1, "win": 1, "tm": 12910, "na": 38}, {"name": "渡邊勇", "div": "メディカル・グラライ", "visit": 20, "case": 11, "pitch": 2, "win": 2, "tm": 4635, "na": 68}, {"name": "木村有秀", "div": "コントラクト", "visit": 5, "case": 4, "pitch": 2, "win": 1, "tm": 10440, "na": 20}, {"name": "細川和輝", "div": "コントラクト", "visit": 2, "case": 1, "pitch": 0, "win": 0, "tm": 780, "na": 3}, {"name": "大石貴彦", "div": "メディカル・グラライ", "visit": 3, "case": 1, "pitch": 1, "win": 0, "tm": 9330, "na": 19}, {"name": "亀井靖司", "div": "コントラクト", "visit": 1, "case": 0, "pitch": 0, "win": 0, "tm": 120, "na": 1}, {"name": "緒方義広", "div": "コントラクト", "visit": 1, "case": 1, "pitch": 1, "win": 1, "tm": 360, "na": 2}, {"name": "伊知地崇明", "div": "メディカル・グラライ", "visit": 2, "case": 2, "pitch": 0, "win": 0, "tm": 135, "na": 2}, {"name": "池谷陽介", "div": "コントラクト", "visit": 1, "case": 0, "pitch": 0, "win": 0, "tm": 120, "na": 1}, {"name": "渡邉明宏", "div": "コントラクト", "visit": 1, "case": 0, "pitch": 0, "win": 0, "tm": 600, "na": 3}, {"name": "山中裕司", "div": "メディカル・グラライ", "visit": 1, "case": 0, "pitch": 0, "win": 0, "tm": 2220, "na": 7}, {"name": "池田正人", "div": "メディカル・グラライ", "visit": 1, "case": 0, "pitch": 0, "win": 0, "tm": 330, "na": 1}, {"name": "水野杏美", "div": "コントラクト", "visit": 1, "case": 0, "pitch": 0, "win": 0, "tm": 360, "na": 2}, {"name": "小林まどか", "div": "コントラクト", "visit": 1, "case": 0, "pitch": 0, "win": 0, "tm": 30, "na": 1}, {"name": "杉浦威友", "div": "保育給食", "visit": 3, "case": 2, "pitch": 2, "win": 1, "tm": 1620, "na": 5}];
+var PLAN = {"メディカル・グラライ": {"visit": 1080, "case": 365, "pitch": 125, "win": 46}, "コントラクト": {"visit": 337, "case": 129, "pitch": 51, "win": 30}, "保育給食": {"visit": 1161, "case": 635, "pitch": 128, "win": 60}};
+var INIT = {"メディカル・グラライ": {"visit": 398, "case": 132, "pitch": 18, "win": 8}, "コントラクト": {"visit": 372, "case": 114, "pitch": 68, "win": 39}, "保育給食": {"visit": 47, "case": 22, "pitch": 15, "win": 8}};
+var WIN = {"荒木豊": [{"facility": "東洋鋼鈑下松事業所社員食堂", "client": "東洋鋼鈑株式会社", "headcount": "1500", "sales": "1,876,976", "profit": "93,849", "profit_rate": "5.0", "annual": "22,523,712", "open_date": "2026-09-24"}, {"facility": "王子製紙米子工場尚志會館", "client": "王子製紙", "headcount": "1500", "sales": "4,103,795", "profit": "350,621", "profit_rate": "8.5", "annual": "49,245,540", "open_date": "2026-07-01"}, {"facility": "御国色素新本社食堂", "client": "御国色素株式会社", "headcount": "300", "sales": "2,326,372", "profit": "186,310", "profit_rate": "8.0", "annual": "27,916,464", "open_date": "2026-08-17"}, {"facility": "カルビー関西びわ湖第二工場", "client": "カルビー湖南", "headcount": "200", "sales": "1,769,550", "profit": "114,877", "profit_rate": "6.5", "annual": "21,234,600", "open_date": "2026-06-01"}, {"facility": "愛知県消防学校食堂", "client": "前田建設工業", "headcount": "467", "sales": "10,941,993", "profit": "709,142", "profit_rate": "6.5", "annual": "131,303,916", "open_date": "2029-04-02"}, {"facility": "鳴門渦潮高校学生寮・食堂", "client": "徳島県立鳴門渦潮高校", "headcount": "72", "sales": "4,757,767", "profit": "77,486", "profit_rate": "1.6", "annual": "57,093,204", "open_date": "2026-04-04"}], "相澤新歌": [{"facility": "保育園アルペジオ昭島中神町園", "client": "株式会社アルペジオ", "headcount": "30", "sales": "1,248,310", "profit": "124,000", "profit_rate": "9.9", "annual": "14,979,720", "open_date": "2026-05-01"}, {"facility": "おともだち保育園", "client": "社会福祉法人日本フレンズ奉仕団", "headcount": "90", "sales": "2,386,977", "profit": "238,000", "profit_rate": "10.0", "annual": "28,643,724", "open_date": "2026-09-01"}, {"facility": "向丘はなみずき保育園", "client": "社会福祉法人子の神福祉会", "headcount": "124", "sales": "2,334,085", "profit": "117,000", "profit_rate": "5.0", "annual": "28,009,020", "open_date": "2026-04-01"}, {"facility": "杉の子育英幼稚園", "client": "学校法人須賀学園", "headcount": "290", "sales": "2,705,809", "profit": "136,666", "profit_rate": "5.1", "annual": "32,469,708", "open_date": "2026-04-01"}, {"facility": "おともだち保育園分園こまつなぎ", "client": "社会福祉法人日本フレンズ奉仕団", "headcount": "19", "sales": "903,444", "profit": "90,000", "profit_rate": "10.0", "annual": "10,841,328", "open_date": "2026-09-01"}], "藤田謙介": [{"facility": "プリマハム茨城工場食堂", "client": "プリマハム茨城工場", "headcount": "500", "sales": "4,237,487", "profit": "338,999", "profit_rate": "8.0", "annual": "50,849,844", "open_date": "2026-07-01"}, {"facility": "新潟国際大学食堂", "client": "国際大学", "headcount": "400", "sales": "3,348,117", "profit": "267,850", "profit_rate": "8.0", "annual": "40,177,404", "open_date": "2026-09-01"}, {"facility": "長岡技術大学新食堂", "client": "長岡技術科学大学", "headcount": "2500", "sales": "4,994,750", "profit": "399,580", "profit_rate": "8.0", "annual": "59,937,000", "open_date": "2027-04-01"}, {"facility": "国分第二本社食堂", "client": "国分", "headcount": "518", "sales": "4,092,417", "profit": "279,416", "profit_rate": "6.8", "annual": "49,109,004", "open_date": "2027-01-11"}], "大榮幸一": [{"facility": "愛知県消防学校食堂", "client": "前田建設工業", "headcount": "467", "sales": "10,941,993", "profit": "709,142", "profit_rate": "6.5", "annual": "131,303,916", "open_date": "2029-04-02"}, {"facility": "扶桑薬品工業", "client": "扶桑薬品工業", "headcount": "200", "sales": "2,282,091", "profit": "182,811", "profit_rate": "8.0", "annual": "27,385,092", "open_date": "2026-10-01"}, {"facility": "株式会社五光工業新設食堂", "client": "株式会社五光工業", "headcount": "100", "sales": "929,182", "profit": "100,537", "profit_rate": "10.8", "annual": "11,150,184", "open_date": "2026-09-01"}, {"facility": "九州フジパン福岡工場食堂", "client": "九州フジパン福岡工場", "headcount": "371", "sales": "1,952,262", "profit": "156,278", "profit_rate": "8.0", "annual": "23,427,144", "open_date": "2026-04-02"}], "渡辺泰": [{"facility": "アジア競技大会選手宿泊施設食堂", "client": "公益財団法人愛知・名古屋アジア競技大会組織委員会", "headcount": "20000", "sales": "23,835,614", "profit": "3,575,341", "profit_rate": "15.0", "annual": "286,027,368", "open_date": "2026-09-10"}, {"facility": "カルビー清原工場食堂", "client": "カルビー清原工場", "headcount": "280", "sales": "1,884,808", "profit": "79,083", "profit_rate": "4.2", "annual": "22,617,696", "open_date": "2026-07-01"}, {"facility": "あぶらや清助商店富山大学寮", "client": "株式会社あぶらや清助商店", "headcount": "270", "sales": "1,842,500", "profit": "147,400", "profit_rate": "8.0", "annual": "22,110,000", "open_date": "2026-10-01"}], "磯川岳士": [{"facility": "東海大学柔星塾食堂", "client": "東海大学(湘南)", "headcount": "90", "sales": "3,532,550", "profit": "178,338", "profit_rate": "5.0", "annual": "42,390,600", "open_date": "2026-05-07"}, {"facility": "ヤマト運輸銀座ビル食堂", "client": "ヤマト運輸本社", "headcount": "397", "sales": "3,049,455", "profit": "104,302", "profit_rate": "3.4", "annual": "36,593,460", "open_date": "2026-02-02"}, {"facility": "國學院大學ラグビー部寮", "client": "國學院大學(たまプラーザ)", "headcount": "80", "sales": "4,559,800", "profit": "365,464", "profit_rate": "8.0", "annual": "54,717,600", "open_date": "2026-04-01"}], "荘司琢磨": [{"facility": "日本テレビ17F食堂", "client": "日本テレビ放送汐留新社屋", "headcount": "5000", "sales": "12,438,300", "profit": "369,552", "profit_rate": "3.0", "annual": "149,259,600", "open_date": "2026-04-01"}, {"facility": "宮地エンジニアリング千葉工場食堂", "client": "宮地エンジニアリング千葉工場", "headcount": "370", "sales": "2,796,997", "profit": "140,103", "profit_rate": "5.0", "annual": "33,563,964", "open_date": "2027-06-01"}, {"facility": "日本オーチス・エレベータ芝山工場食堂", "client": "日本オーチス・エレベータ株式会社", "headcount": "500", "sales": "2,913,909", "profit": "278,143", "profit_rate": "9.5", "annual": "34,966,908", "open_date": "2026-07-01"}, {"facility": "國學院大學ラグビー部寮", "client": "國學院大學(たまプラーザ)", "headcount": "80", "sales": "4,559,800", "profit": "365,464", "profit_rate": "8.0", "annual": "54,717,600", "open_date": "2026-04-01"}], "渡邊勇": [{"facility": "特別養護老人ホームリビエラテラス鎌倉", "client": "社会福祉法人桜栄福祉会", "headcount": "80", "sales": "4,570,000", "profit": "220,000", "profit_rate": "4.8", "annual": "54,840,000", "open_date": "2026-09-01"}, {"facility": "障がい者支援施設第三上田ひもろ木園", "client": "社会福祉法人りんどうの会", "headcount": "30", "sales": "2,291,144", "profit": "232,293", "profit_rate": "10.1", "annual": "27,493,728", "open_date": "2026-06-01"}], "山下雄大": [{"facility": "オリエンタルモーター鶴岡中央社員食堂", "client": "オリエンタルモーター(株)鶴岡カンパニー", "headcount": "302", "sales": "1,890,800", "profit": "158,314", "profit_rate": "8.4", "annual": "22,689,600", "open_date": "2026-04-01"}, {"facility": "東北職業能力大学校東北ポリテク寮食堂", "client": "東北職業能力開発大学校", "headcount": "700", "sales": "5,938,771", "profit": "478,633", "profit_rate": "8.1", "annual": "71,265,252", "open_date": "2026-04-01"}, {"facility": "セコム工業本社工場社員食堂", "client": "セコム工業本社工場", "headcount": "317", "sales": "3,046,539", "profit": "272,412", "profit_rate": "8.9", "annual": "36,558,468", "open_date": "2026-04-01"}], "松井茂夫": [{"facility": "極東製薬工業高萩工場食堂", "client": "極東製薬工業株式会社", "headcount": "170", "sales": "1,592,000", "profit": "128,000", "profit_rate": "8.0", "annual": "19,104,000", "open_date": "2026-09-01"}, {"facility": "プリマハム茨城工場食堂", "client": "プリマハム茨城工場", "headcount": "500", "sales": "4,237,487", "profit": "338,999", "profit_rate": "8.0", "annual": "50,849,844", "open_date": "2026-07-01"}], "吉田睦": [{"facility": "小曽根幼稚園", "client": "学校法人小曽根学院", "headcount": "166", "sales": "2,879,380", "profit": "289,000", "profit_rate": "10.0", "annual": "34,552,560", "open_date": "2028-04-01"}, {"facility": "岡山紫雲こどもみらい園", "client": "社会福祉法人紫雲会", "headcount": "190", "sales": "2,766,920", "profit": "180,000", "profit_rate": "6.5", "annual": "33,203,040", "open_date": "2026-04-01"}], "笹岡圭三": [{"facility": "高師東こども園", "client": "社会福祉法人高師東保育園", "headcount": "225", "sales": "3,053,938", "profit": "237,000", "profit_rate": "7.8", "annual": "36,647,256", "open_date": "2026-04-01"}, {"facility": "高松西保育園", "client": "社会福祉法人高松南福祉会", "headcount": "130", "sales": "2,258,800", "profit": "225,000", "profit_rate": "10.0", "annual": "27,105,600", "open_date": "2026-04-01"}], "若槻正吾": [{"facility": "ツクイポピルスガーデン福山", "client": "株式会社ツクイ", "headcount": "44", "sales": "3,079,280", "profit": "216,000", "profit_rate": "7.0", "annual": "36,951,360", "open_date": "2026-04-01"}, {"facility": "ココファン高松西宝町", "client": "株式会社学研ココファン", "headcount": "108", "sales": "3,486,120", "profit": "176,000", "profit_rate": "5.0", "annual": "41,833,440", "open_date": "2026-05-01"}], "平元将博": [{"facility": "今治造船西条工場新食堂", "client": "今治造船株式会社西条工場", "headcount": "2500", "sales": "10,258,350", "profit": "412,880", "profit_rate": "4.0", "annual": "123,100,200", "open_date": "2027-04-01"}], "古東久典": [{"facility": "テクノ工業甲府第三工場食堂", "client": "テクノ工業", "headcount": "50", "sales": "1,269,442", "profit": "151,330", "profit_rate": "11.9", "annual": "15,233,304", "open_date": "2026-06-01"}], "木村有秀": [{"facility": "老健みやびの里", "client": "医療法人社団誠恵会", "headcount": "150", "sales": "7,814,052", "profit": "544,664", "profit_rate": "7.0", "annual": "93,768,624", "open_date": "2026-10-01"}], "臼井瞭太": [{"facility": "特養ヒルズ鎌倉", "client": "社会福祉法人桜栄福祉会", "headcount": "100", "sales": "5,333,760", "profit": "190,000", "profit_rate": "3.6", "annual": "64,005,120", "open_date": "2026-06-01"}], "杉浦威友": [{"facility": "あずさ保育園", "client": "社会福祉法人杏樹会", "headcount": "130", "sales": "2,724,595", "profit": "480,000", "profit_rate": "17.6", "annual": "32,695,140", "open_date": "2026-04-01"}], "緒方義広": [{"facility": "医療法人仁愛会横山病院", "client": "医療法人仁愛会横山病院", "headcount": "47", "sales": "2,400,000", "profit": "125,000", "profit_rate": "5.2", "annual": "28,800,000", "open_date": "2026-04-01"}]};
+var SCOLS = ['#378ADD','#1D9E75','#BA7517','#D4537E'];
+var SLBLS = ['訪問','案件化','試合化','獲得'];
+var SKEYS = ['visit','case','pitch','win'];
+var selDiv = 'all';
+var DC = null;
 
-const SGAUGE=[{key:'visit',lbl:'訪問',col:'#378ADD'},{key:'case',lbl:'案件',col:'#1D9E75'},{key:'pitch',lbl:'試合',col:'#BA7517'},{key:'win',lbl:'獲得',col:'#D4537E'}];
-let DATA={persons:[],routes:[],divStats:{}},selDiv='all',selRouteDiv='all',divCI=null,routeCI=null;
-
-function normDiv(v){if(!v)return'';if(v.includes('メディカル')||v.includes('グランドライフ'))return'メディカル・グラライ';return v;}
-
-function buildGauges(acts){
-  const teams=['メディカル・グラライ','コントラクト','保育給食'];
-  document.getElementById('teamGauges').innerHTML=teams.map(team=>{
-    const p=PLAN[team]||{visit:0,case:0,pitch:0,win:0},a=acts[team]||{visit:0,case:0,pitch:0,win:0};
-    const wp=Math.round((a.win||0)/(p.win||1)*100);
-    const hc=wp>=100?'#3B6D11':wp>=70?'#854F0B':'#A32D2D',hbg=wp>=100?'#EAF3DE':wp>=70?'#FAEEDA':'#FCEBEB';
-    const rows=SGAUGE.map(sg=>{
-      const pv=p[sg.key]||1,av=a[sg.key]||0,pc=Math.min(Math.round(av/pv*100),100),over=av>=pv;
-      const bc=ion() {
-    if(!v){ if(e) e.textContent='パスワードを入力してください'; return; }
-    if(v === PASS){ unlock(); }
-    else {
-      if(e) e.textContent='パスワードが正しくありません';
-      if(i){ i.style.borderColor='#A32D2D'; i.value=''; i.focus();
-             setTimeout(function(){ i.style.borderColor=''; },600); }
+// ===== ゲージ =====
+function buildGauges(acts) {
+  var teams = ['メディカル・グラライ','コントラクト','保育給食'];
+  var sg = [{k:'visit',l:'訪問',c:'#378ADD'},{k:'case',l:'案件',c:'#1D9E75'},{k:'pitch',l:'試合',c:'#BA7517'},{k:'win',l:'獲得',c:'#D4537E'}];
+  var html = '';
+  for (var i=0;i<teams.length;i++) {
+    var tm=teams[i], p=PLAN[tm]||{}, a=acts[tm]||{};
+    var wp=Math.round((a.win||0)/((p.win||1))*100);
+    var hc=wp>=100?'#3B6D11':wp>=70?'#854F0B':'#A32D2D';
+    var hbg=wp>=100?'#EAF3DE':wp>=70?'#FAEEDA':'#FCEBEB';
+    var rows='';
+    for (var j=0;j<sg.length;j++) {
+      var s=sg[j], pv=p[s.k]||1, av=a[s.k]||0;
+      var pc=Math.min(Math.round(av/pv*100),100), over=av>=pv;
+      var bc=over?'#1D9E75':pc>=70?'#EF9F27':s.c;
+      var tc=over?'#3B6D11':pc>=70?'#854F0B':'#A32D2D';
+      rows+='<div class="g-row"><div class="g-lbl">'+s.l+'</div><div class="g-track"><div class="g-fill" style="width:'+pc+'%;background:'+bc+'"></div></div><div class="g-nums">'+av.toLocaleString()+' / '+pv.toLocaleString()+'</div><div class="g-pct" style="color:'+tc+'">'+(over?'✓':pc+'%')+'</div></div>';
     }
-  };
-  
-
-
-
-const dz=document.getElementById('dropZone'),fi=document.getElementById('fileInput');
-window.addEventListener('DOMContentLoaded',()=>{
-  fetch('./data.csv').then(r=>{if(!r.ok)throw 0;return r.arrayBuffer();}).then(b=>{
-    parseCSV(new TextDecoder('shift-jis').decode(b),'data.csv（自動読込）');
-    document.getElementById('dropLabel').textContent='データを更新する場合は新しいCSVをドロップ';
-    document.getElementById('dropSub').textContent='data.csv を差し替えてサイトを再デプロイすると全員に反映されます';
-  }).catch(()=>{});
-});
-dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag-over');});
-dz.addEventListener('dragleave',()=>dz.classList.remove('drag-over'));
-dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag-over');const f=e.dataTransfer.files[0];if(f)readFile(f);});
-fi.addEventListener('change',e=>{if(e.target.files[0])readFile(e.target.files[0]);e.target.value='';});
-function readFile(f){const r=new FileReader();r.onload=e=>parseCSV(new TextDecoder('shift-jis').decode(e.target.result),f.name);r.readAsArrayBuffer(f);}
-
-const _SM={'H':1,'G':1,'F':2,'D':2,'C':3,'B':3,'A':4};
-function getOrd(v){return _SM[((v||'').trim().split(',')[0].trim())]||0;}
-function normRoute(v){
-  if(!v||v==='その他')return'その他/未入力';
-  if(v.includes('飛込'))return'飛び込み';if(v.includes('テレアポ'))return'テレアポ';
-  if(v.includes('DM'))return'DM（郵送）';
-  if(v.includes('グループ')||v.includes('系列')||v.includes('関係法人'))return'既存顧客紹介（G：グループ/系列）';
-  if(/web/i.test(v))return'問い合わせ（Web）';if(v.includes('受電'))return'問い合わせ（受電）';
-  if(v.includes('顧客HP'))return'顧客HPへ問い合わせ';
-  if(v.includes('既存顧客紹介'))return'既存顧客紹介（その他）';
-  return'その他/未入力';
+    html+='<div class="g-card"><div class="g-name">'+tm+'<span class="g-badge" style="color:'+hc+';background:'+hbg+'">獲得 '+(wp>=100?'超過':wp+'%')+'</span></div>'+rows+'</div>';
+  }
+  document.getElementById('gauges').innerHTML = html;
 }
-function splitCSV(ln){const r=[];let c='',q=false;for(let i=0;i<ln.length;i++){const ch=ln[i];if(ch==='"'){q=!q;}else if(ch===','&&!q){r.push(c);c='';}else c+=ch;}r.push(c);return r;}
+buildGauges(INIT);
+
+// ===== ファイル読み込み =====
+var drop=document.getElementById('drop'), fi=document.getElementById('fi');
+drop.addEventListener('dragover',function(e){e.preventDefault();drop.classList.add('over')});
+drop.addEventListener('dragleave',function(){drop.classList.remove('over')});
+drop.addEventListener('drop',function(e){e.preventDefault();drop.classList.remove('over');var f=e.dataTransfer.files[0];if(f)readF(f)});
+fi.addEventListener('change',function(e){if(e.target.files[0])readF(e.target.files[0]);fi.value=''});
+window.addEventListener('load',function(){
+  fetch('./data.csv').then(function(r){if(!r.ok)throw 0;return r.arrayBuffer()}).then(function(b){
+    parseCSV(new TextDecoder('shift-jis').decode(b),'data.csv（自動）');
+    document.getElementById('dlbl').textContent='データを更新するには新しいCSVをドロップ';
+  }).catch(function(){});
+});
+function readF(f){var r=new FileReader();r.onload=function(e){parseCSV(new TextDecoder('shift-jis').decode(e.target.result),f.name)};r.readAsArrayBuffer(f)}
+
+// ===== CSV解析 =====
+var SM={'H':1,'G':1,'F':2,'D':2,'C':3,'B':3,'A':4};
+function gOrd(v){return SM[((v||'').trim().split(',')[0].trim())]||0}
+function nDiv(v){if(!v)return'';if(/メディカル|グランドライフ|グラライ|SFM\/G|SFG/.test(v))return 'メディカル・グラライ';if(/コントラクト|SCF/.test(v))return 'コントラクト';if(/保育/.test(v))return '保育給食';return''}
+function splitL(ln){var r=[],c='',q=false;for(var i=0;i<ln.length;i++){var ch=ln[i];if(ch==='"'){q=!q}else if(ch===','&&!q){r.push(c);c=''}else c+=ch}r.push(c);return r}
 
 function parseCSV(text,fn){
-  const lines=text.split(/
-?
+  var lines=text.split(/?
 /);if(lines.length<2)return;
-  const hdr=splitCSV(lines[0]),ci={};
-  hdr.forEach((h,i)=>{const ht=h.trim();
-    if(ht==='事業本部')ci.div=i;if(ht==='獲得／紹介経路')ci.route=i;
-    if(ht==='顧客名（法人/自治体名）'||ht==='顧客名')ci.client=i;
-    if(ht==='報告者')ci.reporter=i;if(ht==='活動時間（分）')ci.minutes=i;
-  });
-  const pc=[];hdr.forEach((h,i)=>{if(h.trim()==='進捗状況')pc.push(i);});
-  ci.progress=pc.length>1?pc[pc.length-1]:pc[0];
-  if(!ci.reporter||!ci.progress){alert('CSVのカラム構造を認識できませんでした');return;}
-  const led=new Map();
-  for(let i=1;i<lines.length;i++){
-    if(!lines[i].trim())continue;const row=splitCSV(lines[i]);
-    const rep=(row[ci.reporter]||'').trim(),prog=(row[ci.progress]||'').trim(),cli=(row[ci.client]||'').trim();
-    if(!rep||!prog||!cli)continue;const ord=getOrd(prog);if(!ord)continue;
-    const divR=normDiv((row[ci.div]||'').trim()),key=rep+'|||'+cli;
-    if(!led.has(key))led.set(key,{reporter:rep,client:cli,div:divR,route:normRoute((row[ci.route]||'').trim()),maxOrder:0,times:[]});
-    const e=led.get(key);
-    if(ord>e.maxOrder)e.maxOrder=ord;
-    if(!e.route||e.route==='その他/未入力')e.route=normRoute((row[ci.route]||'').trim());
-    const m=parseInt(row[ci.minutes]||'');if(!isNaN(m)&&m>0)e.times.push(m);
+  var hdr=splitL(lines[0]),ci={},pc2=[];
+  for(var i=0;i<hdr.length;i++){var h=hdr[i].trim();
+    if(h==='事業本部')ci.div=i;
+    if(h==='報告者')ci.reporter=i;
+    if(h==='顧客名（法人/自治体名）'||h==='顧客名')ci.client=i;
+    if(h==='活動時間（分）')ci.min=i;
+    if(h==='進捗状況')pc2.push(i);
   }
-  const pm=new Map(),rm=new Map();
-  for(const[,e]of led){
-    const k=e.reporter;
-    if(!pm.has(k))pm.set(k,{name:k,div:e.div,visit:0,case:0,pitch:0,win:0,totalMin:0,nAct:0,wins:WIN_DETAILS[k]||[]});
-    const p=pm.get(k),SK=['','visit','case','pitch','win'];
-    for(let o=1;o<=e.maxOrder;o++)p[SK[o]]++;
-    e.times.forEach(t=>{p.totalMin+=t;p.nAct++;});
-    const rk=e.route||'その他/未入力';
-    if(!rm.has(rk))rm.set(rk,{name:rk,visit:0,case:0,pitch:0,win:0,totalMin:0,nAct:0});
-    const rv=rm.get(rk);for(let o=1;o<=e.maxOrder;o++)rv[SK[o]]++;
-    e.times.forEach(t=>{rv.totalMin+=t;rv.nAct++;});
+  ci.prog=pc2.length>1?pc2[pc2.length-1]:pc2[0];
+  if(ci.reporter===undefined||ci.prog===undefined){alert('CSVのカラム構造を認識できませんでした。e-Sales ManagerのRawdataを使用してください。');return}
+  var led={};
+  for(var i=1;i<lines.length;i++){
+    if(!lines[i].trim())continue;
+    var row=splitL(lines[i]);
+    var rep=(row[ci.reporter]||'').trim(),prog=(row[ci.prog]||'').trim(),cli=ci.client!==undefined?(row[ci.client]||'').trim():'';
+    if(!rep||!prog||!cli)continue;
+    var ord=gOrd(prog);if(!ord)continue;
+    var div=nDiv(ci.div!==undefined?(row[ci.div]||'').trim():'');
+    var key=rep+'|||'+cli;
+    if(!led[key])led[key]={mo:0,rep:rep,div:div,times:[]};
+    var e=led[key];
+    if(ord>e.mo)e.mo=ord;
+    if(!e.div&&div)e.div=div;
+    var m=parseInt(row[ci.min]||'');if(!isNaN(m)&&m>0)e.times.push(m);
   }
-  const dm=new Map();
-  for(const[,p]of pm){
-    if(!dm.has(p.div))dm.set(p.div,{visit:0,case:0,pitch:0,win:0,count:0});
-    const d=dm.get(p.div);['visit','case','pitch','win'].forEach(k=>d[k]+=p[k]);d.count++;
+  var pm={};
+  for(var k in led){
+    var e=led[k],n=e.rep;
+    if(!pm[n])pm[n]={name:n,div:e.div,visit:0,case:0,pitch:0,win:0,tm:0,na:0,wins:WIN[n]||[]};
+    var p2=pm[n];
+    var sk2={1:'visit',2:'case',3:'pitch',4:'win'};
+    for(var o=1;o<=e.mo;o++)p2[sk2[o]]++;
+    for(var t=0;t<e.times.length;t++){p2.tm+=e.times[t];p2.na++}
   }
-  DATA.persons=[...pm.values()].filter(p=>p.visit+p.win>0);
-  DATA.routes=[...rm.values()].sort((a,b)=>b.win-a.win);
-  DATA.divStats=Object.fromEntries(dm);
-  const acts={};['メディカル・グラライ','コントラクト','保育給食'].forEach(dn=>{
-    const ds=DATA.divStats[dn];acts[dn]=ds?{visit:ds.visit,case:ds.case,pitch:ds.pitch,win:ds.win}:{visit:0,case:0,pitch:0,win:0};
-  });
+  PERSONS=[];for(var n in pm)if(pm[n].visit+pm[n].win>0)PERSONS.push(pm[n]);
+  var ds={};
+  for(var i=0;i<PERSONS.length;i++){var p2=PERSONS[i],d=p2.div||'その他';if(!ds[d])ds[d]={visit:0,case:0,pitch:0,win:0};for(var j=0;j<4;j++)ds[d][SKEYS[j]]+=p2[SKEYS[j]]}
+  var acts={};
+  var tms=['メディカル・グラライ','コントラクト','保育給食'];
+  for(var i=0;i<tms.length;i++){var tm=tms[i];acts[tm]=ds[tm]||{visit:0,case:0,pitch:0,win:0}}
   buildGauges(acts);
-  document.getElementById('lastUpdate').textContent=`更新: ${fn} (${new Date().toLocaleDateString('ja-JP')})`;
-  document.getElementById('planNote').textContent=`実績: CSVより自動集計（${new Date().toLocaleDateString('ja-JP')}）`;
+  document.getElementById('upd').textContent='更新: '+fn+' ('+new Date().toLocaleDateString('ja-JP')+')';
+  document.getElementById('gnote').textContent='実績: CSVより集計 '+new Date().toLocaleDateString('ja-JP');
   selDiv='all';renderAll();
 }
 
-function pct(a,b){return b?Math.round(a/b*100):0;}
-function sum(arr,k){return arr.reduce((s,x)=>s+(x[k]||0),0);}
-function grade(r){if(r>=40)return['S','bg'];if(r>=20)return['A','bb'];if(r>=8)return['B','bo'];return['C','br'];}
-function showTab(id,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));btn.classList.add('on');document.getElementById('pane-'+id).classList.add('on');}
-function getFiltered(){return selDiv==='all'?DATA.persons:DATA.persons.filter(p=>p.div===selDiv);}
+// ===== ユーティリティ =====
+function pct(a,b){return b?Math.round(a/b*100):0}
+function sum(arr,k){var s=0;for(var i=0;i<arr.length;i++)s+=arr[i][k]||0;return s}
+function grade(r){if(r>=40)return'S';if(r>=20)return'A';if(r>=8)return'B';return'C'}
+function ST(id,btn){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});document.querySelectorAll('.pane').forEach(function(p){p.classList.remove('on')});btn.classList.add('on');document.getElementById('pane-'+id).classList.add('on')}
+function gF(){return selDiv==='all'?PERSONS:PERSONS.filter(function(p){return p.div===selDiv})}
 
-const _tip=document.getElementById('winTip');
-function showTip(e,w){
-  _tip.innerHTML=`<div class="tip-fac">${w.facility}</div>
-    <div class="tip-row"><span class="tip-lbl">顧客</span><span class="tip-val" style="max-width:170px;text-align:right;word-break:break-all;">${w.client}</span></div>
-    <div class="tip-row"><span class="tip-lbl">規模</span><span class="tip-val">${Number(w.headcount).toLocaleString()}名/床</span></div>
-    <div class="tip-row"><span class="tip-lbl">単月売上</span><span class="tip-val">¥${w.sales}</span></div>
-    <div class="tip-row"><span class="tip-lbl">単月粗利</span><span class="tip-val">¥${w.profit}</span></div>
-    <div class="tip-row"><span class="tip-lbl">粗利率</span><span class="tip-val">${w.profit_rate}%</span></div>
-    <div class="tip-row"><span class="tip-lbl">年度貢献</span><span class="tip-val">¥${w.annual}</span></div>
-    <span class="tip-open">OPEN ${w.open_date}</span>`;
-  _tip.classList.add('show');posTip(e);
+// ===== ツールチップ =====
+var tip=document.getElementById('tip');
+function showTip(ev,w){
+  tip.innerHTML='<div class="tip-h">'+w.facility+'</div>'+
+    '<div class="tr"><span class="tl">顧客</span><span class="tv" style="max-width:160px;text-align:right;word-break:break-all">'+w.client+'</span></div>'+
+    '<div class="tr"><span class="tl">規模</span><span class="tv">'+Number(w.headcount).toLocaleString()+'名/床</span></div>'+
+    '<div class="tr"><span class="tl">単月売上</span><span class="tv">¥'+w.sales+'</span></div>'+
+    '<div class="tr"><span class="tl">単月粗利</span><span class="tv">¥'+w.profit+'</span></div>'+
+    '<div class="tr"><span class="tl">粗利率</span><span class="tv">'+w.profit_rate+'%</span></div>'+
+    '<div class="tr"><span class="tl">年度貢献</span><span class="tv">¥'+w.annual+'</span></div>'+
+    '<span class="tip-open">OPEN '+w.open_date+'</span>';
+  tip.classList.add('on');posTip(ev);
 }
-function posTip(e){const x=e.clientX+14,y=e.clientY-10;_tip.style.left=(x+300>window.innerWidth?x-314:x)+'px';_tip.style.top=(y+220>window.innerHeight?y-220:y)+'px';}
-function hideTip(){_tip.classList.remove('show');}
-document.addEventListener('mousemove',e=>{if(_tip.classList.contains('show'))posTip(e);});
-function makeWinDots(wins){
-  if(!wins||!wins.length)return'<span style="font-size:10px;color:var(--t3);">—</span>';
-  return'<div class="wdw">'+wins.map((w,i)=>`<div class="win-dot" onmouseenter="showTip(event,${JSON.stringify(w).replace(/"/g,'&quot;')})" onmouseleave="hideTip()">${i+1}</div>`).join('')+'</div>';
+function posTip(ev){var x=ev.clientX+12,y=ev.clientY-8;tip.style.left=(x+290>window.innerWidth?x-302:x)+'px';tip.style.top=(y+220>window.innerHeight?y-220:y)+'px'}
+function hideTip(){tip.classList.remove('on')}
+document.addEventListener('mousemove',function(ev){if(tip.classList.contains('on'))posTip(ev)});
+function mkDots(wins){
+  if(!wins||!wins.length)return'<span style="font-size:10px;color:#9a9892">—</span>';
+  var h='<div class="wdots">';
+  for(var i=0;i<wins.length;i++){
+    var w=wins[i],esc=JSON.stringify(w).replace(/"/g,'&quot;');
+    h+='<div class="wdot" onmouseenter="showTip(event,'+esc+')" onmouseleave="hideTip()">'+(i+1)+'</div>';
+  }
+  return h+'</div>';
 }
 
+// ===== renderAll =====
 function renderAll(){
-  ['funnel','person','route','insight'].forEach(id=>{document.getElementById(id+'-empty').style.display='none';document.getElementById(id+'-content').style.display='block';});
-  renderFunnel();renderPerson();renderRoute();renderInsight();
+  ['funnel','person','insight'].forEach(function(id){
+    document.getElementById(id.charAt(0)+'e').style.display='none';
+    document.getElementById(id.charAt(0)+'c').style.display='block';
+  });
+  renderFunnel();renderPerson();renderInsight();
 }
 
+// ===== FUNNEL =====
 function renderFunnel(){
-  const divs=[...new Set(DATA.persons.map(p=>p.div).filter(Boolean))].sort();
-  const df=document.getElementById('divFilter');df.innerHTML='';
-  ['all',...divs].forEach(d=>{const b=document.createElement('button');b.className='fbtn'+(selDiv===d?' on':'');b.textContent=d==='all'?'全部門':d;b.onclick=()=>{selDiv=d;renderFunnel();};df.appendChild(b);});
-  const fp=getFiltered(),v=sum(fp,'visit'),c=sum(fp,'case'),p=sum(fp,'pitch'),w=sum(fp,'win'),ar=pct(w,v);
-  document.getElementById('kpiRow').innerHTML=[
-    {v,l:'訪問リード数',s:null},
-    {v:c,l:'案件化数',s:`案件化率 ${pct(c,v)}%`,up:pct(c,v)>=35},
-    {v:p,l:'試合化数',s:`試合化率 ${pct(p,c)}%`,up:pct(p,c)>=35},
-    {v:w,l:'獲得数',s:`成約率 ${pct(w,p)}%`,up:pct(w,p)>=50},
-    {v:ar+'%',l:'訪問成約率',s:ar>=10?'目標圏内':'要改善',up:ar>=10},
-  ].map(k=>`<div class="kc"><div class="kv">${k.v}</div><div class="kl">${k.l}</div>${k.s?`<div class="ks ${k.up?'up':'dn'}">${k.s}</div>`:''}</div>`).join('');
-  const RLABELS=['','案件化率','試合化率','成約率'];
-  const vals=[v,c,p,w],mx=Math.max(...vals)||1;
-  document.getElementById('funnelViz').innerHTML=SLABELS.map((lbl,i)=>{
-    const w2=Math.round(vals[i]/mx*100);
-    const rate=i===0?`訪問成約率 ${pct(w,v)}%`:`${RLABELS[i]} ${pct(vals[i],vals[i-1])}%`;
-    const up=i===0?true:pct(vals[i],vals[i-1])>=30;
-    return`<div class="fn-row"><div class="fn-lbl">${lbl}</div><div class="fn-bg"><div class="fn-bar" style="width:${w2}%;background:${SCOLORS[i]};"><span>${vals[i]}</span></div></div><div class="fn-n">${vals[i]}</div><div class="fn-r" style="color:${i>0?(up?'var(--green)':'var(--red)'):'var(--t3)'};">${rate}</div></div>`;
+  var divs=[...new Set(PERSONS.map(function(p){return p.div}).filter(Boolean))].sort();
+  var df=document.getElementById('df');df.innerHTML='';
+  var makeBtn=function(d){var b=document.createElement('button');b.className='fbtn'+(selDiv===d?' on':'');b.textContent=d==='all'?'全部門':d;b.onclick=function(){selDiv=d;renderFunnel()};df.appendChild(b)};
+  makeBtn('all');divs.forEach(makeBtn);
+  var fp=gF(),v=sum(fp,'visit'),c=sum(fp,'case'),p=sum(fp,'pitch'),w=sum(fp,'win');
+  document.getElementById('kpi').innerHTML=[
+    {v:v,l:'訪問リード数',s:null},
+    {v:c,l:'案件化数',s:'案件化率 '+pct(c,v)+'%',up:pct(c,v)>=35},
+    {v:p,l:'試合化数',s:'試合化率 '+pct(p,c)+'%',up:pct(p,c)>=35},
+    {v:w,l:'獲得数',s:'成約率 '+pct(w,p)+'%',up:pct(w,p)>=50},
+    {v:pct(w,v)+'%',l:'訪問成約率',s:pct(w,v)>=10?'目標圏内':'要改善',up:pct(w,v)>=10}
+  ].map(function(k){return'<div class="kc"><div class="kv">'+k.v+'</div><div class="kl">'+k.l+'</div>'+(k.s?'<div class="ks '+(k.up?'up':'dn')+'">'+k.s+'</div>':'')+'</div>'}).join('');
+  var vals=[v,c,p,w],mx=Math.max.apply(null,vals)||1,rl=['','案件化率','試合化率','成約率'];
+  document.getElementById('fviz').innerHTML=SLBLS.map(function(lb,i){
+    var w2=Math.round(vals[i]/mx*100),rt=i===0?'訪問成約率 '+pct(w,v)+'%':rl[i]+' '+pct(vals[i],vals[i-1])+'%',up=i===0||pct(vals[i],vals[i-1])>=30;
+    return'<div class="fn-row"><div class="fn-lbl">'+lb+'</div><div class="fn-bg"><div class="fn-bar" style="width:'+w2+'%;background:'+SCOLS[i]+'"><span>'+vals[i]+'</span></div></div><div class="fn-n">'+vals[i]+'</div><div class="fn-r" style="color:'+(i>0?(up?'#3B6D11':'#A32D2D'):'#9a9892')+'">'+rt+'</div></div>';
   }).join('');
-  const wTop=[...fp].filter(p=>p.win>0).sort((a,b)=>b.win-a.win).slice(0,10),mxW=wTop[0]?.win||1;
-  document.getElementById('winRanking').innerHTML=wTop.map((p,i)=>
-    `<div class="rank-row"><div class="rank-n">${i+1}</div><div class="rank-name">${p.name}</div><div class="rank-bg"><div class="rank-fill" style="width:${Math.round(p.win/mxW*100)}%;background:${SCOLORS[3]};"></div></div><div style="display:flex;align-items:center;gap:4px;">${makeWinDots(p.wins)}<span class="rank-val">${p.win}件</span></div></div>`).join('');
-  const rTop=[...fp].filter(p=>p.visit>=5).sort((a,b)=>pct(b.win,b.visit)-pct(a.win,a.visit)).slice(0,10),mxR=pct(rTop[0]?.win||0,rTop[0]?.visit||1)||1;
-  document.getElementById('rateRanking').innerHTML=rTop.map((p,i)=>{
-    const r=pct(p.win,p.visit);
-    return`<div class="rank-row"><div class="rank-n">${i+1}</div><div class="rank-name">${p.name}</div><div class="rank-bg"><div class="rank-fill" style="width:${Math.round(r/mxR*100)}%;background:${SCOLORS[2]};"></div></div><div class="rank-val">${r}%</div></div>`;
+  var wt=[].concat(fp).filter(function(p){return p.win>0}).sort(function(a,b){return b.win-a.win}).slice(0,10),mw=wt[0]?wt[0].win:1;
+  document.getElementById('wrank').innerHTML=wt.map(function(p,i){
+    return'<div class="rr"><div class="rn">'+(i+1)+'</div><div class="rnm">'+p.name+'</div><div class="rbg"><div class="rf" style="width:'+Math.round(p.win/mw*100)+'%;background:#D4537E"></div></div><div style="display:flex;align-items:center;gap:4px">'+mkDots(p.wins)+'<span class="rv">'+p.win+'件</span></div></div>';
   }).join('');
-  if(divCI)divCI.destroy();const dn=Object.keys(DATA.divStats).filter(Boolean).sort();
-  divCI=new Chart(document.getElementById('divChart'),{type:'bar',data:{labels:dn,datasets:[
-    {label:'案件化率',data:dn.map(d=>pct(DATA.divStats[d].case,DATA.divStats[d].visit)),backgroundColor:'#9FE1CB',borderColor:'#1D9E75',borderWidth:1,borderRadius:3},
-    {label:'試合化率',data:dn.map(d=>pct(DATA.divStats[d].pitch,DATA.divStats[d].case)),backgroundColor:'#FAC775',borderColor:'#BA7517',borderWidth:1,borderRadius:3},
-    {label:'成約率',data:dn.map(d=>pct(DATA.divStats[d].win,DATA.divStats[d].pitch)),backgroundColor:'#F4C0D1',borderColor:'#D4537E',borderWidth:1,borderRadius:3},
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},callback:v=>v+'%'},max:110,beginAtZero:true}}}});
+  var rt=[].concat(fp).filter(function(p){return p.visit>=5}).sort(function(a,b){return pct(b.win,b.visit)-pct(a.win,a.visit)}).slice(0,10),mr=rt[0]?pct(rt[0].win,rt[0].visit):1;
+  document.getElementById('rrank').innerHTML=rt.map(function(p,i){var r=pct(p.win,p.visit);return'<div class="rr"><div class="rn">'+(i+1)+'</div><div class="rnm">'+p.name+'</div><div class="rbg"><div class="rf" style="width:'+Math.round(r/mr*100)+'%;background:#BA7517"></div></div><div class="rv">'+r+'%</div></div>'}).join('');
+  if(DC)DC.destroy();
+  var dn=Object.keys(PERSONS.reduce(function(m,p){if(p.div)m[p.div]=1;return m},{})).sort();
+  var ds2={};
+  PERSONS.forEach(function(p){if(!ds2[p.div])ds2[p.div]={visit:0,case:0,pitch:0,win:0};SKEYS.forEach(function(k){ds2[p.div][k]+=p[k]||0})});
+  DC=new Chart(document.getElementById('dchart'),{type:'bar',data:{labels:dn,datasets:[
+    {label:'案件化率',data:dn.map(function(d){return pct(ds2[d]?ds2[d].case:0,ds2[d]?ds2[d].visit:0)}),backgroundColor:'#9FE1CB',borderColor:'#1D9E75',borderWidth:1,borderRadius:3},
+    {label:'試合化率',data:dn.map(function(d){return pct(ds2[d]?ds2[d].pitch:0,ds2[d]?ds2[d].case:0)}),backgroundColor:'#FAC775',borderColor:'#BA7517',borderWidth:1,borderRadius:3},
+    {label:'成約率',data:dn.map(function(d){return pct(ds2[d]?ds2[d].win:0,ds2[d]?ds2[d].pitch:0)}),backgroundColor:'#F4C0D1',borderColor:'#D4537E',borderWidth:1,borderRadius:3}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},callback:function(v){return v+'%'}},max:110,beginAtZero:true}}}});
 }
 
+// ===== PERSON =====
 function renderPerson(){
-  const divs=[...new Set(DATA.persons.map(p=>p.div).filter(Boolean))].sort();
-  const pf=document.getElementById('personFilter');pf.innerHTML='';
-  ['all',...divs].forEach(d=>{const b=document.createElement('button');b.className='fbtn'+(selDiv===d?' on':'');b.textContent=d==='all'?'全部門':d;b.onclick=()=>{selDiv=d;renderPersonTable();};pf.appendChild(b);});
-  renderPersonTable();
-  const medV=DATA.persons.map(p=>p.visit).sort((a,b)=>a-b)[Math.floor(DATA.persons.length/2)]||10;
-  const medR=DATA.persons.filter(p=>p.visit>0).map(p=>pct(p.win,p.visit)).sort((a,b)=>a-b)[Math.floor(DATA.persons.length/2)]||5;
-  const low=[...DATA.persons].filter(p=>p.visit>=medV&&pct(p.win,p.visit)<medR).sort((a,b)=>b.visit-a.visit).slice(0,8);
-  const high=[...DATA.persons].filter(p=>p.visit<medV&&pct(p.win,p.visit)>=medR).sort((a,b)=>pct(b.win,b.visit)-pct(a.win,a.visit)).slice(0,8);
-  document.getElementById('lowEff').innerHTML=low.map(p=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:.5px solid var(--bd);font-size:11px;"><span>${p.name}</span><span style="color:var(--t2);">訪問${p.visit}件・訪問成約率${pct(p.win,p.visit)}%</span></div>`).join('')||'<div style="font-size:11px;color:var(--t3);padding:8px 0;">該当なし</div>';
-  document.getElementById('highEff').innerHTML=high.map(p=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:.5px solid var(--bd);font-size:11px;"><span>${p.name}</span><span style="color:var(--green);">訪問${p.visit}件・訪問成約率${pct(p.win,p.visit)}%</span></div>`).join('')||'<div style="font-size:11px;color:var(--t3);padding:8px 0;">該当なし</div>';
+  var divs=[...new Set(PERSONS.map(function(p){return p.div}).filter(Boolean))].sort();
+  var pf=document.getElementById('pf');pf.innerHTML='';
+  var mk=function(d){var b=document.createElement('button');b.className='fbtn'+(selDiv===d?' on':'');b.textContent=d==='all'?'全部門':d;b.onclick=function(){selDiv=d;renderPT()};pf.appendChild(b)};
+  mk('all');divs.forEach(mk);
+  renderPT();
 }
-function renderPersonTable(){
-  document.querySelectorAll('#personFilter .fbtn').forEach(b=>b.classList.toggle('on',b.textContent===(selDiv==='all'?'全部門':selDiv)));
-  const fp=selDiv==='all'?DATA.persons:DATA.persons.filter(p=>p.div===selDiv);
-  const sk=document.getElementById('personSort').value;
-  const sorted=[...fp].sort((a,b)=>{
+function renderPT(){
+  document.querySelectorAll('#pf .fbtn').forEach(function(b){b.classList.toggle('on',b.textContent===(selDiv==='all'?'全部門':selDiv))});
+  var fp=gF(),sk=document.getElementById('psort').value;
+  var sorted=[].concat(fp).sort(function(a,b){
     if(sk==='rate')return pct(b.win,b.visit)-pct(a.win,a.visit);
     return (b[sk]||0)-(a[sk]||0);
   });
-  const aM=p=>p.nAct?Math.round(p.totalMin/p.nAct):'-';
-  document.getElementById('personTable').innerHTML=`<table><thead><tr><th>担当者</th><th>部門</th><th>訪問</th><th>案件化<small style="font-weight:400;"> (案件化率)</small></th><th>試合化<small style="font-weight:400;"> (試合化率)</small></th><th>獲得<small style="font-weight:400;"> (成約率)</small></th><th>訪問成約率</th><th>分/件</th><th>評価</th></tr></thead><tbody>${
-    sorted.map(p=>{const r=pct(p.win,p.visit);const[g,gc]=grade(r);
-    return`<tr><td>${p.name}</td><td style="color:var(--t2);font-weight:400;">${p.div}</td><td>${p.visit}</td><td>${p.case}<span style="font-size:9px;color:var(--t3);"> (${pct(p.case,p.visit)}%)</span></td><td>${p.pitch}<span style="font-size:9px;color:var(--t3);"> (${pct(p.pitch,p.case)}%)</span></td><td>${makeWinDots(p.wins)}</td><td><strong>${r}%</strong></td><td>${aM(p)}</td><td><span class="bdg ${gc}">${g}</span></td></tr>`;
-    }).join('')}</tbody></table>`;
+  var am=function(p){return p.na?Math.round(p.tm/p.na):'-'};
+  document.getElementById('ptbl').innerHTML='<table><thead><tr><th>担当者</th><th>部門</th><th>訪問</th><th>案件化<small style="font-weight:400"> (率)</small></th><th>試合化<small style="font-weight:400"> (率)</small></th><th>獲得</th><th>訪問成約率</th><th>分/件</th><th>評価</th></tr></thead><tbody>'+
+  sorted.map(function(p){
+    var r=pct(p.win,p.visit),g=grade(r);
+    return'<tr><td>'+p.name+'</td><td style="color:#5f5e5a;font-weight:400">'+p.div+'</td><td>'+p.visit+'</td><td>'+p.case+' <small style="color:#9a9892">('+pct(p.case,p.visit)+'%)</small></td><td>'+p.pitch+' <small style="color:#9a9892">('+pct(p.pitch,p.case)+'%)</small></td><td>'+mkDots(p.wins)+'</td><td><b>'+r+'%</b></td><td>'+am(p)+'</td><td><span class="bdg '+g+'">'+g+'</span></td></tr>';
+  }).join('')+'</tbody></table>';
 }
 
-function renderRoute(){
-  const rdivs=['all','コントラクト','メディカル・グラライ','保育給食'];
-  const rdf=document.getElementById('routeDivFilter');
-  if(!rdf.children.length){
-    rdivs.forEach(d=>{const b=document.createElement('button');b.className='fbtn'+(selRouteDiv===d?' on':'');b.textContent=d==='all'?'全セグメント':d;b.onclick=()=>{selRouteDiv=d;renderRoute();};rdf.appendChild(b);});
-  } else {
-    rdf.querySelectorAll('.fbtn').forEach(b=>b.classList.toggle('on',b.textContent===(selRouteDiv==='all'?'全セグメント':selRouteDiv)));
-  }
-  function getRouteStats(){
-    return Object.entries(ROUTE_DIV_DATA).map(([name,divs])=>{
-      let v=0,c=0,p=0,w=0,u=0;
-      Object.entries(divs).forEach(([div,s])=>{if(selRouteDiv==='all'||div===selRouteDiv){v+=s.v;c+=s.c;p+=s.p;w+=s.w;u+=s.u;}});
-      return{name,v,c,p,w,u};
-    }).filter(r=>r.v>0);
-  }
-  const routes=getRouteStats().sort((a,b)=>pct(b.w,b.v)-pct(a.w,a.v));
-  function rA(r){const rt=pct(r.w,r.v);if(rt>=30)return['最優先拡大','bg'];if(rt>=15)return['投資増強','bb'];if(rt>=8)return['維持','bo'];return['縮小検討','br'];}
-  document.getElementById('routeTable').innerHTML=`<table><thead><tr><th>経路</th><th>訪問</th><th>案件化率</th><th>試合化率</th><th>成約率</th><th>獲得</th><th>訪問成約率</th><th>未決着数</th><th>未決着率</th><th>推奨</th></tr></thead><tbody>${
-    routes.map(r=>{const rt=pct(r.w,r.v);const[act,ac]=rA(r);const ur=r.v?Math.round(r.u/r.v*100):0;
-    return`<tr><td>${r.name}</td><td>${r.v}</td><td>${pct(r.c,r.v)}%</td><td>${pct(r.p,r.c)}%</td><td>${pct(r.w,r.p)}%</td><td><strong>${r.w}</strong></td><td><strong>${rt}%</strong></td><td>${r.u}</td><td><span style="color:${ur>=80?'#BA7517':'var(--t2)'};">${ur}%</span></td><td><span class="bdg ${ac}">${act}</span></td></tr>`;
-    }).join('')}</tbody></table>`;
-  const mx=Math.max(...routes.map(r=>r.v))||1;
-  document.getElementById('routeCards').innerHTML=routes.map(r=>{
-    const rt=pct(r.w,r.v);const[,gc]=grade(rt);const ur=r.v?Math.round(r.u/r.v*100):0;
-    const bars=[r.v,r.c,r.p,r.w].map((val,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><div style="font-size:9px;color:var(--t2);">${val}</div><div style="width:100%;background:var(--bg);border-radius:3px;height:40px;display:flex;align-items:flex-end;overflow:hidden;"><div style="width:100%;height:${Math.round(val/mx*100)}%;background:${SCOLORS[i]};border-radius:3px;"></div></div><div style="font-size:8px;color:var(--t3);">${SLABELS[i]}</div></div>`).join('');
-    return`<div class="rc"><div class="rc-badge"><span class="bdg ${gc}">成約率 ${rt}%</span></div><div class="rc-name">${r.name}</div><div style="display:flex;gap:4px;align-items:flex-end;height:70px;margin-bottom:6px;">${bars}</div><div style="font-size:10px;color:var(--t2);">案件化${pct(r.c,r.v)}%→試合化${pct(r.p,r.c)}%→成約${pct(r.w,r.p)}%</div><div style="font-size:10px;color:${ur>=80?'#BA7517':'var(--t3)'};margin-top:4px;">未決着: ${r.u}件（${ur}%）</div></div>`;
-  }).join('');
-  if(routeCI)routeCI.destroy();const bs=[...routes].sort((a,b)=>b.v-a.v);
-  routeCI=new Chart(document.getElementById('routeBarChart'),{type:'bar',data:{
-    labels:bs.map(r=>r.name.replace('既存顧客紹介','G紹介').replace('問い合わせ','問合').replace('（','(').replace('）',')')),
-    datasets:[
-      {label:'訪問数',data:bs.map(r=>r.v),backgroundColor:'#B5D4F4',borderColor:'#378ADD',borderWidth:1,borderRadius:3},
-      {label:'獲得数',data:bs.map(r=>r.w),backgroundColor:'#F4C0D1',borderColor:'#D4537E',borderWidth:1,borderRadius:3},
-      {label:'未決着数',data:bs.map(r=>r.u),backgroundColor:'#FAC775',borderColor:'#BA7517',borderWidth:1,borderRadius:3},
-    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10}}}}}});
-}
-
+// ===== INSIGHT =====
 function renderInsight(){
-  const ps=DATA.persons,tv=sum(ps,'visit'),tc=sum(ps,'case'),tp=sum(ps,'pitch'),tw=sum(ps,'win');
-  const topRate=[...ps].filter(p=>p.visit>=5).sort((a,b)=>pct(b.win,b.visit)-pct(a.win,a.visit))[0];
-  const zeroWin=ps.filter(p=>p.win===0&&p.visit>=5);
-  const rates=[pct(tc,tv),pct(tp,tc),pct(tw,tp)];
-  const bottle=['案件化','試合化','成約'][rates.indexOf(Math.min(...rates))];
-  const ins=[
-    {em:'🏆',ic:'var(--greenl)',title:`最高訪問成約率: ${topRate?.name||'-'}（${pct(topRate?.win,topRate?.visit)}%）`,desc:`訪問${topRate?.visit}件で${topRate?.win}件成約。案件化率${pct(topRate?.case,topRate?.visit)}%・試合化率${pct(topRate?.pitch,topRate?.case)}%・成約率${pct(topRate?.win,topRate?.pitch)}%。振り返りMtgで手法を言語化し横展する。`,tag:'ノウハウ横展対象',tc:'bg'},
-    {em:'⚠️',ic:'var(--redl)',title:`訪問多・獲得ゼロが${zeroWin.length}名`,desc:`${zeroWin.slice(0,5).map(p=>`${p.name}(${p.visit}件)`).join('・')}。案件化率・試合化率のどちらがボトルネックかを個人別に確認し、1on1で対策を議論する。`,tag:'緊急対応',tc:'br'},
-    {em:'🔍',ic:'var(--bluel)',title:`最大ボトルネック: 「${bottle}」ステージ`,desc:`案件化率${pct(tc,tv)}% / 試合化率${pct(tp,tc)}% / 成約率${pct(tw,tp)}%。「${bottle}」の転換率が最も低い。このステージに集中することが全体獲得数の改善に最も効果的。`,tag:'改善優先',tc:'bo'},
-    {em:'📍',ic:'var(--greenl)',title:'最強経路: 既存顧客紹介（G：グループ/系列）',desc:'訪問成約率が全経路で最高。コントラクトでは訪問成約率42%（31訪問・13獲得）。グループ会社・系列への横展を組織的に仕組み化することが353億への最短経路。',tag:'最優先投資',tc:'bg'},
-    {em:'📉',ic:'var(--amberl)',title:'未決着率が高い経路に活路あり',desc:'飛び込み（未決着率98〜99%）・DM（80〜100%）は現状の成約率は低いが未決着が多い。「成約率が低い＝やめる」ではなく、未決着の理由（検討中・競合負け等）を分析してから判断する。',tag:'要因分析',tc:'bo'},
+  var ps=PERSONS,tv=sum(ps,'visit'),tc=sum(ps,'case'),tp=sum(ps,'pitch'),tw=sum(ps,'win');
+  var topR=[].concat(ps).filter(function(p){return p.visit>=5}).sort(function(a,b){return pct(b.win,b.visit)-pct(a.win,a.visit)})[0];
+  var zW=ps.filter(function(p){return p.win===0&&p.visit>=5});
+  var rates=[pct(tc,tv),pct(tp,tc),pct(tw,tp)];
+  var minR=Math.min.apply(null,rates);
+  var bottle=['案件化','試合化','成約'][rates.indexOf(minR)];
+  var ins=[
+    {em:'🏆',bg:'#EAF3DE',title:'最高訪問成約率: '+(topR?topR.name+' ('+pct(topR.win,topR.visit)+'%)':'—'),desc:topR?'訪問'+topR.visit+'件で'+topR.win+'件成約。案件化率'+pct(topR.case,topR.visit)+'% / 試合化率'+pct(topR.pitch,topR.case)+'% / 成約率'+pct(topR.win,topR.pitch)+'%。振り返りMtgで手法を言語化し横展する。':'',tag:'ノウハウ横展対象',tc:'S'},
+    {em:'⚠️',bg:'#FCEBEB',title:'訪問多・獲得ゼロが'+zW.length+'名',desc:zW.slice(0,5).map(function(p){return p.name+'('+p.visit+'件)'}).join('・')+'。案件化率・試合化率のどちらがボトルネックかを個人別に1on1で確認する。',tag:'緊急対応',tc:'C'},
+    {em:'🔍',bg:'#E6F1FB',title:'最大ボトルネック: 「'+bottle+'」ステージ (転換率'+minR+'%)',desc:'案件化率'+pct(tc,tv)+'% / 試合化率'+pct(tp,tc)+'% / 成約率'+pct(tw,tp)+'%。「'+bottle+'」の改善が全体獲得数の向上に最も効果的。',tag:'改善優先',tc:'B'},
+    {em:'📍',bg:'#EAF3DE',title:'最強経路: 既存顧客紹介（G：グループ/系列）',desc:'コントラクト部門で訪問成約率42%（31訪問・13獲得）を記録。グループ会社・系列への横展を組織的に仕組み化することが353億への最短経路。',tag:'最優先投資',tc:'S'},
+    {em:'📊',bg:'#f0ede6',title:'全体サマリー: 訪問'+tv+'→案件'+tc+'→試合'+tp+'→獲得'+tw,desc:'全体訪問成約率 '+pct(tw,tv)+'%。1Q計画（コントラクト30件・グラライ46件・保育60件）に対してCSVデータを随時更新して進捗を確認する。',tag:'データサマリー',tc:'A'}
   ];
-  document.getElementById('insightCards').innerHTML=ins.map(i=>`<div style="display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:.5px solid var(--bd);"><div style="width:30px;height:30px;border-radius:var(--rs);background:${i.ic};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;">${i.em}</div><div><div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:3px;">${i.title}<span class="bdg ${i.tc}" style="margin-left:6px;">${i.tag}</span></div><div style="font-size:11px;color:var(--t2);line-height:1.7;">${i.desc}</div></div></div>`).join('');
+  document.getElementById('ins').innerHTML=ins.filter(function(i){return i.desc}).map(function(i){
+    return'<div style="display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #f0ede6">'+
+      '<div style="width:28px;height:28px;border-radius:8px;background:'+i.bg+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px">'+i.em+'</div>'+
+      '<div><div style="font-size:12px;font-weight:700;margin-bottom:2px">'+i.title+'<span class="bdg '+i.tc+'" style="margin-left:6px">'+i.tag+'</span></div>'+
+      '<div style="font-size:11px;color:#5f5e5a;line-height:1.7">'+i.desc+'</div></div></div>';
+  }).join('');
 }
 </script>
 </body>
