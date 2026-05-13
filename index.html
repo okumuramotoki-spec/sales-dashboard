@@ -12,23 +12,23 @@ body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;backgroun
 .logo{font-size:15px;font-weight:700}.logo b{color:#378ADD}
 .upd{font-size:11px;color:#9a9892;background:#f7f6f3;padding:3px 10px;border-radius:99px}
 .mission{background:#0C447C;color:#fff;padding:16px 20px 0}
-.mission-inner{max-width:1100px;margin:0 auto}
-.mission-row{display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap}
-.mission-lbl{font-size:11px;font-weight:700;opacity:.5;white-space:nowrap;padding-top:2px}
-.mission-txt{font-size:12px;line-height:1.7;flex:1}
-.goals{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(255,255,255,.15);gap:0}
-.goal{padding:10px 0 10px 0;border-right:1px solid rgba(255,255,255,.12);padding-right:12px}
-.goal:last-child{border:none;padding-left:12px}
+.mi{max-width:1100px;margin:0 auto}
+.mrow{display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.mlbl{font-size:11px;font-weight:700;opacity:.5;white-space:nowrap;padding-top:2px}
+.mtxt{font-size:12px;line-height:1.7;flex:1}
+.goals{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(255,255,255,.15)}
+.goal{padding:10px 12px 10px 0;border-right:1px solid rgba(255,255,255,.12)}
 .goal:not(:first-child){padding-left:12px}
-.goal-n{font-size:9px;opacity:.4;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
-.goal-t{font-size:11px;line-height:1.5}
+.goal:last-child{border:none}
+.gn{font-size:9px;opacity:.4;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.gt{font-size:11px;line-height:1.5}
 .gauge-wrap{background:#fff;border-bottom:1px solid #e0ddd6;padding:18px 20px}
-.gauge-inner{max-width:1100px;margin:0 auto}
-.gauge-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:6px}
-.gauge-ttl{font-size:10px;color:#9a9892;text-transform:uppercase;letter-spacing:.06em}
-.gauge-sub{font-size:11px;color:#5f5e5a}
-.gauge-note{font-size:10px;color:#9a9892;background:#f7f6f3;padding:3px 10px;border-radius:99px}
-.gauge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.gi{max-width:1100px;margin:0 auto}
+.ghdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:6px}
+.gttl{font-size:10px;color:#9a9892;text-transform:uppercase;letter-spacing:.06em}
+.gsub{font-size:11px;color:#5f5e5a}
+.gnote{font-size:10px;color:#9a9892;background:#f7f6f3;padding:3px 10px;border-radius:99px}
+.ggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .g-card{border:1px solid #e0ddd6;border-radius:10px;padding:14px 16px}
 .g-name{font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
 .g-badge{font-size:10px;font-weight:700;padding:2px 10px;border-radius:99px}
@@ -40,10 +40,10 @@ body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;backgroun
 .g-pct{font-size:10px;font-weight:700;width:30px;text-align:right;flex-shrink:0}
 .drop{margin:14px 20px;border:1.5px dashed #ccc;border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;background:#fff;transition:all .15s}
 .drop:hover,.drop.over{border-color:#378ADD;background:#E6F1FB}
-.drop-ico{width:34px;height:34px;border-radius:8px;background:#E6F1FB;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.drop-ico svg{width:17px;height:17px;stroke:#378ADD;fill:none;stroke-width:1.8;stroke-linecap:round}
-.drop-txt p{font-size:13px;font-weight:500}.drop-txt small{font-size:11px;color:#9a9892}
-.drop-btn{margin-left:auto;font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid #ccc;background:transparent;color:#5f5e5a;cursor:pointer;flex-shrink:0;white-space:nowrap}
+.dico{width:34px;height:34px;border-radius:8px;background:#E6F1FB;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dico svg{width:17px;height:17px;stroke:#378ADD;fill:none;stroke-width:1.8;stroke-linecap:round}
+.dtxt p{font-size:13px;font-weight:500}.dtxt small{font-size:11px;color:#9a9892}
+.dbtn{margin-left:auto;font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid #ccc;background:transparent;color:#5f5e5a;cursor:pointer;flex-shrink:0;white-space:nowrap}
 .tabs{display:flex;border-bottom:1px solid #e0ddd6;padding:0 20px;background:#fff}
 .tab{font-size:12px;padding:9px 14px;cursor:pointer;border:none;border-bottom:2px solid transparent;color:#5f5e5a;background:transparent;white-space:nowrap;margin-bottom:-1px;transition:all .12s}
 .tab.on{color:#1a1916;border-bottom-color:#378ADD;font-weight:700}
@@ -98,12 +98,11 @@ tr:last-child td{border:none}tr:hover td{background:#faf9f6}
 .tip-open{display:inline-block;margin-top:7px;font-size:10px;background:#378ADD;color:#fff;padding:2px 8px;border-radius:99px}
 .empty{text-align:center;padding:50px;color:#9a9892;font-size:13px}
 select{font-size:11px;padding:3px 7px;border-radius:7px;border:1px solid #ccc;background:#fff;color:#1a1916}
-@media(max-width:700px){.gauge-grid,.two,.goals{grid-template-columns:1fr}}
+@media(max-width:700px){.ggrid,.two,.goals{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="tip" id="tip"></div>
-
 <div class="hdr">
   <div style="display:flex;align-items:center;gap:10px">
     <div class="logo">営業<b>ちゃんと化</b>ダッシュボード</div>
@@ -111,71 +110,64 @@ select{font-size:11px;padding:3px 7px;border-radius:7px;border:1px solid #ccc;ba
   </div>
   <div style="font-size:11px;color:#9a9892">353億円達成プロジェクト</div>
 </div>
-
 <div class="mission">
-  <div class="mission-inner">
-    <div class="mission-row">
-      <div class="mission-lbl">目的</div>
-      <div class="mission-txt">353億円達成に向けた「営業活動のちゃんと化」。計画と実績のGAPを常時可視化し、PDCAを回せる組織に変える。<br><span style="opacity:.6;font-size:11px">仕組みが行動を変え、行動がマインドを変える。</span></div>
+  <div class="mi">
+    <div class="mrow">
+      <div class="mlbl">目的</div>
+      <div class="mtxt">353億円達成に向けた「営業活動のちゃんと化」。計画と実績のGAPを常時可視化し、PDCAを回せる組織に変える。<br><span style="opacity:.6;font-size:11px">仕組みが行動を変え、行動がマインドを変える。</span></div>
     </div>
     <div class="goals">
-      <div class="goal"><div class="goal-n">Goal 1</div><div class="goal-t">計画と実績のGAPがリアルタイムで見える</div></div>
-      <div class="goal"><div class="goal-n">Goal 2</div><div class="goal-t">同じDBを見て会話が成立している<br><span style="opacity:.55;font-size:10px">更新・閲覧しないと会話が成立しない状態へ</span></div></div>
-      <div class="goal"><div class="goal-n">Goal 3</div><div class="goal-t">コントロールできる指標だけを管理している</div></div>
-      <div class="goal"><div class="goal-n">Goal 4</div><div class="goal-t">成功ノウハウが振り返りMtg・1on1で横展されている</div></div>
+      <div class="goal"><div class="gn">Goal 1</div><div class="gt">計画と実績のGAPがリアルタイムで見える</div></div>
+      <div class="goal"><div class="gn">Goal 2</div><div class="gt">同じDBを見て会話が成立している</div></div>
+      <div class="goal"><div class="gn">Goal 3</div><div class="gt">コントロールできる指標だけを管理している</div></div>
+      <div class="goal"><div class="gn">Goal 4</div><div class="gt">成功ノウハウが振り返りMtg・1on1で横展されている</div></div>
     </div>
   </div>
 </div>
-
 <div class="gauge-wrap">
-  <div class="gauge-inner">
-    <div class="gauge-hdr">
+  <div class="gi">
+    <div class="ghdr">
       <div>
-        <div class="gauge-ttl">1Q 計画 vs 実績 — 全ステージ</div>
-        <div class="gauge-sub">計画: FY26獲得計画シート 1Q合計 ／ 実績: e-Sales Manager Rawdata</div>
+        <div class="gttl">1Q 計画 vs 実績 — 全ステージ</div>
+        <div class="gsub">計画: FY26獲得計画シート 1Q合計 ／ 実績: e-Sales Manager Rawdata</div>
       </div>
-      <div class="gauge-note" id="gnote">実績: 最新データ</div>
+      <div class="gnote" id="gnote">実績: 最新データ</div>
     </div>
-    <div class="gauge-grid" id="gauges"></div>
+    <div class="ggrid" id="gauges"></div>
   </div>
 </div>
-
 <div class="drop" id="drop" onclick="document.getElementById('fi').click()">
-  <div class="drop-ico"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg></div>
-  <div class="drop-txt"><p id="dlbl">e-Sales Manager RawdataをここにドラッグするかCSVを選択</p><small id="dsub">Shift-JIS対応 / data.csvを同フォルダに置くと自動読み込み</small></div>
-  <button class="drop-btn" onclick="event.stopPropagation();document.getElementById('fi').click()">CSVを選択</button>
+  <div class="dico"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg></div>
+  <div class="dtxt"><p id="dlbl">e-Sales Manager RawdataをここにドラッグするかCSVを選択</p><small>Shift-JIS対応 / data.csvを同フォルダに置くと自動読み込み</small></div>
+  <button class="dbtn" onclick="event.stopPropagation();document.getElementById('fi').click()">CSVを選択</button>
   <input type="file" id="fi" accept=".csv" style="display:none">
 </div>
-
 <div class="tabs">
   <button class="tab on" onclick="ST('funnel',this)">ファネル概要</button>
   <button class="tab" onclick="ST('person',this)">個人横比較</button>
   <button class="tab" onclick="ST('insight',this)">インサイト</button>
 </div>
-
 <div class="main">
-
 <div id="pane-funnel" class="pane on">
   <div id="fe" class="empty">CSVをアップロードするとデータが表示されます</div>
   <div id="fc" style="display:none">
-    <div class="def"><b>📌 指標定義</b>｜<b>訪問</b>: 初回訪問(H/G)　<b>案件化</b>: 概算見積(F/D)　<b>試合化</b>: 本見積提出(C/B)　<b>獲得</b>: 成約内定(A)<br><b>案件化率</b>: 訪問→案件化　<b>試合化率</b>: 案件化→試合化　<b>成約率</b>: 試合化→獲得　<b>訪問成約率</b>: 訪問→獲得<br><b>獲得数</b>: 成約内定(A)に到達したリードを担当者×顧客単位で重複排除してカウント</div>
+    <div class="def"><b>指標定義</b>：訪問(H/G)　案件化(F/D)　試合化(C/B)　獲得(A)<br>案件化率：訪問→案件化　試合化率：案件化→試合化　成約率：試合化→獲得　訪問成約率：訪問→獲得</div>
     <div class="sec">部門フィルター</div><div class="filters" id="df"></div>
     <div class="sec">KPI</div><div class="krow" id="kpi"></div>
     <div class="two">
       <div><div class="sec">ファネル進捗</div><div id="fviz"></div></div>
-      <div class="card" style="margin:0"><div class="card-t">獲得数 TOP10　<small style="font-weight:400;color:#9a9892">※丸にマウスオーバーで案件詳細</small></div><div id="wrank"></div></div>
+      <div class="card" style="margin:0"><div class="card-t">獲得数 TOP10（丸にマウスオーバーで案件詳細）</div><div id="wrank"></div></div>
     </div>
     <div class="two">
       <div class="card" style="margin:0"><div class="card-t">部門別ファネル効率</div><div style="position:relative;height:190px"><canvas id="dchart"></canvas></div></div>
-      <div class="card" style="margin:0"><div class="card-t">訪問成約率 TOP10　<small style="font-weight:400;color:#9a9892">訪問5件以上</small></div><div id="rrank"></div></div>
+      <div class="card" style="margin:0"><div class="card-t">訪問成約率 TOP10（訪問5件以上）</div><div id="rrank"></div></div>
     </div>
   </div>
 </div>
-
 <div id="pane-person" class="pane">
   <div id="pe" class="empty">CSVをアップロードするとデータが表示されます</div>
   <div id="pc" style="display:none">
-    <div class="def"><b>📌 評価グレード</b>（訪問成約率）｜<span class="bdg S">S</span> 40%以上　<span class="bdg A">A</span> 20〜39%　<span class="bdg B">B</span> 8〜19%　<span class="bdg C">C</span> 7%以下</div>
+    <div class="def"><b>評価グレード</b>（訪問成約率）：<span class="bdg S">S</span> 40%以上　<span class="bdg A">A</span> 20〜39%　<span class="bdg B">B</span> 8〜19%　<span class="bdg C">C</span> 7%以下</div>
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px">
       <div class="filters" id="pf"></div>
       <div style="display:flex;align-items:center;gap:6px">
@@ -190,16 +182,13 @@ select{font-size:11px;padding:3px 7px;border-radius:7px;border:1px solid #ccc;ba
     <div class="card"><div class="tbl" id="ptbl"></div></div>
   </div>
 </div>
-
 <div id="pane-insight" class="pane">
   <div id="ie" class="empty">CSVをアップロードするとインサイトが表示されます</div>
   <div id="ic" style="display:none"><div class="card" id="ins"></div></div>
 </div>
-
 </div>
-
 <script>
-// ===== データ =====
+
 var PERSONS = [{"name": "西村純彦", "div": "保育給食", "visit": 1, "case": 0, "pitch": 0, "win": 0, "tm": 0, "na": 1}, {"name": "松井茂夫", "div": "コントラクト", "visit": 19, "case": 7, "pitch": 3, "win": 2, "tm": 11040, "na": 98}, {"name": "吉田睦", "div": "保育給食", "visit": 21, "case": 10, "pitch": 5, "win": 2, "tm": 14950, "na": 74}, {"name": "笹岡圭三", "div": "コントラクト", "visit": 147, "case": 4, "pitch": 2, "win": 2, "tm": 6195, "na": 164}, {"name": "藤田謙介", "div": "コントラクト", "visit": 20, "case": 13, "pitch": 9, "win": 4, "tm": 10800, "na": 119}, {"name": "門田賢一", "div": "メディカル・グラライ", "visit": 111, "case": 35, "pitch": 1, "win": 0, "tm": 20555, "na": 259}, {"name": "加藤剛", "div": "メディカル・グラライ", "visit": 29, "case": 17, "pitch": 2, "win": 0, "tm": 2385, "na": 40}, {"name": "古東久典", "div": "コントラクト", "visit": 11, "case": 4, "pitch": 1, "win": 1, "tm": 10755, "na": 49}, {"name": "蘇武里佳", "div": "コントラクト", "visit": 35, "case": 7, "pitch": 2, "win": 1, "tm": 17575, "na": 81}, {"name": "今野純一", "div": "メディカル・グラライ", "visit": 134, "case": 18, "pitch": 1, "win": 1, "tm": 15315, "na": 224}, {"name": "池田季蓉子", "div": "コントラクト", "visit": 17, "case": 8, "pitch": 2, "win": 1, "tm": 11700, "na": 52}, {"name": "渡辺泰", "div": "コントラクト", "visit": 13, "case": 7, "pitch": 5, "win": 3, "tm": 13355, "na": 63}, {"name": "戸高杏", "div": "保育給食", "visit": 15, "case": 4, "pitch": 2, "win": 0, "tm": 12765, "na": 61}, {"name": "戸田賢悟", "div": "メディカル・グラライ", "visit": 20, "case": 15, "pitch": 3, "win": 0, "tm": 14395, "na": 75}, {"name": "荒木豊", "div": "コントラクト", "visit": 12, "case": 9, "pitch": 8, "win": 6, "tm": 19220, "na": 64}, {"name": "越村寧々", "div": "メディカル・グラライ", "visit": 31, "case": 4, "pitch": 0, "win": 0, "tm": 10815, "na": 55}, {"name": "磯川岳士", "div": "コントラクト", "visit": 14, "case": 12, "pitch": 6, "win": 3, "tm": 12165, "na": 74}, {"name": "若槻正吾", "div": "メディカル・グラライ", "visit": 10, "case": 6, "pitch": 3, "win": 2, "tm": 2775, "na": 20}, {"name": "平野奨", "div": "メディカル・グラライ", "visit": 18, "case": 9, "pitch": 1, "win": 0, "tm": 650, "na": 22}, {"name": "大榮幸一", "div": "コントラクト", "visit": 14, "case": 10, "pitch": 9, "win": 4, "tm": 15690, "na": 56}, {"name": "和田潔", "div": "メディカル・グラライ", "visit": 2, "case": 2, "pitch": 2, "win": 2, "tm": 510, "na": 3}, {"name": "荘司琢磨", "div": "コントラクト", "visit": 9, "case": 6, "pitch": 5, "win": 4, "tm": 16815, "na": 64}, {"name": "山下雄大", "div": "コントラクト", "visit": 5, "case": 4, "pitch": 4, "win": 3, "tm": 13640, "na": 43}, {"name": "土田秀俊", "div": "コントラクト", "visit": 8, "case": 4, "pitch": 3, "win": 1, "tm": 11145, "na": 51}, {"name": "平元将博", "div": "コントラクト", "visit": 12, "case": 8, "pitch": 3, "win": 1, "tm": 13505, "na": 43}, {"name": "田中航", "div": "コントラクト", "visit": 6, "case": 3, "pitch": 3, "win": 1, "tm": 15965, "na": 45}, {"name": "宇垣亮", "div": "メディカル・グラライ", "visit": 8, "case": 5, "pitch": 1, "win": 0, "tm": 20245, "na": 42}, {"name": "国米彰", "div": "コントラクト", "visit": 17, "case": 2, "pitch": 0, "win": 0, "tm": 8125, "na": 37}, {"name": "相澤新歌", "div": "保育給食", "visit": 7, "case": 6, "pitch": 6, "win": 5, "tm": 11335, "na": 62}, {"name": "臼井瞭太", "div": "メディカル・グラライ", "visit": 8, "case": 7, "pitch": 1, "win": 1, "tm": 12910, "na": 38}, {"name": "渡邊勇", "div": "メディカル・グラライ", "visit": 20, "case": 11, "pitch": 2, "win": 2, "tm": 4635, "na": 68}, {"name": "木村有秀", "div": "コントラクト", "visit": 5, "case": 4, "pitch": 2, "win": 1, "tm": 10440, "na": 20}, {"name": "細川和輝", "div": "コントラクト", "visit": 2, "case": 1, "pitch": 0, "win": 0, "tm": 780, "na": 3}, {"name": "大石貴彦", "div": "メディカル・グラライ", "visit": 3, "case": 1, "pitch": 1, "win": 0, "tm": 9330, "na": 19}, {"name": "亀井靖司", "div": "コントラクト", "visit": 1, "case": 0, "pitch": 0, "win": 0, "tm": 120, "na": 1}, {"name": "緒方義広", "div": "コントラクト", "visit": 1, "case": 1, "pitch": 1, "win": 1, "tm": 360, "na": 2}, {"name": "伊知地崇明", "div": "メディカル・グラライ", "visit": 2, "case": 2, "pitch": 0, "win": 0, "tm": 135, "na": 2}, {"name": "池谷陽介", "div": "コントラクト", "visit": 1, "case": 0, "pitch": 0, "win": 0, "tm": 120, "na": 1}, {"name": "渡邉明宏", "div": "コントラクト", "visit": 1, "case": 0, "pitch": 0, "win": 0, "tm": 600, "na": 3}, {"name": "山中裕司", "div": "メディカル・グラライ", "visit": 1, "case": 0, "pitch": 0, "win": 0, "tm": 2220, "na": 7}, {"name": "池田正人", "div": "メディカル・グラライ", "visit": 1, "case": 0, "pitch": 0, "win": 0, "tm": 330, "na": 1}, {"name": "水野杏美", "div": "コントラクト", "visit": 1, "case": 0, "pitch": 0, "win": 0, "tm": 360, "na": 2}, {"name": "小林まどか", "div": "コントラクト", "visit": 1, "case": 0, "pitch": 0, "win": 0, "tm": 30, "na": 1}, {"name": "杉浦威友", "div": "保育給食", "visit": 3, "case": 2, "pitch": 2, "win": 1, "tm": 1620, "na": 5}];
 var PLAN = {"メディカル・グラライ": {"visit": 1080, "case": 365, "pitch": 125, "win": 46}, "コントラクト": {"visit": 337, "case": 129, "pitch": 51, "win": 30}, "保育給食": {"visit": 1161, "case": 635, "pitch": 128, "win": 60}};
 var INIT = {"メディカル・グラライ": {"visit": 398, "case": 132, "pitch": 18, "win": 8}, "コントラクト": {"visit": 372, "case": 114, "pitch": 68, "win": 39}, "保育給食": {"visit": 47, "case": 22, "pitch": 15, "win": 8}};
@@ -210,230 +199,464 @@ var SKEYS = ['visit','case','pitch','win'];
 var selDiv = 'all';
 var DC = null;
 
-// ===== ゲージ =====
 function buildGauges(acts) {
   var teams = ['メディカル・グラライ','コントラクト','保育給食'];
-  var sg = [{k:'visit',l:'訪問',c:'#378ADD'},{k:'case',l:'案件',c:'#1D9E75'},{k:'pitch',l:'試合',c:'#BA7517'},{k:'win',l:'獲得',c:'#D4537E'}];
+  var sg = [
+    {k:'visit',l:'訪問',c:'#378ADD'},
+    {k:'case',l:'案件',c:'#1D9E75'},
+    {k:'pitch',l:'試合',c:'#BA7517'},
+    {k:'win',l:'獲得',c:'#D4537E'}
+  ];
   var html = '';
-  for (var i=0;i<teams.length;i++) {
-    var tm=teams[i], p=PLAN[tm]||{}, a=acts[tm]||{};
-    var wp=Math.round((a.win||0)/((p.win||1))*100);
-    var hc=wp>=100?'#3B6D11':wp>=70?'#854F0B':'#A32D2D';
-    var hbg=wp>=100?'#EAF3DE':wp>=70?'#FAEEDA':'#FCEBEB';
-    var rows='';
-    for (var j=0;j<sg.length;j++) {
-      var s=sg[j], pv=p[s.k]||1, av=a[s.k]||0;
-      var pc=Math.min(Math.round(av/pv*100),100), over=av>=pv;
-      var bc=over?'#1D9E75':pc>=70?'#EF9F27':s.c;
-      var tc=over?'#3B6D11':pc>=70?'#854F0B':'#A32D2D';
-      rows+='<div class="g-row"><div class="g-lbl">'+s.l+'</div><div class="g-track"><div class="g-fill" style="width:'+pc+'%;background:'+bc+'"></div></div><div class="g-nums">'+av.toLocaleString()+' / '+pv.toLocaleString()+'</div><div class="g-pct" style="color:'+tc+'">'+(over?'✓':pc+'%')+'</div></div>';
+  for (var i = 0; i < teams.length; i++) {
+    var tm = teams[i];
+    var p = PLAN[tm] || {};
+    var a = acts[tm] || {};
+    var wp = Math.round((a.win || 0) / ((p.win || 1)) * 100);
+    var hc = wp >= 100 ? '#3B6D11' : wp >= 70 ? '#854F0B' : '#A32D2D';
+    var hbg = wp >= 100 ? '#EAF3DE' : wp >= 70 ? '#FAEEDA' : '#FCEBEB';
+    var rows = '';
+    for (var j = 0; j < sg.length; j++) {
+      var s = sg[j];
+      var pv = p[s.k] || 1;
+      var av = a[s.k] || 0;
+      var pc = Math.min(Math.round(av / pv * 100), 100);
+      var over = av >= pv;
+      var bc = over ? '#1D9E75' : pc >= 70 ? '#EF9F27' : s.c;
+      var tc = over ? '#3B6D11' : pc >= 70 ? '#854F0B' : '#A32D2D';
+      rows += '<div class="g-row">'
+        + '<div class="g-lbl">' + s.l + '</div>'
+        + '<div class="g-track"><div class="g-fill" style="width:' + pc + '%;background:' + bc + '"></div></div>'
+        + '<div class="g-nums">' + av.toLocaleString() + ' / ' + pv.toLocaleString() + '</div>'
+        + '<div class="g-pct" style="color:' + tc + '">' + (over ? '✓' : pc + '%') + '</div>'
+        + '</div>';
     }
-    html+='<div class="g-card"><div class="g-name">'+tm+'<span class="g-badge" style="color:'+hc+';background:'+hbg+'">獲得 '+(wp>=100?'超過':wp+'%')+'</span></div>'+rows+'</div>';
+    html += '<div class="g-card">'
+      + '<div class="g-name">' + tm
+      + '<span class="g-badge" style="color:' + hc + ';background:' + hbg + '">獲得 ' + (wp >= 100 ? '超過' : wp + '%') + '</span>'
+      + '</div>' + rows + '</div>';
   }
   document.getElementById('gauges').innerHTML = html;
 }
 buildGauges(INIT);
 
-// ===== ファイル読み込み =====
-var drop=document.getElementById('drop'), fi=document.getElementById('fi');
-drop.addEventListener('dragover',function(e){e.preventDefault();drop.classList.add('over')});
-drop.addEventListener('dragleave',function(){drop.classList.remove('over')});
-drop.addEventListener('drop',function(e){e.preventDefault();drop.classList.remove('over');var f=e.dataTransfer.files[0];if(f)readF(f)});
-fi.addEventListener('change',function(e){if(e.target.files[0])readF(e.target.files[0]);fi.value=''});
-window.addEventListener('load',function(){
-  fetch('./data.csv').then(function(r){if(!r.ok)throw 0;return r.arrayBuffer()}).then(function(b){
-    parseCSV(new TextDecoder('shift-jis').decode(b),'data.csv（自動）');
-    document.getElementById('dlbl').textContent='データを更新するには新しいCSVをドロップ';
-  }).catch(function(){});
+var drop = document.getElementById('drop');
+var fi = document.getElementById('fi');
+drop.addEventListener('dragover', function(e) { e.preventDefault(); drop.classList.add('over'); });
+drop.addEventListener('dragleave', function() { drop.classList.remove('over'); });
+drop.addEventListener('drop', function(e) {
+  e.preventDefault();
+  drop.classList.remove('over');
+  var f = e.dataTransfer.files[0];
+  if (f) readF(f);
 });
-function readF(f){var r=new FileReader();r.onload=function(e){parseCSV(new TextDecoder('shift-jis').decode(e.target.result),f.name)};r.readAsArrayBuffer(f)}
+fi.addEventListener('change', function(e) {
+  if (e.target.files[0]) readF(e.target.files[0]);
+  fi.value = '';
+});
+window.addEventListener('load', function() {
+  fetch('./data.csv')
+    .then(function(r) { if (!r.ok) throw new Error('no file'); return r.arrayBuffer(); })
+    .then(function(b) {
+      parseCSV(new TextDecoder('shift-jis').decode(b), 'data.csv（自動）');
+      document.getElementById('dlbl').textContent = 'データを更新するには新しいCSVをドロップ';
+    })
+    .catch(function() {});
+});
 
-// ===== CSV解析 =====
-var SM={'H':1,'G':1,'F':2,'D':2,'C':3,'B':3,'A':4};
-function gOrd(v){return SM[((v||'').trim().split(',')[0].trim())]||0}
-function nDiv(v){
-  if(!v)return'';
-  var s=['メディカル','グランドライフ','グラライ','SFM/G','SFG'];
-  for(var i=0;i<s.length;i++){if(v.indexOf(s[i])>=0)return 'メディカル・グラライ';}
-  if(v.indexOf('コントラクト')>=0||v.indexOf('SCF')>=0)return 'コントラクト';
-  if(v.indexOf('保育')>=0)return '保育給食';
-  return'';
+function readF(f) {
+  var r = new FileReader();
+  r.onload = function(e) {
+    parseCSV(new TextDecoder('shift-jis').decode(e.target.result), f.name);
+  };
+  r.readAsArrayBuffer(f);
 }
-function splitL(ln){var r=[],c='',q=false;for(var i=0;i<ln.length;i++){var ch=ln[i];if(ch==='"'){q=!q}else if(ch===','&&!q){r.push(c);c=''}else c+=ch}r.push(c);return r}
 
-function parseCSV(text,fn){
-  var lines=text.split(/
-?
-/);if(lines.length<2)return;
-  var hdr=splitL(lines[0]),ci={},pc2=[];
-  for(var i=0;i<hdr.length;i++){var h=hdr[i].trim();
-    if(h==='事業本部')ci.div=i;
-    if(h==='報告者')ci.reporter=i;
-    if(h==='顧客名（法人/自治体名）'||h==='顧客名')ci.client=i;
-    if(h==='活動時間（分）')ci.min=i;
-    if(h==='進捗状況')pc2.push(i);
+var SM = {'H':1,'G':1,'F':2,'D':2,'C':3,'B':3,'A':4};
+
+function getOrd(v) {
+  var code = (v || '').trim();
+  var idx = code.indexOf(',');
+  if (idx >= 0) code = code.substring(0, idx);
+  code = code.trim();
+  return SM[code] || 0;
+}
+
+function nDiv(v) {
+  if (!v) return '';
+  var gl = ['メディカル','グランドライフ','グラライ','SFM/G','SFG'];
+  for (var i = 0; i < gl.length; i++) {
+    if (v.indexOf(gl[i]) >= 0) return 'メディカル・グラライ';
   }
-  ci.prog=pc2.length>1?pc2[pc2.length-1]:pc2[0];
-  if(ci.reporter===undefined||ci.prog===undefined){alert('CSVのカラム構造を認識できませんでした。e-Sales ManagerのRawdataを使用してください。');return}
-  var led={};
-  for(var i=1;i<lines.length;i++){
-    if(!lines[i].trim())continue;
-    var row=splitL(lines[i]);
-    var rep=(row[ci.reporter]||'').trim(),prog=(row[ci.prog]||'').trim(),cli=ci.client!==undefined?(row[ci.client]||'').trim():'';
-    if(!rep||!prog||!cli)continue;
-    var ord=gOrd(prog);if(!ord)continue;
-    var div=nDiv(ci.div!==undefined?(row[ci.div]||'').trim():'');
-    var key=rep+'|||'+cli;
-    if(!led[key])led[key]={mo:0,rep:rep,div:div,times:[]};
-    var e=led[key];
-    if(ord>e.mo)e.mo=ord;
-    if(!e.div&&div)e.div=div;
-    var m=parseInt(row[ci.min]||'');if(!isNaN(m)&&m>0)e.times.push(m);
+  if (v.indexOf('コントラクト') >= 0 || v.indexOf('SCF') >= 0) return 'コントラクト';
+  if (v.indexOf('保育') >= 0) return '保育給食';
+  return '';
+}
+
+function splitLine(ln) {
+  var r = [], c = '', q = false;
+  for (var i = 0; i < ln.length; i++) {
+    var ch = ln[i];
+    if (ch === '"') { q = !q; }
+    else if (ch === ',' && !q) { r.push(c); c = ''; }
+    else { c += ch; }
   }
-  var pm={};
-  for(var k in led){
-    var e=led[k],n=e.rep;
-    if(!pm[n])pm[n]={name:n,div:e.div,visit:0,case:0,pitch:0,win:0,tm:0,na:0,wins:WIN[n]||[]};
-    var p2=pm[n];
-    var sk2={1:'visit',2:'case',3:'pitch',4:'win'};
-    for(var o=1;o<=e.mo;o++)p2[sk2[o]]++;
-    for(var t=0;t<e.times.length;t++){p2.tm+=e.times[t];p2.na++}
+  r.push(c);
+  return r;
+}
+
+function splitLines(text) {
+  var result = [];
+  var current = '';
+  for (var i = 0; i < text.length; i++) {
+    var ch = text[i];
+    if (ch === '\r') {
+      if (i + 1 < text.length && text[i+1] === '\n') i++;
+      result.push(current);
+      current = '';
+    } else if (ch === '\n') {
+      result.push(current);
+      current = '';
+    } else {
+      current += ch;
+    }
   }
-  PERSONS=[];for(var n in pm)if(pm[n].visit+pm[n].win>0)PERSONS.push(pm[n]);
-  var ds={};
-  for(var i=0;i<PERSONS.length;i++){var p2=PERSONS[i],d=p2.div||'その他';if(!ds[d])ds[d]={visit:0,case:0,pitch:0,win:0};for(var j=0;j<4;j++)ds[d][SKEYS[j]]+=p2[SKEYS[j]]}
-  var acts={};
-  var tms=['メディカル・グラライ','コントラクト','保育給食'];
-  for(var i=0;i<tms.length;i++){var tm=tms[i];acts[tm]=ds[tm]||{visit:0,case:0,pitch:0,win:0}}
+  if (current.length > 0) result.push(current);
+  return result;
+}
+
+function parseCSV(text, fn) {
+  var lines = splitLines(text);
+  if (lines.length < 2) return;
+  var hdr = splitLine(lines[0]);
+  var ci = {};
+  var progCols = [];
+  for (var i = 0; i < hdr.length; i++) {
+    var h = hdr[i].trim();
+    if (h === '事業本部') ci.div = i;
+    if (h === '報告者') ci.reporter = i;
+    if (h === '顧客名（法人/自治体名）' || h === '顧客名') ci.client = i;
+    if (h === '活動時間（分）') ci.min = i;
+    if (h === '進捗状況') progCols.push(i);
+  }
+  ci.prog = progCols.length > 1 ? progCols[progCols.length - 1] : progCols[0];
+  if (ci.reporter === undefined || ci.prog === undefined) {
+    alert('CSVのカラム構造を認識できませんでした');
+    return;
+  }
+  var led = {};
+  for (var i = 1; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    var row = splitLine(lines[i]);
+    var rep = (row[ci.reporter] || '').trim();
+    var prog = (row[ci.prog] || '').trim();
+    var cli = ci.client !== undefined ? (row[ci.client] || '').trim() : '';
+    if (!rep || !prog || !cli) continue;
+    var ord = getOrd(prog);
+    if (!ord) continue;
+    var div = nDiv(ci.div !== undefined ? (row[ci.div] || '').trim() : '');
+    var key = rep + '|||' + cli;
+    if (!led[key]) led[key] = {mo: 0, rep: rep, div: div, times: []};
+    var e = led[key];
+    if (ord > e.mo) e.mo = ord;
+    if (!e.div && div) e.div = div;
+    var m = parseInt(row[ci.min] || '');
+    if (!isNaN(m) && m > 0) e.times.push(m);
+  }
+  var pm = {};
+  for (var k in led) {
+    var e = led[k];
+    var n = e.rep;
+    if (!pm[n]) pm[n] = {name: n, div: e.div, visit: 0, case: 0, pitch: 0, win: 0, tm: 0, na: 0, wins: WIN[n] || []};
+    var p2 = pm[n];
+    var sk2 = {1:'visit', 2:'case', 3:'pitch', 4:'win'};
+    for (var o = 1; o <= e.mo; o++) p2[sk2[o]]++;
+    for (var t = 0; t < e.times.length; t++) { p2.tm += e.times[t]; p2.na++; }
+  }
+  PERSONS = [];
+  for (var n in pm) {
+    if (pm[n].visit + pm[n].win > 0) PERSONS.push(pm[n]);
+  }
+  var ds = {};
+  for (var i = 0; i < PERSONS.length; i++) {
+    var p2 = PERSONS[i];
+    var d = p2.div || 'その他';
+    if (!ds[d]) ds[d] = {visit:0, case:0, pitch:0, win:0};
+    for (var j = 0; j < SKEYS.length; j++) ds[d][SKEYS[j]] += p2[SKEYS[j]] || 0;
+  }
+  var acts = {};
+  var tms = ['メディカル・グラライ','コントラクト','保育給食'];
+  for (var i = 0; i < tms.length; i++) {
+    var tm = tms[i];
+    acts[tm] = ds[tm] || {visit:0, case:0, pitch:0, win:0};
+  }
   buildGauges(acts);
-  document.getElementById('upd').textContent='更新: '+fn+' ('+new Date().toLocaleDateString('ja-JP')+')';
-  document.getElementById('gnote').textContent='実績: CSVより集計 '+new Date().toLocaleDateString('ja-JP');
-  selDiv='all';renderAll();
+  document.getElementById('upd').textContent = '更新: ' + fn + ' (' + new Date().toLocaleDateString('ja-JP') + ')';
+  document.getElementById('gnote').textContent = '実績: CSVより集計 ' + new Date().toLocaleDateString('ja-JP');
+  selDiv = 'all';
+  renderAll();
 }
 
-// ===== ユーティリティ =====
-function pct(a,b){return b?Math.round(a/b*100):0}
-function sum(arr,k){var s=0;for(var i=0;i<arr.length;i++)s+=arr[i][k]||0;return s}
-function grade(r){if(r>=40)return'S';if(r>=20)return'A';if(r>=8)return'B';return'C'}
-function ST(id,btn){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});document.querySelectorAll('.pane').forEach(function(p){p.classList.remove('on')});btn.classList.add('on');document.getElementById('pane-'+id).classList.add('on')}
-function gF(){return selDiv==='all'?PERSONS:PERSONS.filter(function(p){return p.div===selDiv})}
-
-// ===== ツールチップ =====
-var tip=document.getElementById('tip');
-function showTip(ev,w){
-  tip.innerHTML='<div class="tip-h">'+w.facility+'</div>'+
-    '<div class="tr"><span class="tl">顧客</span><span class="tv" style="max-width:160px;text-align:right;word-break:break-all">'+w.client+'</span></div>'+
-    '<div class="tr"><span class="tl">規模</span><span class="tv">'+Number(w.headcount).toLocaleString()+'名/床</span></div>'+
-    '<div class="tr"><span class="tl">単月売上</span><span class="tv">¥'+w.sales+'</span></div>'+
-    '<div class="tr"><span class="tl">単月粗利</span><span class="tv">¥'+w.profit+'</span></div>'+
-    '<div class="tr"><span class="tl">粗利率</span><span class="tv">'+w.profit_rate+'%</span></div>'+
-    '<div class="tr"><span class="tl">年度貢献</span><span class="tv">¥'+w.annual+'</span></div>'+
-    '<span class="tip-open">OPEN '+w.open_date+'</span>';
-  tip.classList.add('on');posTip(ev);
+function pct(a, b) { return b ? Math.round(a / b * 100) : 0; }
+function sum(arr, k) { var s = 0; for (var i = 0; i < arr.length; i++) s += arr[i][k] || 0; return s; }
+function grade(r) { if (r >= 40) return 'S'; if (r >= 20) return 'A'; if (r >= 8) return 'B'; return 'C'; }
+function ST(id, btn) {
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('on'); });
+  document.querySelectorAll('.pane').forEach(function(p) { p.classList.remove('on'); });
+  btn.classList.add('on');
+  document.getElementById('pane-' + id).classList.add('on');
 }
-function posTip(ev){var x=ev.clientX+12,y=ev.clientY-8;tip.style.left=(x+290>window.innerWidth?x-302:x)+'px';tip.style.top=(y+220>window.innerHeight?y-220:y)+'px'}
-function hideTip(){tip.classList.remove('on')}
-document.addEventListener('mousemove',function(ev){if(tip.classList.contains('on'))posTip(ev)});
-function mkDots(wins){
-  if(!wins||!wins.length)return'<span style="font-size:10px;color:#9a9892">—</span>';
-  var h='<div class="wdots">';
-  for(var i=0;i<wins.length;i++){
-    var w=wins[i],esc=JSON.stringify(w).replace(/"/g,'&quot;');
-    h+='<div class="wdot" onmouseenter="showTip(event,'+esc+')" onmouseleave="hideTip()">'+(i+1)+'</div>';
+function gF() { return selDiv === 'all' ? PERSONS : PERSONS.filter(function(p) { return p.div === selDiv; }); }
+
+var tip = document.getElementById('tip');
+function showTip(ev, w) {
+  tip.innerHTML = '<div class="tip-h">' + w.facility + '</div>'
+    + '<div class="tr"><span class="tl">顧客</span><span class="tv" style="max-width:160px;text-align:right;word-break:break-all">' + w.client + '</span></div>'
+    + '<div class="tr"><span class="tl">規模</span><span class="tv">' + Number(w.headcount).toLocaleString() + '名/床</span></div>'
+    + '<div class="tr"><span class="tl">単月売上</span><span class="tv">¥' + w.sales + '</span></div>'
+    + '<div class="tr"><span class="tl">単月粗利</span><span class="tv">¥' + w.profit + '</span></div>'
+    + '<div class="tr"><span class="tl">粗利率</span><span class="tv">' + w.profit_rate + '%</span></div>'
+    + '<div class="tr"><span class="tl">年度貢献</span><span class="tv">¥' + w.annual + '</span></div>'
+    + '<span class="tip-open">OPEN ' + w.open_date + '</span>';
+  tip.classList.add('on');
+  posTip(ev);
+}
+function posTip(ev) {
+  var x = ev.clientX + 12, y = ev.clientY - 8;
+  tip.style.left = (x + 290 > window.innerWidth ? x - 302 : x) + 'px';
+  tip.style.top = (y + 220 > window.innerHeight ? y - 220 : y) + 'px';
+}
+function hideTip() { tip.classList.remove('on'); }
+document.addEventListener('mousemove', function(ev) { if (tip.classList.contains('on')) posTip(ev); });
+
+function mkDots(wins) {
+  if (!wins || !wins.length) return '<span style="font-size:10px;color:#9a9892">—</span>';
+  var h = '<div class="wdots">';
+  for (var i = 0; i < wins.length; i++) {
+    var w = wins[i];
+    var esc = JSON.stringify(w).replace(/"/g, '&quot;');
+    h += '<div class="wdot" onmouseenter="showTip(event,' + esc + ')" onmouseleave="hideTip()">' + (i + 1) + '</div>';
   }
-  return h+'</div>';
+  return h + '</div>';
 }
 
-// ===== renderAll =====
-function renderAll(){
-  ['funnel','person','insight'].forEach(function(id){
-    document.getElementById(id.charAt(0)+'e').style.display='none';
-    document.getElementById(id.charAt(0)+'c').style.display='block';
+function renderAll() {
+  var ids = ['funnel','person','insight'];
+  for (var i = 0; i < ids.length; i++) {
+    var id = ids[i];
+    document.getElementById(id.charAt(0) + 'e').style.display = 'none';
+    document.getElementById(id.charAt(0) + 'c').style.display = 'block';
+  }
+  renderFunnel();
+  renderPerson();
+  renderInsight();
+}
+
+function renderFunnel() {
+  var divSet = {};
+  for (var i = 0; i < PERSONS.length; i++) { if (PERSONS[i].div) divSet[PERSONS[i].div] = 1; }
+  var divs = Object.keys(divSet).sort();
+  var df = document.getElementById('df');
+  df.innerHTML = '';
+  var allBtn = document.createElement('button');
+  allBtn.className = 'fbtn' + (selDiv === 'all' ? ' on' : '');
+  allBtn.textContent = '全部門';
+  allBtn.onclick = function() { selDiv = 'all'; renderFunnel(); };
+  df.appendChild(allBtn);
+  for (var i = 0; i < divs.length; i++) {
+    (function(d) {
+      var b = document.createElement('button');
+      b.className = 'fbtn' + (selDiv === d ? ' on' : '');
+      b.textContent = d;
+      b.onclick = function() { selDiv = d; renderFunnel(); };
+      df.appendChild(b);
+    })(divs[i]);
+  }
+  var fp = gF();
+  var v = sum(fp,'visit'), c = sum(fp,'case'), p = sum(fp,'pitch'), w = sum(fp,'win');
+  var kpiData = [
+    {v:v, l:'訪問リード数', s:null},
+    {v:c, l:'案件化数', s:'案件化率 ' + pct(c,v) + '%', up: pct(c,v) >= 35},
+    {v:p, l:'試合化数', s:'試合化率 ' + pct(p,c) + '%', up: pct(p,c) >= 35},
+    {v:w, l:'獲得数', s:'成約率 ' + pct(w,p) + '%', up: pct(w,p) >= 50},
+    {v:pct(w,v) + '%', l:'訪問成約率', s: pct(w,v) >= 10 ? '目標圏内' : '要改善', up: pct(w,v) >= 10}
+  ];
+  var kpiHtml = '';
+  for (var i = 0; i < kpiData.length; i++) {
+    var k = kpiData[i];
+    kpiHtml += '<div class="kc"><div class="kv">' + k.v + '</div><div class="kl">' + k.l + '</div>'
+      + (k.s ? '<div class="ks ' + (k.up ? 'up' : 'dn') + '">' + k.s + '</div>' : '') + '</div>';
+  }
+  document.getElementById('kpi').innerHTML = kpiHtml;
+  var vals = [v, c, p, w];
+  var mx = 0;
+  for (var i = 0; i < vals.length; i++) if (vals[i] > mx) mx = vals[i];
+  if (!mx) mx = 1;
+  var rl = ['', '案件化率', '試合化率', '成約率'];
+  var fhtml = '';
+  for (var i = 0; i < SLBLS.length; i++) {
+    var w2 = Math.round(vals[i] / mx * 100);
+    var rt = i === 0 ? '訪問成約率 ' + pct(w,v) + '%' : rl[i] + ' ' + pct(vals[i], vals[i-1]) + '%';
+    var up = i === 0 || pct(vals[i], vals[i-1]) >= 30;
+    fhtml += '<div class="fn-row">'
+      + '<div class="fn-lbl">' + SLBLS[i] + '</div>'
+      + '<div class="fn-bg"><div class="fn-bar" style="width:' + w2 + '%;background:' + SCOLS[i] + '"><span>' + vals[i] + '</span></div></div>'
+      + '<div class="fn-n">' + vals[i] + '</div>'
+      + '<div class="fn-r" style="color:' + (i > 0 ? (up ? '#3B6D11' : '#A32D2D') : '#9a9892') + '">' + rt + '</div>'
+      + '</div>';
+  }
+  document.getElementById('fviz').innerHTML = fhtml;
+  var wt = fp.filter(function(p) { return p.win > 0; }).sort(function(a,b) { return b.win - a.win; }).slice(0, 10);
+  var mw = wt.length > 0 ? wt[0].win : 1;
+  var wrHtml = '';
+  for (var i = 0; i < wt.length; i++) {
+    var p2 = wt[i];
+    wrHtml += '<div class="rr"><div class="rn">' + (i+1) + '</div><div class="rnm">' + p2.name + '</div>'
+      + '<div class="rbg"><div class="rf" style="width:' + Math.round(p2.win/mw*100) + '%;background:#D4537E"></div></div>'
+      + '<div style="display:flex;align-items:center;gap:4px">' + mkDots(p2.wins) + '<span class="rv">' + p2.win + '件</span></div></div>';
+  }
+  document.getElementById('wrank').innerHTML = wrHtml;
+  var rt2 = fp.filter(function(p) { return p.visit >= 5; }).sort(function(a,b) { return pct(b.win,b.visit) - pct(a.win,a.visit); }).slice(0, 10);
+  var mr = rt2.length > 0 ? pct(rt2[0].win, rt2[0].visit) : 1;
+  var rrHtml = '';
+  for (var i = 0; i < rt2.length; i++) {
+    var p2 = rt2[i], r = pct(p2.win, p2.visit);
+    rrHtml += '<div class="rr"><div class="rn">' + (i+1) + '</div><div class="rnm">' + p2.name + '</div>'
+      + '<div class="rbg"><div class="rf" style="width:' + Math.round(r/mr*100) + '%;background:#BA7517"></div></div>'
+      + '<div class="rv">' + r + '%</div></div>';
+  }
+  document.getElementById('rrank').innerHTML = rrHtml;
+  if (DC) DC.destroy();
+  var ds2 = {};
+  for (var i = 0; i < PERSONS.length; i++) {
+    var p2 = PERSONS[i];
+    if (!ds2[p2.div]) ds2[p2.div] = {visit:0, case:0, pitch:0, win:0};
+    for (var j = 0; j < SKEYS.length; j++) ds2[p2.div][SKEYS[j]] += p2[SKEYS[j]] || 0;
+  }
+  var dn = Object.keys(ds2).sort();
+  DC = new Chart(document.getElementById('dchart'), {
+    type: 'bar',
+    data: {
+      labels: dn,
+      datasets: [
+        {label:'案件化率', data: dn.map(function(d) { return pct(ds2[d].case, ds2[d].visit); }), backgroundColor:'#9FE1CB', borderColor:'#1D9E75', borderWidth:1, borderRadius:3},
+        {label:'試合化率', data: dn.map(function(d) { return pct(ds2[d].pitch, ds2[d].case); }), backgroundColor:'#FAC775', borderColor:'#BA7517', borderWidth:1, borderRadius:3},
+        {label:'成約率',  data: dn.map(function(d) { return pct(ds2[d].win,   ds2[d].pitch); }), backgroundColor:'#F4C0D1', borderColor:'#D4537E', borderWidth:1, borderRadius:3}
+      ]
+    },
+    options: {responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{labels:{font:{size:10}}}},
+      scales:{
+        x:{grid:{display:false}, ticks:{font:{size:10}}},
+        y:{grid:{color:'rgba(0,0,0,0.04)'}, ticks:{font:{size:10}, callback:function(v){return v+'%'}}, max:110, beginAtZero:true}
+      }
+    }
   });
-  renderFunnel();renderPerson();renderInsight();
 }
 
-// ===== FUNNEL =====
-function renderFunnel(){
-  var divs=[...new Set(PERSONS.map(function(p){return p.div}).filter(Boolean))].sort();
-  var df=document.getElementById('df');df.innerHTML='';
-  var makeBtn=function(d){var b=document.createElement('button');b.className='fbtn'+(selDiv===d?' on':'');b.textContent=d==='all'?'全部門':d;b.onclick=function(){selDiv=d;renderFunnel()};df.appendChild(b)};
-  makeBtn('all');divs.forEach(makeBtn);
-  var fp=gF(),v=sum(fp,'visit'),c=sum(fp,'case'),p=sum(fp,'pitch'),w=sum(fp,'win');
-  document.getElementById('kpi').innerHTML=[
-    {v:v,l:'訪問リード数',s:null},
-    {v:c,l:'案件化数',s:'案件化率 '+pct(c,v)+'%',up:pct(c,v)>=35},
-    {v:p,l:'試合化数',s:'試合化率 '+pct(p,c)+'%',up:pct(p,c)>=35},
-    {v:w,l:'獲得数',s:'成約率 '+pct(w,p)+'%',up:pct(w,p)>=50},
-    {v:pct(w,v)+'%',l:'訪問成約率',s:pct(w,v)>=10?'目標圏内':'要改善',up:pct(w,v)>=10}
-  ].map(function(k){return'<div class="kc"><div class="kv">'+k.v+'</div><div class="kl">'+k.l+'</div>'+(k.s?'<div class="ks '+(k.up?'up':'dn')+'">'+k.s+'</div>':'')+'</div>'}).join('');
-  var vals=[v,c,p,w],mx=Math.max.apply(null,vals)||1,rl=['','案件化率','試合化率','成約率'];
-  document.getElementById('fviz').innerHTML=SLBLS.map(function(lb,i){
-    var w2=Math.round(vals[i]/mx*100),rt=i===0?'訪問成約率 '+pct(w,v)+'%':rl[i]+' '+pct(vals[i],vals[i-1])+'%',up=i===0||pct(vals[i],vals[i-1])>=30;
-    return'<div class="fn-row"><div class="fn-lbl">'+lb+'</div><div class="fn-bg"><div class="fn-bar" style="width:'+w2+'%;background:'+SCOLS[i]+'"><span>'+vals[i]+'</span></div></div><div class="fn-n">'+vals[i]+'</div><div class="fn-r" style="color:'+(i>0?(up?'#3B6D11':'#A32D2D'):'#9a9892')+'">'+rt+'</div></div>';
-  }).join('');
-  var wt=[].concat(fp).filter(function(p){return p.win>0}).sort(function(a,b){return b.win-a.win}).slice(0,10),mw=wt[0]?wt[0].win:1;
-  document.getElementById('wrank').innerHTML=wt.map(function(p,i){
-    return'<div class="rr"><div class="rn">'+(i+1)+'</div><div class="rnm">'+p.name+'</div><div class="rbg"><div class="rf" style="width:'+Math.round(p.win/mw*100)+'%;background:#D4537E"></div></div><div style="display:flex;align-items:center;gap:4px">'+mkDots(p.wins)+'<span class="rv">'+p.win+'件</span></div></div>';
-  }).join('');
-  var rt=[].concat(fp).filter(function(p){return p.visit>=5}).sort(function(a,b){return pct(b.win,b.visit)-pct(a.win,a.visit)}).slice(0,10),mr=rt[0]?pct(rt[0].win,rt[0].visit):1;
-  document.getElementById('rrank').innerHTML=rt.map(function(p,i){var r=pct(p.win,p.visit);return'<div class="rr"><div class="rn">'+(i+1)+'</div><div class="rnm">'+p.name+'</div><div class="rbg"><div class="rf" style="width:'+Math.round(r/mr*100)+'%;background:#BA7517"></div></div><div class="rv">'+r+'%</div></div>'}).join('');
-  if(DC)DC.destroy();
-  var dn=Object.keys(PERSONS.reduce(function(m,p){if(p.div)m[p.div]=1;return m},{})).sort();
-  var ds2={};
-  PERSONS.forEach(function(p){if(!ds2[p.div])ds2[p.div]={visit:0,case:0,pitch:0,win:0};SKEYS.forEach(function(k){ds2[p.div][k]+=p[k]||0})});
-  DC=new Chart(document.getElementById('dchart'),{type:'bar',data:{labels:dn,datasets:[
-    {label:'案件化率',data:dn.map(function(d){return pct(ds2[d]?ds2[d].case:0,ds2[d]?ds2[d].visit:0)}),backgroundColor:'#9FE1CB',borderColor:'#1D9E75',borderWidth:1,borderRadius:3},
-    {label:'試合化率',data:dn.map(function(d){return pct(ds2[d]?ds2[d].pitch:0,ds2[d]?ds2[d].case:0)}),backgroundColor:'#FAC775',borderColor:'#BA7517',borderWidth:1,borderRadius:3},
-    {label:'成約率',data:dn.map(function(d){return pct(ds2[d]?ds2[d].win:0,ds2[d]?ds2[d].pitch:0)}),backgroundColor:'#F4C0D1',borderColor:'#D4537E',borderWidth:1,borderRadius:3}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},callback:function(v){return v+'%'}},max:110,beginAtZero:true}}}});
-}
-
-// ===== PERSON =====
-function renderPerson(){
-  var divs=[...new Set(PERSONS.map(function(p){return p.div}).filter(Boolean))].sort();
-  var pf=document.getElementById('pf');pf.innerHTML='';
-  var mk=function(d){var b=document.createElement('button');b.className='fbtn'+(selDiv===d?' on':'');b.textContent=d==='all'?'全部門':d;b.onclick=function(){selDiv=d;renderPT()};pf.appendChild(b)};
-  mk('all');divs.forEach(mk);
+function renderPerson() {
+  var divSet = {};
+  for (var i = 0; i < PERSONS.length; i++) { if (PERSONS[i].div) divSet[PERSONS[i].div] = 1; }
+  var divs = Object.keys(divSet).sort();
+  var pf = document.getElementById('pf');
+  pf.innerHTML = '';
+  var allBtn = document.createElement('button');
+  allBtn.className = 'fbtn' + (selDiv === 'all' ? ' on' : '');
+  allBtn.textContent = '全部門';
+  allBtn.onclick = function() { selDiv = 'all'; renderPT(); };
+  pf.appendChild(allBtn);
+  for (var i = 0; i < divs.length; i++) {
+    (function(d) {
+      var b = document.createElement('button');
+      b.className = 'fbtn' + (selDiv === d ? ' on' : '');
+      b.textContent = d;
+      b.onclick = function() { selDiv = d; renderPT(); };
+      pf.appendChild(b);
+    })(divs[i]);
+  }
   renderPT();
 }
-function renderPT(){
-  document.querySelectorAll('#pf .fbtn').forEach(function(b){b.classList.toggle('on',b.textContent===(selDiv==='all'?'全部門':selDiv))});
-  var fp=gF(),sk=document.getElementById('psort').value;
-  var sorted=[].concat(fp).sort(function(a,b){
-    if(sk==='rate')return pct(b.win,b.visit)-pct(a.win,a.visit);
-    return (b[sk]||0)-(a[sk]||0);
+
+function renderPT() {
+  document.querySelectorAll('#pf .fbtn').forEach(function(b) {
+    b.classList.toggle('on', b.textContent === (selDiv === 'all' ? '全部門' : selDiv));
   });
-  var am=function(p){return p.na?Math.round(p.tm/p.na):'-'};
-  document.getElementById('ptbl').innerHTML='<table><thead><tr><th>担当者</th><th>部門</th><th>訪問</th><th>案件化<small style="font-weight:400"> (率)</small></th><th>試合化<small style="font-weight:400"> (率)</small></th><th>獲得</th><th>訪問成約率</th><th>分/件</th><th>評価</th></tr></thead><tbody>'+
-  sorted.map(function(p){
-    var r=pct(p.win,p.visit),g=grade(r);
-    return'<tr><td>'+p.name+'</td><td style="color:#5f5e5a;font-weight:400">'+p.div+'</td><td>'+p.visit+'</td><td>'+p.case+' <small style="color:#9a9892">('+pct(p.case,p.visit)+'%)</small></td><td>'+p.pitch+' <small style="color:#9a9892">('+pct(p.pitch,p.case)+'%)</small></td><td>'+mkDots(p.wins)+'</td><td><b>'+r+'%</b></td><td>'+am(p)+'</td><td><span class="bdg '+g+'">'+g+'</span></td></tr>';
-  }).join('')+'</tbody></table>';
+  var fp = gF();
+  var sk = document.getElementById('psort').value;
+  var sorted = fp.slice().sort(function(a, b) {
+    if (sk === 'rate') return pct(b.win, b.visit) - pct(a.win, a.visit);
+    return (b[sk] || 0) - (a[sk] || 0);
+  });
+  var rows = '';
+  for (var i = 0; i < sorted.length; i++) {
+    var p2 = sorted[i];
+    var r = pct(p2.win, p2.visit);
+    var g = grade(r);
+    var am = p2.na ? Math.round(p2.tm / p2.na) : '-';
+    rows += '<tr>'
+      + '<td>' + p2.name + '</td>'
+      + '<td style="color:#5f5e5a;font-weight:400">' + p2.div + '</td>'
+      + '<td>' + p2.visit + '</td>'
+      + '<td>' + p2.case + ' <small style="color:#9a9892">(' + pct(p2.case, p2.visit) + '%)</small></td>'
+      + '<td>' + p2.pitch + ' <small style="color:#9a9892">(' + pct(p2.pitch, p2.case) + '%)</small></td>'
+      + '<td>' + mkDots(p2.wins) + '</td>'
+      + '<td><b>' + r + '%</b></td>'
+      + '<td>' + am + '</td>'
+      + '<td><span class="bdg ' + g + '">' + g + '</span></td>'
+      + '</tr>';
+  }
+  document.getElementById('ptbl').innerHTML = '<table><thead><tr>'
+    + '<th>担当者</th><th>部門</th><th>訪問</th>'
+    + '<th>案件化 <small style="font-weight:400">(率)</small></th>'
+    + '<th>試合化 <small style="font-weight:400">(率)</small></th>'
+    + '<th>獲得</th><th>訪問成約率</th><th>分/件</th><th>評価</th>'
+    + '</tr></thead><tbody>' + rows + '</tbody></table>';
 }
 
-// ===== INSIGHT =====
-function renderInsight(){
-  var ps=PERSONS,tv=sum(ps,'visit'),tc=sum(ps,'case'),tp=sum(ps,'pitch'),tw=sum(ps,'win');
-  var topR=[].concat(ps).filter(function(p){return p.visit>=5}).sort(function(a,b){return pct(b.win,b.visit)-pct(a.win,a.visit)})[0];
-  var zW=ps.filter(function(p){return p.win===0&&p.visit>=5});
-  var rates=[pct(tc,tv),pct(tp,tc),pct(tw,tp)];
-  var minR=Math.min.apply(null,rates);
-  var bottle=['案件化','試合化','成約'][rates.indexOf(minR)];
-  var ins=[
-    {em:'🏆',bg:'#EAF3DE',title:'最高訪問成約率: '+(topR?topR.name+' ('+pct(topR.win,topR.visit)+'%)':'—'),desc:topR?'訪問'+topR.visit+'件で'+topR.win+'件成約。案件化率'+pct(topR.case,topR.visit)+'% / 試合化率'+pct(topR.pitch,topR.case)+'% / 成約率'+pct(topR.win,topR.pitch)+'%。振り返りMtgで手法を言語化し横展する。':'',tag:'ノウハウ横展対象',tc:'S'},
-    {em:'⚠️',bg:'#FCEBEB',title:'訪問多・獲得ゼロが'+zW.length+'名',desc:zW.slice(0,5).map(function(p){return p.name+'('+p.visit+'件)'}).join('・')+'。案件化率・試合化率のどちらがボトルネックかを個人別に1on1で確認する。',tag:'緊急対応',tc:'C'},
-    {em:'🔍',bg:'#E6F1FB',title:'最大ボトルネック: 「'+bottle+'」ステージ (転換率'+minR+'%)',desc:'案件化率'+pct(tc,tv)+'% / 試合化率'+pct(tp,tc)+'% / 成約率'+pct(tw,tp)+'%。「'+bottle+'」の改善が全体獲得数の向上に最も効果的。',tag:'改善優先',tc:'B'},
-    {em:'📍',bg:'#EAF3DE',title:'最強経路: 既存顧客紹介（G：グループ/系列）',desc:'コントラクト部門で訪問成約率42%（31訪問・13獲得）を記録。グループ会社・系列への横展を組織的に仕組み化することが353億への最短経路。',tag:'最優先投資',tc:'S'},
-    {em:'📊',bg:'#f0ede6',title:'全体サマリー: 訪問'+tv+'→案件'+tc+'→試合'+tp+'→獲得'+tw,desc:'全体訪問成約率 '+pct(tw,tv)+'%。1Q計画（コントラクト30件・グラライ46件・保育60件）に対してCSVデータを随時更新して進捗を確認する。',tag:'データサマリー',tc:'A'}
+function renderInsight() {
+  var ps = PERSONS;
+  var tv = sum(ps,'visit'), tc = sum(ps,'case'), tp = sum(ps,'pitch'), tw = sum(ps,'win');
+  var topR = null;
+  var fp5 = ps.filter(function(p) { return p.visit >= 5; }).sort(function(a,b) { return pct(b.win,b.visit) - pct(a.win,a.visit); });
+  if (fp5.length > 0) topR = fp5[0];
+  var zW = ps.filter(function(p) { return p.win === 0 && p.visit >= 5; });
+  var rates = [pct(tc,tv), pct(tp,tc), pct(tw,tp)];
+  var minR = rates[0], minIdx = 0;
+  for (var i = 1; i < rates.length; i++) { if (rates[i] < minR) { minR = rates[i]; minIdx = i; } }
+  var bottleNames = ['案件化','試合化','成約'];
+  var bottle = bottleNames[minIdx];
+  var zNames = '';
+  for (var i = 0; i < Math.min(5, zW.length); i++) {
+    if (i > 0) zNames += '・';
+    zNames += zW[i].name + '(' + zW[i].visit + '件)';
+  }
+  var ins = [
+    {em:'🏆', bg:'#EAF3DE', tag:'S', tagTxt:'ノウハウ横展対象',
+     title: topR ? '最高訪問成約率: ' + topR.name + ' (' + pct(topR.win,topR.visit) + '%)' : '—',
+     desc: topR ? '訪問' + topR.visit + '件で' + topR.win + '件成約。案件化率' + pct(topR.case,topR.visit) + '% / 試合化率' + pct(topR.pitch,topR.case) + '% / 成約率' + pct(topR.win,topR.pitch) + '%。振り返りMtgで手法を言語化し横展する。' : ''},
+    {em:'⚠️', bg:'#FCEBEB', tag:'C', tagTxt:'緊急対応',
+     title: '訪問多・獲得ゼロが' + zW.length + '名',
+     desc: zNames + '。案件化率・試合化率のどちらがボトルネックかを個人別に1on1で確認する。'},
+    {em:'🔍', bg:'#E6F1FB', tag:'A', tagTxt:'改善優先',
+     title: '最大ボトルネック: 「' + bottle + '」ステージ (転換率' + minR + '%)',
+     desc: '案件化率' + pct(tc,tv) + '% / 試合化率' + pct(tp,tc) + '% / 成約率' + pct(tw,tp) + '%。「' + bottle + '」の改善が全体獲得数の向上に最も効果的。'},
+    {em:'📊', bg:'#f0ede6', tag:'A', tagTxt:'データサマリー',
+     title: '全体: 訪問' + tv + '→案件' + tc + '→試合' + tp + '→獲得' + tw,
+     desc: '全体訪問成約率 ' + pct(tw,tv) + '%。1Q計画（コントラクト30件・グラライ46件・保育60件）に対してCSVデータを随時更新して進捗を確認する。'}
   ];
-  document.getElementById('ins').innerHTML=ins.filter(function(i){return i.desc}).map(function(i){
-    return'<div style="display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #f0ede6">'+
-      '<div style="width:28px;height:28px;border-radius:8px;background:'+i.bg+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px">'+i.em+'</div>'+
-      '<div><div style="font-size:12px;font-weight:700;margin-bottom:2px">'+i.title+'<span class="bdg '+i.tc+'" style="margin-left:6px">'+i.tag+'</span></div>'+
-      '<div style="font-size:11px;color:#5f5e5a;line-height:1.7">'+i.desc+'</div></div></div>';
-  }).join('');
+  var iHtml = '';
+  for (var i = 0; i < ins.length; i++) {
+    var it = ins[i];
+    if (!it.desc) continue;
+    iHtml += '<div style="display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #f0ede6">'
+      + '<div style="width:28px;height:28px;border-radius:8px;background:' + it.bg + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px">' + it.em + '</div>'
+      + '<div><div style="font-size:12px;font-weight:700;margin-bottom:2px">' + it.title
+      + '<span class="bdg ' + it.tag + '" style="margin-left:6px">' + it.tagTxt + '</span></div>'
+      + '<div style="font-size:11px;color:#5f5e5a;line-height:1.7">' + it.desc + '</div></div></div>';
+  }
+  document.getElementById('ins').innerHTML = iHtml;
 }
+
 </script>
 </body>
 </html>
