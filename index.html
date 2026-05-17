@@ -496,14 +496,24 @@ function hideTip(){tip.classList.remove('on');}
 document.addEventListener('mousemove',function(ev){if(tip.classList.contains('on'))posTip(ev);});
 
 function mkDots(arr,stage,color){
-  if(!arr||!arr.length)return'<span style="font-size:10px;color:#9a9892">—</span>';
-  var h='<div class="wdots">';
+  if(!arr||!arr.length)return '<span style="font-size:10px;color:#9a9892">-</span>';
+  var wrap=document.createElement('div');
+  wrap.className='wdots';
   for(var i=0;i<arr.length;i++){
-    var w=arr[i],esc=JSON.stringify(w).replace(/"/g,'&quot;');
-    var cls=stage==='win'?'wdot':'bdot';
-    h+='<div class="'+cls+'" style="background:'+color+'" onmouseenter="showTip(event,'+esc+',''+stage+'')" onmouseleave="hideTip()">'+(w.multi?'🔀':(i+1))+'</div>';
+    var w=arr[i];
+    var dot=document.createElement('div');
+    dot.className=stage==='win'?'wdot':'bdot';
+    dot.style.background=color;
+    dot.textContent=w.multi?String.fromCodePoint(0x1F500):(i+1);
+    (function(ww,ss){
+      dot.addEventListener('mouseenter',function(ev){showTip(ev,ww,ss);});
+    })(w,stage);
+    dot.addEventListener('mouseleave',hideTip);
+    wrap.appendChild(dot);
   }
-  return h+'</div>';
+  var tmp=document.createElement('div');
+  tmp.appendChild(wrap);
+  return tmp.innerHTML;
 }
 
 // ===== renderAll =====
