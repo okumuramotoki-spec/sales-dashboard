@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>営業ちゃんと化ダッシュボード</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;background:#f7f6f3;color:#1a1916;font-size:13px;line-height:1.5}
+#pw{position:fixed;inset:0;background:#0C447C;display:flex;align-items:center;justify-content:center;z-index:9999}
+.pw-box{background:#fff;border-radius:14px;padding:40px 36px;width:340px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.pw-box h2{font-size:16px;font-weight:700;margin-bottom:4px}.pw-box h2 b{color:#378ADD}
+.pw-box p{font-size:12px;color:#9a9892;margin-bottom:24px}
+.pw-lbl{font-size:11px;font-weight:600;color:#5f5e5a;margin-bottom:6px}
+#pwi{width:100%;padding:10px 14px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;display:block;margin-bottom:10px}
+#pwi:focus{border-color:#378ADD}
+#pwb{width:100%;padding:11px;background:#0C447C;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer}
+#pwb:hover{background:#378ADD}
+#pwe{font-size:11px;color:#A32D2D;margin-top:6px;min-height:16px;text-align:center}
+.hdr{background:#fff;border-bottom:1px solid #e0ddd6;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.logo{font-size:15px;font-weight:700}.logo b{color:#378ADD}
+.upd{font-size:11px;color:#9a9892;background:#f7f6f3;padding:3px 10px;border-radius:99px}
+.mission{background:#0C447C;color:#fff;padding:16px 20px 0}
+.mi{max-width:1100px;margin:0 auto}
+.mrow{display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.mlbl{font-size:11px;font-weight:700;opacity:.5;white-space:nowrap;padding-top:2px}
+.mtxt{font-size:12px;line-height:1.7;flex:1}
+.goals{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(255,255,255,.15)}
+.goal{padding:10px 12px 10px 0;border-right:1px solid rgba(255,255,255,.12)}
+.goal:not(:first-child){padding-left:12px}.goal:last-child{border:none}
+.gn{font-size:9px;opacity:.4;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.gt{font-size:11px;line-height:1.5}
+.gauge-sec{background:#fff;border-bottom:1px solid #e0ddd6;padding:18px 20px}
+.gi{max-width:1100px;margin:0 auto}
+.ghdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:6px}
+.gttl{font-size:10px;color:#9a9892;text-transform:uppercase;letter-spacing:.06em}
+.gsub{font-size:11px;color:#5f5e5a}
+.gnote{font-size:10px;color:#9a9892;background:#f7f6f3;padding:3px 10px;border-radius:99px}
+.ggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.gc{border:1px solid #e0ddd6;border-radius:10px;padding:14px 16px}
+.gc-name{font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.gc-badge{font-size:10px;font-weight:700;padding:2px 10px;border-radius:99px}
+.g-row{display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.g-lbl{font-size:10px;color:#5f5e5a;width:40px;text-align:right;flex-shrink:0}
+.g-track{flex:1;height:9px;background:#ede9e1;border-radius:4px;overflow:hidden}
+.g-fill{height:100%;border-radius:4px;transition:width .7s}
+.g-nums{font-size:10px;color:#5f5e5a;width:76px;text-align:right;flex-shrink:0;white-space:nowrap}
+.g-pct{font-size:10px;font-weight:700;width:30px;text-align:right;flex-shrink:0}
+.tactic-sec{margin-top:14px;padding-top:12px;border-top:1px solid #f0ede6}
+.tactic-ttl{font-size:10px;color:#9a9892;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.tactic-row{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.tactic-name{font-size:10px;color:#5f5e5a;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tactic-bar-bg{width:80px;height:5px;background:#f0ede6;border-radius:3px;flex-shrink:0;overflow:hidden}
+.tactic-bar{height:5px;border-radius:3px;background:#378ADD}
+.tactic-val{font-size:10px;color:#5f5e5a;width:36px;text-align:right;flex-shrink:0}
+.drop{margin:14px 20px;border:1.5px dashed #ccc;border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;background:#fff;transition:all .15s}
+.drop:hover,.drop.over{border-color:#378ADD;background:#E6F1FB}
+.dico{width:34px;height:34px;border-radius:8px;background:#E6F1FB;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dico svg{width:17px;height:17px;stroke:#378ADD;fill:none;stroke-width:1.8;stroke-linecap:round}
+.dtxt p{font-size:13px;font-weight:500}.dtxt small{font-size:11px;color:#9a9892}
+.dbtn{margin-left:auto;font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid #ccc;background:transparent;color:#5f5e5a;cursor:pointer;flex-shrink:0;white-space:nowrap}
+.tabs{display:flex;border-bottom:1px solid #e0ddd6;padding:0 20px;background:#fff}
+.tab{font-size:12px;padding:9px 14px;cursor:pointer;border:none;border-bottom:2px solid transparent;color:#5f5e5a;background:transparent;white-space:nowrap;margin-bottom:-1px;transition:all .12s}
+.tab.on{color:#1a1916;border-bottom-color:#378ADD;font-weight:700}
+.main{padding:18px 20px;max-width:1100px}
+.pane{display:none}.pane.on{display:block}
+.sec{font-size:10px;color:#9a9892;letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px;margin-top:1.25rem}
+.sec:first-child{margin-top:0}
+.def{background:#E6F1FB;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#0C447C;line-height:1.9}
+.def b{font-weight:700}
+.target-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.target-chip{background:#EAF3DE;color:#3B6D11;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px}
+.filters{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.fbtn{font-size:11px;padding:4px 11px;border-radius:99px;border:1px solid #ccc;background:transparent;color:#5f5e5a;cursor:pointer;white-space:nowrap;transition:all .1s}
+.fbtn.on{background:#E6F1FB;border-color:#378ADD;color:#0C447C;font-weight:700}
+.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:14px}
+.kc{background:#fff;border:1px solid #e0ddd6;border-radius:8px;padding:10px 12px}
+.kv{font-size:20px;font-weight:700;line-height:1.2}.kl{font-size:10px;color:#5f5e5a;margin-top:2px}.ks{font-size:10px;margin-top:2px}
+.up{color:#3B6D11}.dn{color:#A32D2D}
+.card{background:#fff;border:1px solid #e0ddd6;border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.card-t{font-size:11px;color:#5f5e5a;margin-bottom:10px;font-weight:700}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.fn-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.fn-lbl{font-size:11px;color:#5f5e5a;width:52px;text-align:right;flex-shrink:0}
+.fn-bg{flex:1;background:#f0ede6;border-radius:5px;height:22px;overflow:hidden}
+.fn-bar{height:100%;border-radius:5px;display:flex;align-items:center;padding:0 7px;transition:width .5s}
+.fn-bar span{font-size:11px;font-weight:700;color:#fff}
+.fn-n{font-size:11px;color:#5f5e5a;width:26px;text-align:right;flex-shrink:0}
+.fn-r{font-size:10px;width:80px;text-align:right;flex-shrink:0}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{font-size:10px;font-weight:700;color:#5f5e5a;padding:5px 7px;border-bottom:1px solid #e0ddd6;text-align:right;white-space:nowrap}
+th:first-child{text-align:left}
+td{padding:5px 7px;border-bottom:1px solid #f0ede6;text-align:right;white-space:nowrap}
+td:first-child{text-align:left;font-weight:600}
+tr:last-child td{border:none}tr:hover td{background:#faf9f6}
+.bdg{display:inline-block;font-size:9px;padding:2px 7px;border-radius:99px;font-weight:700}
+.S{background:#EAF3DE;color:#3B6D11}.A{background:#E6F1FB;color:#0C447C}
+.B{background:#FAEEDA;color:#854F0B}.C{background:#FCEBEB;color:#A32D2D}
+.multi-flag{display:inline-block;font-size:9px;padding:1px 5px;border-radius:4px;background:#FFF3CD;color:#856404;border:1px solid #FFEAA7;margin-left:4px}
+.rr{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.rn{font-size:10px;color:#9a9892;width:14px;flex-shrink:0}
+.rnm{font-size:11px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rbg{flex:2;background:#f0ede6;border-radius:3px;height:5px;overflow:hidden}
+.rf{height:5px;border-radius:3px}.rv{font-size:11px;color:#5f5e5a;width:34px;text-align:right;flex-shrink:0}
+.wdot{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#D4537E;color:#fff;font-size:10px;font-weight:700;cursor:pointer;transition:transform .15s}
+.wdot:hover{transform:scale(1.3);background:#A32D2D}
+.bdot{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#BA7517;color:#fff;font-size:10px;font-weight:700;cursor:pointer;transition:transform .15s}
+.bdot:hover{transform:scale(1.3);background:#854F0B}
+.wdots{display:flex;gap:4px;flex-wrap:wrap}
+.tip{display:none;position:fixed;z-index:9999;background:#1a1916;color:#f7f6f3;border-radius:10px;padding:13px 15px;width:300px;box-shadow:0 8px 30px rgba(0,0,0,.35);pointer-events:none;font-size:11px;line-height:1.6}
+.tip.on{display:block}
+.tip-h{font-size:13px;font-weight:700;margin-bottom:7px;line-height:1.4}
+.tip-stage{font-size:10px;padding:1px 6px;border-radius:99px;margin-left:5px;font-weight:700}
+.tr2{display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.tr2:last-of-type{border:none}
+.tl2{color:rgba(255,255,255,.5)}.tv2{font-weight:600}
+.tip-open{display:inline-block;margin-top:7px;font-size:10px;background:#378ADD;color:#fff;padding:2px 8px;border-radius:99px}
+.empty{text-align:center;padding:50px;color:#9a9892;font-size:13px}
+select{font-size:11px;padding:3px 7px;border-radius:7px;border:1px solid #ccc;background:#fff;color:#1a1916}
+.amt-toggle{display:flex;gap:4px;margin-bottom:8px}
+.atbtn{font-size:10px;padding:3px 8px;border-radius:99px;border:1px solid #ccc;background:transparent;color:#5f5e5a;cursor:pointer}
+.atbtn.on{background:#0C447C;border-color:#0C447C;color:#fff;font-weight:700}
+@media(max-width:700px){.ggrid,.two,.goals{grid-template-columns:1fr}}</style>
+</head>
+<body>
+
+<!-- PW -->
+<div id="pw">
+  <div class="pw-box">
+    <h2>営業<b>ちゃんと化</b>ダッシュボード</h2>
+    <p>353億円達成プロジェクト — 社内限定</p>
+    <div class="pw-lbl">パスワード</div>
+    <input id="pwi" type="password" placeholder="パスワードを入力">
+    <button id="pwb">ログイン</button>
+    <div id="pwe"></div>
+  </div>
+</div>
+
+<!-- ダッシュボード本体 -->
+<div id="app" style="display:none">
+<div class="tip" id="tip"></div>
+<div class="hdr">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="logo">営業<b>ちゃんと化</b>ダッシュボード</div>
+    <div class="upd" id="upd">データ未読込</div>
+  </div>
+  <div style="font-size:11px;color:#9a9892">353億円達成プロジェクト</div>
+</div>
+<div class="mission">
+  <div class="mi">
+    <div class="mrow">
+      <div class="mlbl">目的</div>
+      <div class="mtxt">353億円達成に向けた「営業活動のちゃんと化」。計画と実績のGAPを常時可視化し、PDCAを回せる状態をつくる。<br><span style="opacity:.6;font-size:11px">仕組みが行動を変え、行動がマインドを変える。</span></div>
+    </div>
+    <div class="goals">
+      <div class="goal"><div class="gn">Goal 1</div><div class="gt">計画と実績のGAPがリアルタイムで見える</div></div>
+      <div class="goal"><div class="gn">Goal 2</div><div class="gt">同じDBを見て会話が成立している</div></div>
+      <div class="goal"><div class="gn">Goal 3</div><div class="gt">コントロールできる指標だけを管理している</div></div>
+      <div class="goal"><div class="gn">Goal 4</div><div class="gt">成功ノウハウが振り返りMtg・1on1で横展されている</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ゲージ -->
+<div class="gauge-sec">
+  <div class="gi">
+    <div class="ghdr">
+      <div>
+        <div class="gttl">1Q 計画 vs 実績 — 全ステージ</div>
+        <div class="gsub">計画: FY26獲得計画シート CQ列1Q合計 ／ 実績: e-Sales Manager Rawdata</div>
+      </div>
+      <div class="gnote" id="gnote">実績: 最新データ</div>
+    </div>
+    <div class="ggrid" id="gauges"></div>
+  </div>
+</div>
+
+<!-- ドロップ -->
+<div class="drop" id="drop" onclick="document.getElementById('fi').click()">
+  <div class="dico"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg></div>
+  <div class="dtxt"><p id="dlbl">Cms-reportをドラッグまたはCSVを選択（自動でdata.csvも読み込み）</p><small>Shift-JIS対応</small></div>
+  <button class="dbtn" onclick="event.stopPropagation();document.getElementById('fi').click()">CSVを選択</button>
+  <input type="file" id="fi" accept=".csv" style="display:none">
+</div>
+
+<!-- タブ -->
+<div class="tabs">
+  <button class="tab on" onclick="ST('funnel',this)">ファネル概要</button>
+  <button class="tab" onclick="ST('person',this)">個人横比較</button>
+  <button class="tab" onclick="ST('insight',this)">インサイト</button>
+</div>
+
+<div class="main">
+
+<!-- ファネル -->
+<div id="pane-funnel" class="pane on">
+  <div id="fe" class="empty">CSVをアップロードするとデータが表示されます</div>
+  <div id="fc" style="display:none">
+    <div class="def">
+      <b>指標定義（eSM進捗ランク準拠）</b><br>
+      <b>A 獲得</b>：口頭内定含む受託確定　<b>B/C 試合中</b>：B=本見積提出今期案件　C=コンペ確定今期案件<br>
+      <b>D/F 案件化</b>：D=提案活動中　F=中長期提案候補　<b>G/H 訪問</b>：G=与件把握中　H=ターゲットリスト<br>
+      <b>対象</b>：2026年4月1日以降案件　<b>複数担当</b>：🔀マーク付き案件は担当者数で貢献額を按分
+    </div>
+    <div class="target-row">
+      <span class="target-chip">目標: 訪問→案件 30%</span>
+      <span class="target-chip">目標: 案件→試合 30%</span>
+      <span class="target-chip">目標: 試合→獲得 50%</span>
+      <span class="target-chip">目標: 訪問→獲得 4.5%</span>
+    </div>
+    <div class="sec">部門フィルター</div><div class="filters" id="df"></div>
+    <div class="sec">KPI</div><div class="krow" id="kpi"></div>
+    <div class="two">
+      <div><div class="sec">ファネル進捗</div><div id="fviz"></div></div>
+      <div class="card" style="margin:0">
+        <div class="card-t">受注金額サマリー</div>
+        <div class="amt-toggle">
+          <button class="atbtn on" onclick="setAmt(0,this)">①A獲得のみ</button>
+          <button class="atbtn" onclick="setAmt(1,this)">②A+BC見込</button>
+          <button class="atbtn" onclick="setAmt(2,this)">③A+BC+D見込</button>
+        </div>
+        <div id="amt-display"></div>
+      </div>
+    </div>
+    <div class="two">
+      <div class="card" style="margin:0"><div class="card-t">部門別ファネル効率</div><div style="position:relative;height:190px"><canvas id="dchart"></canvas></div></div>
+      <div class="card" style="margin:0"><div class="card-t">獲得数 TOP10　<small style="font-weight:400;color:#9a9892">丸にマウスオーバーで案件詳細</small></div><div id="wrank"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 個人横比較 -->
+<div id="pane-person" class="pane">
+  <div id="pe" class="empty">CSVをアップロードするとデータが表示されます</div>
+  <div id="pc" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+      <div class="filters" id="pf"></div>
+      <select id="psort" onchange="renderPT()">
+        <option value="win">獲得数順</option>
+        <option value="visit">訪問数順</option>
+        <option value="rate">訪問成約率順</option>
+      </select>
+    </div>
+    <div class="card"><div class="tbl" id="ptbl"></div></div>
+  </div>
+</div>
+
+<!-- インサイト -->
+<div id="pane-insight" class="pane">
+  <div id="ie" class="empty">CSVをアップロードするとインサイトが表示されます</div>
+  <div id="ic" style="display:none"><div class="card" id="ins"></div></div>
+</div>
+
+</div></div>
+<script>
+var PERSONS = [{"name": "国米彰", "div": "コントラクト", "visit": 17, "case": 2, "pitch": 1, "win": 0, "tm": 11905, "na": 55, "wins": [], "pitches": [{"facility": "明治座", "client": "明治座", "headcount": "140", "sales": "1,750,000", "profit": "175,000", "profit_rate": "10.0", "annual": "21,000,000", "open_date": "—", "route": "その他/未入力", "multi": false, "srep": "国米彰", "sales_raw": 1750000, "annual_raw": 21000000}], "cases_d": [{"facility": "ロイヤルパークホテル日本橋", "client": "ロイヤルパークホテル", "headcount": "400", "sales": "7,000,000", "profit": "600,000", "profit_rate": "8.6", "annual": "84,000,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "国米彰", "sales_raw": 7000000, "annual_raw": 84000000}]}, {"name": "平元将博", "div": "コントラクト", "visit": 12, "case": 9, "pitch": 6, "win": 1, "tm": 16985, "na": 56, "wins": [{"facility": "今治造船株式会社西条工場新食堂", "client": "今治造船株式会社西条工場", "headcount": "2500", "sales": "10,258,350", "profit": "412,880", "profit_rate": "4.0", "annual": "123,100,200", "open_date": "2027-04-01", "route": "既存顧客紹介（G）", "multi": false, "srep": "平元将博", "sales_raw": 10258350, "annual_raw": 123100200}], "pitches": [{"facility": "愛光中学・高等学校　学生食堂", "client": "学校法人　愛光学園　愛光中学・高等学校", "headcount": "1000", "sales": "15,000,000", "profit": "1,200,000", "profit_rate": "8.0", "annual": "180,000,000", "open_date": "—", "route": "その他/未入力", "multi": true, "srep": "井手本光世", "sales_raw": 15000000, "annual_raw": 180000000}, {"facility": "株式会社日本クライメイトシステムズ山口工場食堂", "client": "日本クライメイトシステムズ", "headcount": "80", "sales": "1,040,145", "profit": "101,530", "profit_rate": "9.8", "annual": "12,481,740", "open_date": "—", "route": "その他/未入力", "multi": false, "srep": "平元将博", "sales_raw": 1040145, "annual_raw": 12481740}, {"facility": "大晃ホールディングス株式会社食堂", "client": "大晃ホールディングス株式会社", "headcount": "450", "sales": "2,937,600", "profit": "235,008", "profit_rate": "8.0", "annual": "35,251,200", "open_date": "—", "route": "その他/未入力", "multi": false, "srep": "", "sales_raw": 2937600, "annual_raw": 35251200}, {"facility": "グリコマニュファクチャリングジャパン株式会社兵庫工場", "client": "グリコマニュファクチャリングジャパン株式会社兵庫工場", "headcount": "120", "sales": "1,270,765", "profit": "102,063", "profit_rate": "8.0", "annual": "15,249,180", "open_date": "2026-08-03", "route": "既存顧客紹介（G）", "multi": true, "srep": "木下佳巳", "sales_raw": 1270765, "annual_raw": 15249180}, {"facility": "大塚製薬株式会社大阪創薬研究センター", "client": "大塚製薬株式会社研究管理部", "headcount": "150", "sales": "1,453,500", "profit": "117,925", "profit_rate": "8.1", "annual": "17,442,000", "open_date": "—", "route": "その他/未入力", "multi": false, "srep": "", "sales_raw": 1453500, "annual_raw": 17442000}], "cases_d": [{"facility": "四国化成工業株式会社R＆Dセンター食堂", "client": "四国化成工業株式会社", "headcount": "80", "sales": "1,453,600", "profit": "117,376", "profit_rate": "8.1", "annual": "17,443,200", "open_date": "2027-04-01", "route": "その他/未入力", "multi": false, "srep": "", "sales_raw": 1453600, "annual_raw": 17443200}, {"facility": "東広島某所食堂", "client": "エイジェック", "headcount": "3000", "sales": "30,000,000", "profit": "2,400,000", "profit_rate": "8.0", "annual": "360,000,000", "open_date": "—", "route": "その他/未入力", "multi": false, "srep": "", "sales_raw": 30000000, "annual_raw": 360000000}, {"facility": "京阪神ビルディング株式会社", "client": "京阪神ビルディング株式会社", "headcount": "550", "sales": "4,000,000", "profit": "320,000", "profit_rate": "8.0", "annual": "48,000,000", "open_date": "—", "route": "その他/未入力", "multi": false, "srep": "", "sales_raw": 4000000, "annual_raw": 48000000}]}, {"name": "古東久典", "div": "コントラクト", "visit": 14, "case": 6, "pitch": 1, "win": 1, "tm": 11775, "na": 60, "wins": [{"facility": "テクノ工業甲府第三工場食堂", "client": "テクノ工業", "headcount": "50", "sales": "1,269,442", "profit": "151,330", "profit_rate": "11.9", "annual": "15,233,304", "open_date": "2026-06-01", "route": "既存顧客紹介（G）", "multi": false, "srep": "古東久典", "sales_raw": 1269442, "annual_raw": 15233304}], "pitches": [], "cases_d": [{"facility": "ヤクルト本社中央研究所食堂", "client": "ヤクルト本社中央研究所", "headcount": "360", "sales": "3,200,000", "profit": "256,000", "profit_rate": "8.0", "annual": "38,400,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "古東久典", "sales_raw": 3200000, "annual_raw": 38400000}, {"facility": "多摩美術大学(八王子)第1食堂食堂", "client": "多摩美術大学(八王子)第1食堂", "headcount": "2267", "sales": "4,151,250", "profit": "41,512", "profit_rate": "1.0", "annual": "49,815,000", "open_date": "—", "route": "テレアポ", "multi": true, "srep": "成田和哉", "sales_raw": 4151250, "annual_raw": 49815000}, {"facility": "テルモ甲府東工場食堂", "client": "株式会社テルモ　甲府工場", "headcount": "1000", "sales": "6,000,000", "profit": "480,000", "profit_rate": "8.0", "annual": "72,000,000", "open_date": "—", "route": "既存顧客紹介（G）", "multi": false, "srep": "古東久典", "sales_raw": 6000000, "annual_raw": 72000000}, {"facility": "竹内製作所食堂", "client": "株式会社竹内製作所", "headcount": "950", "sales": "4,000,000", "profit": "320,000", "profit_rate": "8.0", "annual": "48,000,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "古東久典", "sales_raw": 4000000, "annual_raw": 48000000}, {"facility": "松本国際高等学校松国寮食堂", "client": "学校法人理知の杜　松本国際高等学校", "headcount": "710", "sales": "6,000,000", "profit": "480,000", "profit_rate": "8.0", "annual": "72,000,000", "open_date": "—", "route": "受電", "multi": false, "srep": "古東久典", "sales_raw": 6000000, "annual_raw": 72000000}]}, {"name": "藤田謙介", "div": "コントラクト", "visit": 16, "case": 9, "pitch": 6, "win": 3, "tm": 12335, "na": 143, "wins": [{"facility": "新潟国際大学食堂", "client": "国際大学", "headcount": "400", "sales": "3,348,117", "profit": "267,850", "profit_rate": "8.0", "annual": "40,177,404", "open_date": "2026-09-01", "route": "既存顧客紹介（G）", "multi": false, "srep": "藤田謙介", "sales_raw": 3348117, "annual_raw": 40177404}, {"facility": "国分第二本社食堂", "client": "国分", "headcount": "518", "sales": "4,092,417", "profit": "279,416", "profit_rate": "6.8", "annual": "49,109,004", "open_date": "2027-01-11", "route": "その他/未入力", "multi": false, "srep": "藤田謙介", "sales_raw": 4092417, "annual_raw": 49109004}, {"facility": "長岡技術大学新食堂", "client": "長岡技術科学大学", "headcount": "2500", "sales": "4,994,750", "profit": "399,580", "profit_rate": "8.0", "annual": "59,937,000", "open_date": "2027-04-01", "route": "既存顧客紹介（G）", "multi": false, "srep": "藤田謙介", "sales_raw": 4994750, "annual_raw": 59937000}], "pitches": [{"facility": "西武ライオンズ寮食堂", "client": "西武ライオンズ寮", "headcount": "200", "sales": "4,000,000", "profit": "320,000", "profit_rate": "8.0", "annual": "48,000,000", "open_date": "2027-01-05", "route": "既存顧客紹介（G）", "multi": false, "srep": "藤田謙介", "sales_raw": 4000000, "annual_raw": 48000000}, {"facility": "高崎森永本社食堂", "client": "高崎森永株式会社", "headcount": "525", "sales": "5,484,145", "profit": "441,230", "profit_rate": "8.0", "annual": "65,809,740", "open_date": "2026-09-24", "route": "DM（郵送）", "multi": true, "srep": "渡辺泰", "sales_raw": 5484145, "annual_raw": 65809740}, {"facility": "サンクチュアリコート八ヶ岳", "client": "リゾートトラスト株式会社", "headcount": "500", "sales": "2,500,000", "profit": "200,000", "profit_rate": "8.0", "annual": "30,000,000", "open_date": "2027-01-15", "route": "受電", "multi": false, "srep": "藤田謙介", "sales_raw": 2500000, "annual_raw": 30000000}], "cases_d": [{"facility": "ジェイテクト東京工場食堂", "client": "ジェイテクト東京工場", "headcount": "550", "sales": "2,285,200", "profit": "183,167", "profit_rate": "8.0", "annual": "27,422,400", "open_date": "—", "route": "テレアポ", "multi": true, "srep": "古東久典", "sales_raw": 2285200, "annual_raw": 27422400}, {"facility": "ジェイテクト関東工場（狭山）食堂", "client": "ジェイテクト関東工場", "headcount": "150", "sales": "1,448,000", "profit": "115,840", "profit_rate": "8.0", "annual": "17,376,000", "open_date": "—", "route": "DM（郵送）", "multi": false, "srep": "藤田謙介", "sales_raw": 1448000, "annual_raw": 17376000}, {"facility": "東京?月堂川口工場食堂", "client": "東京風月堂川口工場", "headcount": "100", "sales": "1,250,000", "profit": "100,000", "profit_rate": "8.0", "annual": "15,000,000", "open_date": "2027-04-01", "route": "Web問い合わせ", "multi": false, "srep": "藤田謙介", "sales_raw": 1250000, "annual_raw": 15000000}]}, {"name": "土田秀俊", "div": "コントラクト", "visit": 8, "case": 4, "pitch": 3, "win": 1, "tm": 13655, "na": 62, "wins": [{"facility": "塩野フィネス株式会社福井事業所", "client": "塩野フィネス株式会社福井事業所", "headcount": "110", "sales": "1,351,000", "profit": "108,600", "profit_rate": "8.0", "annual": "16,212,000", "open_date": "2026-06-15", "route": "Web問い合わせ", "multi": true, "srep": "木下佳巳", "sales_raw": 1351000, "annual_raw": 16212000}], "pitches": [{"facility": "能登テック食堂", "client": "能登テック株式会社", "headcount": "250", "sales": "1,413,644", "profit": "113,730", "profit_rate": "8.0", "annual": "16,963,728", "open_date": "2026-09-24", "route": "既存顧客紹介（その他）", "multi": false, "srep": "土田秀俊", "sales_raw": 1413644, "annual_raw": 16963728}, {"facility": "京セラ株式会社富山入善工場 食堂", "client": "京セラ株式会社富山入善工場", "headcount": "500", "sales": "2,502,455", "profit": "126,221", "profit_rate": "5.0", "annual": "30,029,460", "open_date": "2026-11-02", "route": "既存顧客紹介（G）", "multi": false, "srep": "土田秀俊", "sales_raw": 2502455, "annual_raw": 30029460}], "cases_d": [{"facility": "リシュモンジャパン深川オフィス食堂", "client": "リシュモンジャパン", "headcount": "300", "sales": "2,485,000", "profit": "224,506", "profit_rate": "9.0", "annual": "29,820,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "", "sales_raw": 2485000, "annual_raw": 29820000}]}, {"name": "蘇武里佳", "div": "コントラクト", "visit": 33, "case": 6, "pitch": 0, "win": 0, "tm": 19555, "na": 98, "wins": [], "pitches": [], "cases_d": [{"facility": "日本マイクロニクス青森工場食堂", "client": "株式会社日本マイクロニクス青森工場", "headcount": "900", "sales": "3,100,000", "profit": "250,000", "profit_rate": "8.1", "annual": "37,200,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "蘇武里佳", "sales_raw": 3100000, "annual_raw": 37200000}, {"facility": "キオクシア岩手610棟", "client": "キオクシア岩手株式会社", "headcount": "2000", "sales": "8,720,000", "profit": "0", "profit_rate": "0.0", "annual": "104,640,000", "open_date": "—", "route": "受電", "multi": false, "srep": "蘇武里佳", "sales_raw": 8720000, "annual_raw": 104640000}, {"facility": "シチズンマシナリーミヤノ北上事業所社員食堂", "client": "シチズンマシナリーミヤノ株式会社北上事業所", "headcount": "160", "sales": "1,338,000", "profit": "107,000", "profit_rate": "8.0", "annual": "16,056,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "蘇武里佳", "sales_raw": 1338000, "annual_raw": 16056000}, {"facility": "ドーコン本社", "client": "株式会社ドーコン本社", "headcount": "800", "sales": "2,400,000", "profit": "192,000", "profit_rate": "8.0", "annual": "28,800,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "蘇武里佳", "sales_raw": 2400000, "annual_raw": 28800000}, {"facility": "日本マイクロニクス青森松崎工場社員食堂", "client": "株式会社日本マイクロニクス青森松崎工場", "headcount": "115", "sales": "771,000", "profit": "103,000", "profit_rate": "13.4", "annual": "9,252,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "蘇武里佳", "sales_raw": 771000, "annual_raw": 9252000}, {"facility": "ドルトンX学園高校ビレッジハウス花泉（新設）", "client": "学校法人河合塾学園ドルトンX学園高等学校", "headcount": "75", "sales": "3,225,000", "profit": "254,000", "profit_rate": "7.9", "annual": "38,700,000", "open_date": "2027-04-01", "route": "既存顧客紹介（G）", "multi": false, "srep": "蘇武里佳", "sales_raw": 3225000, "annual_raw": 38700000}]}, {"name": "田中航", "div": "コントラクト", "visit": 4, "case": 2, "pitch": 1, "win": 1, "tm": 19580, "na": 53, "wins": [{"facility": "日本テレビ17F食堂", "client": "日本テレビ放送汐留新社屋", "headcount": "5000", "sales": "12,438,300", "profit": "369,552", "profit_rate": "3.0", "annual": "149,259,600", "open_date": "2026-04-01", "route": "既存顧客紹介（G）", "multi": false, "srep": "田中航", "sales_raw": 12438300, "annual_raw": 149259600}], "pitches": [], "cases_d": [{"facility": "千葉ロッテマリーンズ 選??堂/カフェテリア", "client": "株式会社千葉ロッテマリーンズ", "headcount": "300", "sales": "3,000,000", "profit": "240,000", "profit_rate": "8.0", "annual": "36,000,000", "open_date": "2027-01-01", "route": "既存顧客紹介（G）", "multi": false, "srep": "", "sales_raw": 3000000, "annual_raw": 36000000}]}, {"name": "荘司琢磨", "div": "コントラクト", "visit": 4, "case": 4, "pitch": 3, "win": 2, "tm": 18075, "na": 74, "wins": [{"facility": "日本オーチス・エレベータ芝山工場食堂", "client": "日本オーチス・エレベータ株式会社", "headcount": "500", "sales": "2,913,909", "profit": "278,143", "profit_rate": "9.5", "annual": "34,966,908", "open_date": "2026-07-01", "route": "Web問い合わせ", "multi": true, "srep": "田中航", "sales_raw": 2913909, "annual_raw": 34966908}, {"facility": "宮地エンジニアリング千葉工場食堂", "client": "宮地エンジニアリング　千葉工場", "headcount": "370", "sales": "2,796,997", "profit": "140,103", "profit_rate": "5.0", "annual": "33,563,964", "open_date": "2027-06-01", "route": "テレアポ", "multi": false, "srep": "荘司琢磨", "sales_raw": 2796997, "annual_raw": 33563964}], "pitches": [{"facility": "東京自働機械製作所柏工場", "client": "株式会社東京自働機械製作所", "headcount": "320", "sales": "2,684,000", "profit": "213,715", "profit_rate": "8.0", "annual": "32,208,000", "open_date": "2026-10-01", "route": "受電", "multi": false, "srep": "", "sales_raw": 2684000, "annual_raw": 32208000}], "cases_d": [{"facility": "WING NRT食堂", "client": "株式会社アイ・エー・エス・エス", "headcount": "3000", "sales": "10,944,000", "profit": "875,520", "profit_rate": "8.0", "annual": "131,328,000", "open_date": "2030-01-01", "route": "その他/未入力", "multi": false, "srep": "", "sales_raw": 10944000, "annual_raw": 131328000}]}, {"name": "大榮幸一", "div": "コントラクト", "visit": 9, "case": 7, "pitch": 6, "win": 2, "tm": 18010, "na": 70, "wins": [{"facility": "扶桑薬品工業", "client": "扶桑薬品工業", "headcount": "200", "sales": "2,282,091", "profit": "182,811", "profit_rate": "8.0", "annual": "27,385,092", "open_date": "2026-10-01", "route": "Web問い合わせ", "multi": true, "srep": "木下佳巳", "sales_raw": 2282091, "annual_raw": 27385092}, {"facility": "株式会社五光工業　新設食堂", "client": "株式会社五光工業", "headcount": "100", "sales": "929,182", "profit": "100,537", "profit_rate": "10.8", "annual": "11,150,184", "open_date": "2026-09-01", "route": "Web問い合わせ", "multi": false, "srep": "大榮幸一", "sales_raw": 929182, "annual_raw": 11150184}], "pitches": [{"facility": "伸和コントロールズ 九州事業所 新設食堂", "client": "伸和コントロールズ", "headcount": "300", "sales": "1,569,092", "profit": "85,105", "profit_rate": "5.4", "annual": "18,829,104", "open_date": "2027-01-05", "route": "既存顧客紹介（G）", "multi": false, "srep": "大榮幸一", "sales_raw": 1569092, "annual_raw": 18829104}, {"facility": "海星学園　食堂・売店", "client": "海星学園", "headcount": "1000", "sales": "2,000,000", "profit": "100,000", "profit_rate": "5.0", "annual": "24,000,000", "open_date": "2027-04-05", "route": "既存顧客紹介（G）", "multi": true, "srep": "樋口良", "sales_raw": 2000000, "annual_raw": 24000000}, {"facility": "プリマハム三重工場", "client": "プリマハム三重工場", "headcount": "350", "sales": "3,130,527", "profit": "251,257", "profit_rate": "8.0", "annual": "37,566,324", "open_date": "2026-08-17", "route": "既存顧客紹介（G）", "multi": false, "srep": "", "sales_raw": 3130527, "annual_raw": 37566324}, {"facility": "株式会社ティラド　滋賀製作所", "client": "株式会社ティラド", "headcount": "960", "sales": "3,500,000", "profit": "120,000", "profit_rate": "3.4", "annual": "42,000,000", "open_date": "2028-04-01", "route": "その他/未入力", "multi": true, "srep": "亀井靖司", "sales_raw": 3500000, "annual_raw": 42000000}], "cases_d": [{"facility": "エナジックスポーツ高等学院 学生寮", "client": "学校法人大城学園　エナジックスポーツ高等学院", "headcount": "100", "sales": "5,000,000", "profit": "250,000", "profit_rate": "5.0", "annual": "60,000,000", "open_date": "2026-09-16", "route": "既存顧客紹介（G）", "multi": false, "srep": "大榮幸一", "sales_raw": 5000000, "annual_raw": 60000000}]}, {"name": "山下雄大", "div": "コントラクト", "visit": 7, "case": 7, "pitch": 5, "win": 4, "tm": 16595, "na": 57, "wins": [{"facility": "東北職業能力大学校東北ポリテク寮食堂", "client": "東北職業能力開発大学校東北ポリテクカレッジ", "headcount": "700", "sales": "5,938,771", "profit": "478,633", "profit_rate": "8.1", "annual": "71,265,252", "open_date": "2026-04-01", "route": "テレアポ", "multi": false, "srep": "", "sales_raw": 5938771, "annual_raw": 71265252}, {"facility": "セコム工業本社工場社員食堂", "client": "セコム工業本社工場", "headcount": "317", "sales": "3,046,539", "profit": "272,412", "profit_rate": "8.9", "annual": "36,558,468", "open_date": "2026-04-01", "route": "DM（郵送）", "multi": false, "srep": "山下雄大", "sales_raw": 3046539, "annual_raw": 36558468}, {"facility": "オリエンタルモーター鶴岡西社員食堂", "client": "オリエンタルモーター(株)鶴岡カンパニー", "headcount": "374", "sales": "1,882,600", "profit": "159,313", "profit_rate": "8.5", "annual": "22,591,200", "open_date": "2026-04-01", "route": "その他/未入力", "multi": false, "srep": "山下雄大", "sales_raw": 1882600, "annual_raw": 22591200}, {"facility": "オリエンタルモーター鶴岡中央社員食堂", "client": "オリエンタルモーター(株)鶴岡カンパニー", "headcount": "302", "sales": "1,890,800", "profit": "158,314", "profit_rate": "8.4", "annual": "22,689,600", "open_date": "2026-04-01", "route": "その他/未入力", "multi": false, "srep": "山下雄大", "sales_raw": 1890800, "annual_raw": 22689600}], "pitches": [{"facility": "アサヒビール福島工場 社員食堂", "client": "アサヒビール福島工場", "headcount": "140", "sales": "1,920,000", "profit": "180,000", "profit_rate": "9.4", "annual": "23,040,000", "open_date": "2026-08-03", "route": "Web問い合わせ", "multi": true, "srep": "千葉充弘", "sales_raw": 1920000, "annual_raw": 23040000}], "cases_d": [{"facility": "理研食品多賀城工場社員食堂", "client": "理研食品多賀城工場", "headcount": "350", "sales": "2,250,000", "profit": "225,000", "profit_rate": "10.0", "annual": "27,000,000", "open_date": "—", "route": "既存顧客紹介（G）", "multi": false, "srep": "山下雄大", "sales_raw": 2250000, "annual_raw": 27000000}, {"facility": "デクセリアルズなかだ事業所社員食堂", "client": "デクセリアルズなかだ事業所", "headcount": "270", "sales": "1,465,000", "profit": "118,000", "profit_rate": "8.1", "annual": "17,580,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "山下雄大", "sales_raw": 1465000, "annual_raw": 17580000}]}, {"name": "荒木豊", "div": "コントラクト", "visit": 11, "case": 9, "pitch": 8, "win": 6, "tm": 27020, "na": 86, "wins": [{"facility": "東洋鋼鈑下松事業所社員食堂（主）", "client": "東洋鋼鈑株式会社", "headcount": "1500", "sales": "1,876,976", "profit": "93,849", "profit_rate": "5.0", "annual": "22,523,712", "open_date": "2026-09-24", "route": "既存顧客紹介（G）", "multi": true, "srep": "平元将博", "sales_raw": 1876976, "annual_raw": 22523712}, {"facility": "カルビー関西びわ湖第第二工場社員食堂", "client": "カルビー湖南", "headcount": "200", "sales": "1,769,550", "profit": "114,877", "profit_rate": "6.5", "annual": "21,234,600", "open_date": "2026-06-01", "route": "既存顧客紹介（G）", "multi": true, "srep": "木下佳巳", "sales_raw": 1769550, "annual_raw": 21234600}, {"facility": "王子製紙米子工場尚志會館（主）", "client": "王子製紙", "headcount": "1500", "sales": "4,103,795", "profit": "350,621", "profit_rate": "8.5", "annual": "49,245,540", "open_date": "2026-07-01", "route": "その他/未入力", "multi": false, "srep": "荒木豊", "sales_raw": 4103795, "annual_raw": 49245540}, {"facility": "【西日本統括部】第20回アジア競技大会（2026／愛知・名古屋）選手宿泊施設食堂運営業務", "client": "公益財団法人愛知・名古屋アジア競技大会組織委員会", "headcount": "20000", "sales": "23,835,614", "profit": "3,575,341", "profit_rate": "15.0", "annual": "286,027,368", "open_date": "2026-09-10", "route": "既存顧客紹介（G）", "multi": true, "srep": "保谷武彦", "sales_raw": 23835614, "annual_raw": 286027368}, {"facility": "御国色素 新本社食堂", "client": "御国色素株式会社", "headcount": "300", "sales": "2,326,372", "profit": "186,310", "profit_rate": "8.0", "annual": "27,916,464", "open_date": "2026-08-17", "route": "Web問い合わせ", "multi": false, "srep": "", "sales_raw": 2326372, "annual_raw": 27916464}, {"facility": "愛知県消防学校食堂", "client": "前田建設工業", "headcount": "467", "sales": "10,941,993", "profit": "709,142", "profit_rate": "6.5", "annual": "131,303,916", "open_date": "2029-04-02", "route": "既存顧客紹介（G）", "multi": true, "srep": "荒木豊/紀藤洋輝", "sales_raw": 10941993, "annual_raw": 131303916}], "pitches": [{"facility": "ツネイシグロース株式会社", "client": "ツネイシホールディングス株式会社", "headcount": "1000", "sales": "1,500,000", "profit": "150,000", "profit_rate": "10.0", "annual": "18,000,000", "open_date": "2026-08-03", "route": "その他/未入力", "multi": false, "srep": "", "sales_raw": 1500000, "annual_raw": 18000000}, {"facility": "川崎重工業神戸本社　カフェテリア", "client": "川崎重工業神戸本社", "headcount": "800", "sales": "4,000,000", "profit": "400,000", "profit_rate": "10.0", "annual": "48,000,000", "open_date": "2027-11-01", "route": "既存顧客紹介（その他）", "multi": false, "srep": "荒木豊", "sales_raw": 4000000, "annual_raw": 48000000}], "cases_d": [{"facility": "廿日市学校給食センター包括業務", "client": "広島県(SCF/SF/TOS)", "headcount": "3000", "sales": "18,000,000", "profit": "1,800,000", "profit_rate": "10.0", "annual": "216,000,000", "open_date": "—", "route": "既存顧客紹介（G）", "multi": false, "srep": "荒木豊", "sales_raw": 18000000, "annual_raw": 216000000}]}, {"name": "松井茂夫", "div": "コントラクト", "visit": 21, "case": 7, "pitch": 3, "win": 1, "tm": 12280, "na": 115, "wins": [{"facility": "極東製薬工業　高萩工場食堂", "client": "極東製薬工業株式会社", "headcount": "170", "sales": "1,592,000", "profit": "128,000", "profit_rate": "8.0", "annual": "19,104,000", "open_date": "2026-09-01", "route": "テレアポ", "multi": false, "srep": "松井茂夫", "sales_raw": 1592000, "annual_raw": 19104000}], "pitches": [{"facility": "旭化成建材境工場食堂", "client": "旭化成建材境工場", "headcount": "500", "sales": "1,250,000", "profit": "100,000", "profit_rate": "8.0", "annual": "15,000,000", "open_date": "2026-10-01", "route": "テレアポ", "multi": true, "srep": "ー", "sales_raw": 1250000, "annual_raw": 15000000}, {"facility": "ロンシール工業土浦工場食堂", "client": "ロンシール工業土浦工場", "headcount": "200", "sales": "1,800,000", "profit": "144,000", "profit_rate": "8.0", "annual": "21,600,000", "open_date": "2026-10-01", "route": "テレアポ", "multi": true, "srep": "藤田謙介", "sales_raw": 1800000, "annual_raw": 21600000}], "cases_d": [{"facility": "筑波銀行本店食堂", "client": "筑波銀行本店", "headcount": "300", "sales": "2,100,000", "profit": "210,000", "profit_rate": "10.0", "annual": "25,200,000", "open_date": "—", "route": "テレアポ", "multi": true, "srep": "藤田謙介", "sales_raw": 2100000, "annual_raw": 25200000}, {"facility": "日本ウェルネススポーツ大学アスリート食堂", "client": "日本ウェルネススポーツ大学", "headcount": "350", "sales": "1,250,000", "profit": "120,000", "profit_rate": "9.6", "annual": "15,000,000", "open_date": "—", "route": "テレアポ", "multi": true, "srep": "ー", "sales_raw": 1250000, "annual_raw": 15000000}, {"facility": "取手競輪場食堂", "client": "取手競輪場", "headcount": "100", "sales": "1,250,000", "profit": "100,000", "profit_rate": "8.0", "annual": "15,000,000", "open_date": "—", "route": "テレアポ", "multi": true, "srep": "ー", "sales_raw": 1250000, "annual_raw": 15000000}, {"facility": "量子科学技術研究開発機構那珂フュージョン科学技術研究所食堂", "client": "量子科学技術研究開発機構那珂フュージョン科学技術研究所", "headcount": "100", "sales": "1,250,000", "profit": "100,000", "profit_rate": "8.0", "annual": "15,000,000", "open_date": "—", "route": "テレアポ", "multi": true, "srep": "ー", "sales_raw": 1250000, "annual_raw": 15000000}]}, {"name": "渡辺泰", "div": "コントラクト", "visit": 13, "case": 6, "pitch": 4, "win": 2, "tm": 16205, "na": 74, "wins": [{"facility": "カルビー清原工場　食堂", "client": "カルビー清原工場", "headcount": "280", "sales": "1,884,808", "profit": "79,083", "profit_rate": "4.2", "annual": "22,617,696", "open_date": "2026-07-01", "route": "既存顧客紹介（G）", "multi": false, "srep": "渡辺泰", "sales_raw": 1884808, "annual_raw": 22617696}, {"facility": "あぶらや清助商店 富山大学寮", "client": "株式会社あぶらや清助商店", "headcount": "270", "sales": "1,842,500", "profit": "147,400", "profit_rate": "8.0", "annual": "22,110,000", "open_date": "2026-10-01", "route": "Web問い合わせ", "multi": true, "srep": "平元将博", "sales_raw": 1842500, "annual_raw": 22110000}], "pitches": [{"facility": "ヤマハモーターハイドロリックシステム株式会社　沼津食堂", "client": "ヤマハモーターハイドロリックシステム株式会社", "headcount": "600", "sales": "2,928,690", "profit": "176,424", "profit_rate": "6.0", "annual": "35,144,280", "open_date": "2026-10-01", "route": "既存顧客紹介（その他）", "multi": true, "srep": "木下佳巳", "sales_raw": 2928690, "annual_raw": 35144280}, {"facility": "大府市宿泊施設※第20回アジア競技大会（2026／愛知・名古屋）選手宿泊施設食堂運営業務", "client": "公益財団法人愛知・名古屋アジア競技大会組織委員会", "headcount": "110", "sales": "8,766,666", "profit": "1,753,333", "profit_rate": "20.0", "annual": "105,199,992", "open_date": "2026-09-10", "route": "既存顧客紹介（G）", "multi": true, "srep": "保谷武彦", "sales_raw": 8766666, "annual_raw": 105199992}], "cases_d": [{"facility": "株式会社ミツトヨ 清原工場食堂", "client": "ミツトヨ清原生産部", "headcount": "—", "sales": "—", "profit": "—", "profit_rate": "—", "annual": "—", "open_date": "—", "route": "テレアポ", "multi": true, "srep": "ー", "sales_raw": 0, "annual_raw": 0}, {"facility": "IJTT真岡工場食堂", "client": "株式会社IJTT　真岡工場", "headcount": "200", "sales": "1,460,491", "profit": "190,289", "profit_rate": "13.0", "annual": "17,525,892", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "渡辺泰", "sales_raw": 1460491, "annual_raw": 17525892}]}, {"name": "磯川岳士", "div": "コントラクト", "visit": 12, "case": 11, "pitch": 4, "win": 2, "tm": 14415, "na": 87, "wins": [{"facility": "ナストーア茅ケ崎製造所食堂", "client": "ナストーア株式会社茅ヶ崎製造所", "headcount": "75", "sales": "1,217,909", "profit": "101,515", "profit_rate": "8.3", "annual": "14,614,908", "open_date": "2026-08-03", "route": "テレアポ", "multi": true, "srep": "荻原祐介", "sales_raw": 1217909, "annual_raw": 14614908}, {"facility": "富士メタルプリンティング食堂", "client": "富士メタルプリンティング株式会社", "headcount": "60", "sales": "1,018,182", "profit": "149,682", "profit_rate": "14.7", "annual": "12,218,184", "open_date": "2026-09-01", "route": "Web問い合わせ", "multi": false, "srep": "磯川岳士", "sales_raw": 1018182, "annual_raw": 12218184}], "pitches": [{"facility": "海上自衛隊MK 2026", "client": "防衛省海上幕僚監部", "headcount": "8394", "sales": "625,000", "profit": "312,500", "profit_rate": "50.0", "annual": "7,500,000", "open_date": "2026-07-01", "route": "受電", "multi": false, "srep": "磯川岳士", "sales_raw": 625000, "annual_raw": 7500000}, {"facility": "ディー・ティー・ファインエレクトロニクス食堂", "client": "ディー・ティー・ファインエレクトロニクス株式会社", "headcount": "120", "sales": "1,200,000", "profit": "120,000", "profit_rate": "10.0", "annual": "14,400,000", "open_date": "2026-09-01", "route": "飛び込み", "multi": false, "srep": "", "sales_raw": 1200000, "annual_raw": 14400000}], "cases_d": [{"facility": "昭和薬科大食堂", "client": "昭和薬科大学", "headcount": "1500", "sales": "2,000,000", "profit": "160,000", "profit_rate": "8.0", "annual": "24,000,000", "open_date": "—", "route": "既存顧客紹介（G）", "multi": true, "srep": "古東久典", "sales_raw": 2000000, "annual_raw": 24000000}, {"facility": "木村鋳造所 本社", "client": "木村鋳造所御前崎工場", "headcount": "250", "sales": "1,500,000", "profit": "120,000", "profit_rate": "8.0", "annual": "18,000,000", "open_date": "2026-11-02", "route": "Web問い合わせ", "multi": true, "srep": "木下佳巳", "sales_raw": 1500000, "annual_raw": 18000000}, {"facility": "マグネスケール食堂", "client": "マグネスケール", "headcount": "300", "sales": "3,180,000", "profit": "318,000", "profit_rate": "10.0", "annual": "38,160,000", "open_date": "2027-04-01", "route": "既存顧客紹介（G）", "multi": true, "srep": "荻原祐介", "sales_raw": 3180000, "annual_raw": 38160000}, {"facility": "わらべや日洋相模原工場食堂", "client": "わらべや日洋相模原工場", "headcount": "200", "sales": "1,500,000", "profit": "120,000", "profit_rate": "8.0", "annual": "18,000,000", "open_date": "2026-11-02", "route": "テレアポ", "multi": false, "srep": "磯川岳士", "sales_raw": 1500000, "annual_raw": 18000000}, {"facility": "光明相模原高等学校食堂", "client": "光明学園相模原高等学校", "headcount": "1270", "sales": "2,000,000", "profit": "160,000", "profit_rate": "8.0", "annual": "24,000,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "磯川岳士", "sales_raw": 2000000, "annual_raw": 24000000}, {"facility": "ユニプレス本社（各事業所食堂一括）", "client": "ユニプレス", "headcount": "200", "sales": "10", "profit": "10", "profit_rate": "100.0", "annual": "120", "open_date": "—", "route": "既存顧客紹介（G）", "multi": false, "srep": "磯川岳士", "sales_raw": 10, "annual_raw": 120}, {"facility": "オーム電機食堂", "client": "オーム電機株式会社", "headcount": "70", "sales": "1,000,000", "profit": "100,000", "profit_rate": "10.0", "annual": "12,000,000", "open_date": "—", "route": "Web問い合わせ", "multi": false, "srep": "磯川岳士", "sales_raw": 1000000, "annual_raw": 12000000}]}, {"name": "宇垣亮", "div": "メディカル・グラライ", "visit": 8, "case": 5, "pitch": 1, "win": 0, "tm": 26305, "na": 55, "wins": [], "pitches": [{"facility": "特養福福の里", "client": "社会福祉法人福福会", "headcount": "60", "sales": "3,438,822", "profit": "367,040", "profit_rate": "10.7", "annual": "41,265,864", "open_date": "2026-11-01", "route": "テレアポ", "multi": false, "srep": "宇垣亮", "sales_raw": 3438822, "annual_raw": 41265864}], "cases_d": [{"facility": "磯ヶ谷病院", "client": "医療法人社団直樹会", "headcount": "164", "sales": "8,000,000", "profit": "800,000", "profit_rate": "10.0", "annual": "96,000,000", "open_date": "2027-04-01", "route": "その他/未入力", "multi": false, "srep": "宇垣亮", "sales_raw": 8000000, "annual_raw": 96000000}, {"facility": "有料ブリスイン野田", "client": "医療法人社団愛世会", "headcount": "123", "sales": "5,326,920", "profit": "212,000", "profit_rate": "4.0", "annual": "63,923,040", "open_date": "2027-04-01", "route": "受電", "multi": true, "srep": "尾��文香", "sales_raw": 5326920, "annual_raw": 63923040}, {"facility": "特養新柏ヴィヴァンホーム", "client": "社会福祉法人新柏会", "headcount": "110", "sales": "5,485,053", "profit": "369,362", "profit_rate": "6.7", "annual": "65,820,636", "open_date": "2026-08-01", "route": "飛び込み", "multi": false, "srep": "宇垣亮", "sales_raw": 5485053, "annual_raw": 65820636}, {"facility": "特養とどろぎ一倫荘", "client": "社会福祉法人煌徳会", "headcount": "100", "sales": "3,886,832", "profit": "466,419", "profit_rate": "12.0", "annual": "46,641,984", "open_date": "—", "route": "その他/未入力", "multi": false, "srep": "宇垣亮", "sales_raw": 3886832, "annual_raw": 46641984}]}, {"name": "尾��文香", "div": "メディカル・グラライ", "visit": 7, "case": 2, "pitch": 0, "win": 0, "tm": 0, "na": 0, "wins": [], "pitches": [], "cases_d": [{"facility": "特養松戸愛光園", "client": "社会福祉法人聖隷福祉事業団", "headcount": "103", "sales": "5,009,920", "profit": "250,496", "profit_rate": "5.0", "annual": "60,119,040", "open_date": "—", "route": "飛び込み", "multi": true, "srep": "宇垣亮", "sales_raw": 5009920, "annual_raw": 60119040}, {"facility": "特養市川三愛", "client": "社会福祉法人三愛", "headcount": "100", "sales": "0", "profit": "0", "profit_rate": "0除算エラーが発生しました。", "annual": "0", "open_date": "—", "route": "飛び込み", "multi": true, "srep": "宇垣亮", "sales_raw": 0, "annual_raw": 0}]}, {"name": "今野純一", "div": "メディカル・グラライ", "visit": 144, "case": 19, "pitch": 1, "win": 1, "tm": 16115, "na": 243, "wins": [{"facility": "ユトリアケアセンターなりさわ（物販）", "client": "社会福祉法人ユトリア会", "headcount": "29", "sales": "1,363", "profit": "163", "profit_rate": "12.0", "annual": "16,356", "open_date": "2025-12-19", "route": "既存顧客紹介（G）", "multi": false, "srep": "今野純一", "sales_raw": 1363, "annual_raw": 16356}], "pitches": [], "cases_d": [{"facility": "特養　笑風苑", "client": "社会福祉法人笑風会", "headcount": "70", "sales": "3,575,000", "profit": "357,500", "profit_rate": "10.0", "annual": "42,900,000", "open_date": "—", "route": "DM（郵送）", "multi": false, "srep": "今野純一", "sales_raw": 3575000, "annual_raw": 42900000}, {"facility": "救護施設　紅花ホーム", "client": "社会福祉法人山形県玉葉会", "headcount": "105", "sales": "4,947,600", "profit": "494,670", "profit_rate": "10.0", "annual": "59,371,200", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "今野純一", "sales_raw": 4947600, "annual_raw": 59371200}, {"facility": "障害者支援施設啓生園", "client": "社会福祉法人宮城県身体障害者福祉協会", "headcount": "40", "sales": "2,067,000", "profit": "276,700", "profit_rate": "13.4", "annual": "24,804,000", "open_date": "2027-04-01", "route": "DM（郵送）", "multi": false, "srep": "今野純一", "sales_raw": 2067000, "annual_raw": 24804000}, {"facility": "太陽の国給食センター", "client": "福島県社会福祉事業団", "headcount": "800", "sales": "37,315,000", "profit": "1,600,000", "profit_rate": "4.3", "annual": "447,780,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "今野純一", "sales_raw": 37315000, "annual_raw": 447780000}, {"facility": "特養福寿草小荷駄町", "client": "社会福祉法人福寿会（山形）", "headcount": "29", "sales": "1,396,000", "profit": "100,000", "profit_rate": "7.2", "annual": "16,752,000", "open_date": "2027-04-01", "route": "飛び込み", "multi": false, "srep": "今野純一", "sales_raw": 1396000, "annual_raw": 16752000}, {"facility": "仙台南病院", "client": "独立行政法人地域医療機能推進機構", "headcount": "200", "sales": "10,980,000", "profit": "1,317,600", "profit_rate": "12.0", "annual": "131,760,000", "open_date": "2027-04-01", "route": "DM（郵送）", "multi": false, "srep": "今野純一", "sales_raw": 10980000, "annual_raw": 131760000}, {"facility": "特別養護老人ホーム大年寺山ジェロントピア", "client": "社会福祉法人ウエルフェア仙台", "headcount": "60", "sales": "3,000,000", "profit": "300,000", "profit_rate": "10.0", "annual": "36,000,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "今野純一", "sales_raw": 3000000, "annual_raw": 36000000}, {"facility": "仙台エコー医療療育センター", "client": "社会福祉法人陽光福祉会", "headcount": "120", "sales": "1,800,000", "profit": "216,000", "profit_rate": "12.0", "annual": "21,600,000", "open_date": "2027-04-01", "route": "飛び込み", "multi": false, "srep": "今野純一", "sales_raw": 1800000, "annual_raw": 21600000}, {"facility": "特別養護老人ホームシオンの園", "client": "社会福祉法人仙台キリスト教育児院", "headcount": "80", "sales": "3,769,600", "profit": "376,960", "profit_rate": "10.0", "annual": "45,235,200", "open_date": "2026-10-01", "route": "飛び込み", "multi": false, "srep": "今野純一", "sales_raw": 3769600, "annual_raw": 45235200}, {"facility": "障害者支援施設大萱荘", "client": "社会福祉法人陽光会（福島）", "headcount": "50", "sales": "1,500,000", "profit": "225,000", "profit_rate": "15.0", "annual": "18,000,000", "open_date": "2027-04-01", "route": "飛び込み", "multi": false, "srep": "今野純一", "sales_raw": 1500000, "annual_raw": 18000000}, {"facility": "障害者支援施設清心荘", "client": "社会福祉法人陽光会（福島）", "headcount": "50", "sales": "1,500,000", "profit": "225,000", "profit_rate": "15.0", "annual": "18,000,000", "open_date": "2027-04-01", "route": "飛び込み", "multi": false, "srep": "今野純一", "sales_raw": 1500000, "annual_raw": 18000000}, {"facility": "特養まちなか宝生園", "client": "社会福祉法人多宝会", "headcount": "80", "sales": "5,059,000", "profit": "609,100", "profit_rate": "12.0", "annual": "60,708,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "今野純一", "sales_raw": 5059000, "annual_raw": 60708000}, {"facility": "ショートステイ　ほっとin福寿草", "client": "社会福祉法人　福寿会", "headcount": "25", "sales": "1,308,000", "profit": "100,000", "profit_rate": "7.6", "annual": "15,696,000", "open_date": "2027-04-01", "route": "飛び込み", "multi": false, "srep": "今野純一", "sales_raw": 1308000, "annual_raw": 15696000}, {"facility": "特養まるめろ", "client": "社会福祉法人青森社会福祉振興団", "headcount": "80", "sales": "2,000,000", "profit": "200,000", "profit_rate": "10.0", "annual": "24,000,000", "open_date": "2027-04-01", "route": "飛び込み", "multi": false, "srep": "今野純一", "sales_raw": 2000000, "annual_raw": 24000000}, {"facility": "ショートステイはぎの里", "client": "株式会社ソーシャルライズ", "headcount": "20", "sales": "1,573,000", "profit": "157,000", "profit_rate": "10.0", "annual": "18,876,000", "open_date": "2027-04-01", "route": "受電", "multi": false, "srep": "今野純一", "sales_raw": 1573000, "annual_raw": 18876000}, {"facility": "老健Challengeすこやか", "client": "医療法人星稜会", "headcount": "100", "sales": "4,712,000", "profit": "471,200", "profit_rate": "10.0", "annual": "56,544,000", "open_date": "—", "route": "DM（郵送）", "multi": false, "srep": "今野純一", "sales_raw": 4712000, "annual_raw": 56544000}, {"facility": "仙台南病院附属老健", "client": "独立行政法人地域医療機能推進機構", "headcount": "100", "sales": "5,000,000", "profit": "600,000", "profit_rate": "12.0", "annual": "60,000,000", "open_date": "2027-04-01", "route": "テレアポ", "multi": false, "srep": "今野純一", "sales_raw": 5000000, "annual_raw": 60000000}, {"facility": "特養てらす鈎取", "client": "社会福祉法人うえるかむ", "headcount": "29", "sales": "2,280,408", "profit": "120,000", "profit_rate": "5.3", "annual": "27,364,896", "open_date": "2027-04-01", "route": "受電", "multi": false, "srep": "今野純一", "sales_raw": 2280408, "annual_raw": 27364896}]}, {"name": "木村有秀", "div": "メディカル・グラライ", "visit": 23, "case": 6, "pitch": 2, "win": 1, "tm": 11655, "na": 23, "wins": [{"facility": "老健みやびの里", "client": "医療法人社団誠恵会", "headcount": "150", "sales": "7,814,052", "profit": "544,664", "profit_rate": "7.0", "annual": "93,768,624", "open_date": "2026-10-01", "route": "その他/未入力", "multi": false, "srep": "木村有秀", "sales_raw": 7814052, "annual_raw": 93768624}], "pitches": [{"facility": "特養越谷よさこいホーム", "client": "社会福祉法人愛生福祉会（高知）", "headcount": "110", "sales": "4,891,696", "profit": "341,412", "profit_rate": "7.0", "annual": "58,700,352", "open_date": "2026-07-01", "route": "既存顧客紹介（その他）", "multi": false, "srep": "木村有秀", "sales_raw": 4891696, "annual_raw": 58700352}], "cases_d": [{"facility": "（老健）翔寿苑", "client": "医療法人眞幸会", "headcount": "108", "sales": "9,728,000", "profit": "466,944", "profit_rate": "4.8", "annual": "116,736,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "木村有秀", "sales_raw": 9728000, "annual_raw": 116736000}, {"facility": "特養東所沢みどりの郷", "client": "社会福祉法人聖久会", "headcount": "76", "sales": "3,700,000", "profit": "177,600", "profit_rate": "4.8", "annual": "44,400,000", "open_date": "2027-04-01", "route": "その他/未入力", "multi": false, "srep": "木村有秀", "sales_raw": 3700000, "annual_raw": 44400000}, {"facility": "特養癒しの里西小松川", "client": "社会福祉法人三幸福祉会（東京）", "headcount": "80", "sales": "3,891,200", "profit": "389,120", "profit_rate": "10.0", "annual": "46,694,400", "open_date": "2027-06-01", "route": "テレアポ", "multi": false, "srep": "木村有秀", "sales_raw": 3891200, "annual_raw": 46694400}, {"facility": "特養くらしテラス小美玉", "client": "社会福祉法人令和会", "headcount": "80", "sales": "3,769,600", "profit": "256,000", "profit_rate": "6.8", "annual": "45,235,200", "open_date": "2026-04-01", "route": "その他/未入力", "multi": false, "srep": "木村有秀", "sales_raw": 3769600, "annual_raw": 45235200}]}, {"name": "門田賢一", "div": "メディカル・グラライ", "visit": 157, "case": 41, "pitch": 3, "win": 0, "tm": 22165, "na": 275, "wins": [], "pitches": [{"facility": "DSまごころ", "client": "みやぎ登米農業協同組合", "headcount": "40", "sales": "697,476", "profit": "73,371", "profit_rate": "10.5", "annual": "8,369,712", "open_date": "2026-10-01", "route": "Web問い合わせ", "multi": true, "srep": "戸田賢悟", "sales_raw": 697476, "annual_raw": 8369712}, {"facility": "DSまごころとよま", "client": "みやぎ登米農業協同組合", "headcount": "40", "sales": "669,747", "profit": "73,371", "profit_rate": "11.0", "annual": "8,036,964", "open_date": "2026-10-01", "route": "Web問い合わせ", "multi": true, "srep": "戸田賢悟", "sales_raw": 669747, "annual_raw": 8036964}, {"facility": "DSまごころみなみかた", "client": "みやぎ登米農業協同組合", "headcount": "40", "sales": "697,476", "profit": "73,371", "profit_rate": "10.5", "annual": "8,369,712", "open_date": "2026-10-01", "route": "Web問い合わせ", "multi": true, "srep": "戸田賢悟", "sales_raw": 697476, "annual_raw": 8369712}], "cases_d": [{"facility": "特養いいとよ", "client": "社会福祉法人平和会/特別養護老人ホームいいとよ", "headcount": "60", "sales": "2,700,000", "profit": "324,000", "profit_rate": "12.0", "annual": "32,400,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "門田賢一", "sales_raw": 2700000, "annual_raw": 32400000}, {"facility": "特養かごぼうの里", "client": "社会福祉法人田尻福祉会", "headcount": "54", "sales": "4,200,000", "profit": "504,000", "profit_rate": "12.0", "annual": "50,400,000", "open_date": "—", "route": "DM（郵送）", "multi": false, "srep": "門田賢一", "sales_raw": 4200000, "annual_raw": 50400000}, {"facility": "特養大崎ホーム", "client": "社会福祉法人大崎福祉会", "headcount": "50", "sales": "3,000,000", "profit": "360,000", "profit_rate": "12.0", "annual": "36,000,000", "open_date": "—", "route": "DM（郵送）", "multi": true, "srep": "今野純一", "sales_raw": 3000000, "annual_raw": 36000000}, {"facility": "特養アイリス花巻", "client": "社会福祉法人大谷会/別養護老人ホームアイリス花巻", "headcount": "100", "sales": "5,000,000", "profit": "600,000", "profit_rate": "12.0", "annual": "60,000,000", "open_date": "—", "route": "DM（郵送）", "multi": false, "srep": "門田賢一", "sales_raw": 5000000, "annual_raw": 60000000}, {"facility": "特養寿楽荘", "client": "社会福祉法人寿栄会（青森）", "headcount": "80", "sales": "4,000,000", "profit": "480,000", "profit_rate": "12.0", "annual": "48,000,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "門田賢一", "sales_raw": 4000000, "annual_raw": 48000000}, {"facility": "養護長生園", "client": "社会福祉法人八戸市社会福祉事業団", "headcount": "50", "sales": "2,800,000", "profit": "336,000", "profit_rate": "12.0", "annual": "33,600,000", "open_date": "—", "route": "受電", "multi": false, "srep": "門田賢一", "sales_raw": 2800000, "annual_raw": 33600000}, {"facility": "ケアハウスソフィアハウス睦喜", "client": "社会福祉法人睦喜会/ケアハウスソフィアハウス睦喜", "headcount": "30", "sales": "1,800,000", "profit": "216,000", "profit_rate": "12.0", "annual": "21,600,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "", "sales_raw": 1800000, "annual_raw": 21600000}, {"facility": "老健シェーンハイムやはば", "client": "社会福祉法人爽生会/老人保健施設シェーンハイムやはば", "headcount": "90", "sales": "4,100,000", "profit": "123,000", "profit_rate": "3.0", "annual": "49,200,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "門田賢一", "sales_raw": 4100000, "annual_raw": 49200000}, {"facility": "ケアハウス千鳥苑", "client": "社会福祉法人寿水会/ケアハウス千鳥苑", "headcount": "30", "sales": "2,200,000", "profit": "264,000", "profit_rate": "12.0", "annual": "26,400,000", "open_date": "—", "route": "飛び込み", "multi": true, "srep": "今野純一", "sales_raw": 2200000, "annual_raw": 26400000}, {"facility": "老健たいわ", "client": "医療法人社団敬和会（岩手県）", "headcount": "109", "sales": "5,500,000", "profit": "660,000", "profit_rate": "12.0", "annual": "66,000,000", "open_date": "—", "route": "DM（郵送）", "multi": false, "srep": "門田賢一", "sales_raw": 5500000, "annual_raw": 66000000}, {"facility": "管理本部", "client": "医療法人社団敬和会（岩手県）", "headcount": "0", "sales": "0", "profit": "0", "profit_rate": "0除算エラーが発生しました。", "annual": "0", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "門田賢一", "sales_raw": 0, "annual_raw": 0}, {"facility": "特養敬風園", "client": "大崎市社会福祉協議会", "headcount": "200", "sales": "8,000,000", "profit": "960,000", "profit_rate": "12.0", "annual": "96,000,000", "open_date": "—", "route": "その他/未入力", "multi": true, "srep": "戸田賢悟", "sales_raw": 8000000, "annual_raw": 96000000}, {"facility": "特養朝光苑", "client": "社会福祉法人温和会", "headcount": "60", "sales": "3,982,210", "profit": "476,858", "profit_rate": "12.0", "annual": "47,786,520", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "門田賢一", "sales_raw": 3982210, "annual_raw": 47786520}, {"facility": "特養修光園", "client": "社会福祉法人八陽会", "headcount": "50", "sales": "2,800,000", "profit": "336,000", "profit_rate": "12.0", "annual": "33,600,000", "open_date": "—", "route": "飛び込み", "multi": true, "srep": "今野純一", "sales_raw": 2800000, "annual_raw": 33600000}, {"facility": "養護寿水荘", "client": "社会福祉法人寿水会/養護老人ホーム寿水荘", "headcount": "70", "sales": "3,400,000", "profit": "408,000", "profit_rate": "12.0", "annual": "40,800,000", "open_date": "—", "route": "飛び込み", "multi": true, "srep": "今野純一", "sales_raw": 3400000, "annual_raw": 40800000}, {"facility": "特養ほっとハウス", "client": "社会福祉法人友の会", "headcount": "80", "sales": "4,000,000", "profit": "480,000", "profit_rate": "12.0", "annual": "48,000,000", "open_date": "—", "route": "飛び込み", "multi": true, "srep": "今野純一", "sales_raw": 4000000, "annual_raw": 48000000}, {"facility": "特養福寿草インスプリング", "client": "社会福祉法人スプリング", "headcount": "48", "sales": "2,800,000", "profit": "336,000", "profit_rate": "12.0", "annual": "33,600,000", "open_date": "—", "route": "DM（郵送）", "multi": false, "srep": "門田賢一", "sales_raw": 2800000, "annual_raw": 33600000}, {"facility": "老健桐紫苑", "client": "社会福祉法人桐紫会", "headcount": "100", "sales": "5,122,000", "profit": "310,000", "profit_rate": "6.1", "annual": "61,464,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "門田賢一", "sales_raw": 5122000, "annual_raw": 61464000}, {"facility": "特養立生苑", "client": "社会福祉法人寿水会/特別養護老人ホーム立生苑（法人本部）", "headcount": "60", "sales": "2,900,000", "profit": "348,000", "profit_rate": "12.0", "annual": "34,800,000", "open_date": "—", "route": "飛び込み", "multi": true, "srep": "今野純一", "sales_raw": 2900000, "annual_raw": 34800000}, {"facility": "老健イーハトーブ介護リハビリセンター", "client": "医療法人杏林会", "headcount": "150", "sales": "5,000,000", "profit": "600,000", "profit_rate": "12.0", "annual": "60,000,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "門田賢一", "sales_raw": 5000000, "annual_raw": 60000000}, {"facility": "特養松風園", "client": "社会福祉法人恵泉会（宮城）", "headcount": "50", "sales": "3,000,000", "profit": "360,000", "profit_rate": "12.0", "annual": "36,000,000", "open_date": "—", "route": "DM（郵送）", "multi": true, "srep": "戸田賢悟", "sales_raw": 3000000, "annual_raw": 36000000}, {"facility": "特養桂葉", "client": "社会福祉法人豊明会", "headcount": "50", "sales": "3,000,000", "profit": "360,000", "profit_rate": "12.0", "annual": "36,000,000", "open_date": "—", "route": "その他/未入力", "multi": true, "srep": "戸田賢悟", "sales_raw": 3000000, "annual_raw": 36000000}, {"facility": "特養若藤園", "client": "社会福祉法人豊明会", "headcount": "54", "sales": "3,200,000", "profit": "384,000", "profit_rate": "12.0", "annual": "38,400,000", "open_date": "—", "route": "その他/未入力", "multi": true, "srep": "戸田賢悟", "sales_raw": 3200000, "annual_raw": 38400000}, {"facility": "特養登米苑", "client": "社会福祉法人登米福祉会", "headcount": "47", "sales": "3,270,960", "profit": "391,885", "profit_rate": "12.0", "annual": "39,251,520", "open_date": "—", "route": "飛び込み", "multi": true, "srep": "戸田賢悟", "sales_raw": 3270960, "annual_raw": 39251520}, {"facility": "養護老人ホーム安生園", "client": "社会福祉法人青森県すこやか福祉事業団", "headcount": "100", "sales": "4,500,000", "profit": "135,000", "profit_rate": "3.0", "annual": "54,000,000", "open_date": "2028-04-01", "route": "飛び込み", "multi": false, "srep": "門田賢一", "sales_raw": 4500000, "annual_raw": 54000000}, {"facility": "特養すこやか苑", "client": "社会福祉法人青森県すこやか福祉事業団", "headcount": "39", "sales": "1,980,000", "profit": "99,000", "profit_rate": "5.0", "annual": "23,760,000", "open_date": "2028-04-01", "route": "飛び込み", "multi": false, "srep": "門田賢一", "sales_raw": 1980000, "annual_raw": 23760000}, {"facility": "障害者総合福祉センターなつどまり（しらかば寮・さつき寮）", "client": "社会福祉法人青森県すこやか福祉事業団", "headcount": "140", "sales": "6,440,000", "profit": "193,200", "profit_rate": "3.0", "annual": "77,280,000", "open_date": "2028-04-01", "route": "飛び込み", "multi": false, "srep": "門田賢一", "sales_raw": 6440000, "annual_raw": 77280000}, {"facility": "サ高住ゆうあいの街", "client": "医療法人友愛会", "headcount": "60", "sales": "3,785,184", "profit": "454,222", "profit_rate": "12.0", "annual": "45,422,208", "open_date": "2027-04-01", "route": "飛び込み", "multi": false, "srep": "門田賢一", "sales_raw": 3785184, "annual_raw": 45422208}, {"facility": "特養サンタウン松園", "client": "社会福祉法人緑愛会（湖山医療福祉グループ）", "headcount": "153", "sales": "7,000,000", "profit": "840,000", "profit_rate": "12.0", "annual": "84,000,000", "open_date": "—", "route": "DM（郵送）", "multi": false, "srep": "門田賢一", "sales_raw": 7000000, "annual_raw": 84000000}, {"facility": "老健高森ロマンホーム", "client": "医療法人社団畑山医院", "headcount": "100", "sales": "5,000,000", "profit": "600,000", "profit_rate": "12.0", "annual": "60,000,000", "open_date": "—", "route": "飛び込み", "multi": true, "srep": "戸田賢悟", "sales_raw": 5000000, "annual_raw": 60000000}, {"facility": "特養白鳥苑", "client": "社会福祉法人白珠会", "headcount": "60", "sales": "3,000,000", "profit": "360,000", "profit_rate": "12.0", "annual": "36,000,000", "open_date": "—", "route": "既存顧客紹介（その他）", "multi": true, "srep": "戸田賢悟", "sales_raw": 3000000, "annual_raw": 36000000}, {"facility": "有料エガリテ", "client": "株式会社イークアル", "headcount": "24", "sales": "1,234,240", "profit": "150,314", "profit_rate": "12.2", "annual": "14,810,880", "open_date": "—", "route": "Web問い合わせ", "multi": false, "srep": "門田賢一", "sales_raw": 1234240, "annual_raw": 14810880}, {"facility": "ケアセンター南昌（老健博愛荘、博愛DS、DSつむぎ、GH敬寿荘、SSやはば、こずかたこども園　等）", "client": "医療法人社団帰厚堂/ケアセンター南昌", "headcount": "93", "sales": "5,000,000", "profit": "600,000", "profit_rate": "12.0", "annual": "60,000,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "門田賢一", "sales_raw": 5000000, "annual_raw": 60000000}, {"facility": "ミニ特養もとだて荘", "client": "社会福祉法人セントラル/地域密着型特別養護老人ホームもとだて荘", "headcount": "29", "sales": "2,000,000", "profit": "240,000", "profit_rate": "12.0", "annual": "24,000,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "門田賢一", "sales_raw": 2000000, "annual_raw": 24000000}, {"facility": "特養いしどりや荘", "client": "社会福祉法人石鳥谷会", "headcount": "100", "sales": "5,000,000", "profit": "600,000", "profit_rate": "12.0", "annual": "60,000,000", "open_date": "—", "route": "DM（郵送）", "multi": false, "srep": "門田賢一", "sales_raw": 5000000, "annual_raw": 60000000}, {"facility": "特養シェーンハイム爽", "client": "社会福祉法人爽生会/特別養護老人ホームシェーンハイム爽", "headcount": "60", "sales": "3,300,000", "profit": "396,000", "profit_rate": "12.0", "annual": "39,600,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "門田賢一", "sales_raw": 3300000, "annual_raw": 39600000}, {"facility": "老健まつみ", "client": "医療法人社団敬和会/介護老人保健施設まつみ", "headcount": "80", "sales": "3,900,000", "profit": "468,000", "profit_rate": "12.0", "annual": "46,800,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "門田賢一", "sales_raw": 3900000, "annual_raw": 46800000}, {"facility": "老健みさと", "client": "医療法人社団敬和会/介護老人保健施設みさと", "headcount": "50", "sales": "2,800,000", "profit": "336,000", "profit_rate": "12.0", "annual": "33,600,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "門田賢一", "sales_raw": 2800000, "annual_raw": 33600000}]}, {"name": "加藤剛", "div": "メディカル・グラライ", "visit": 32, "case": 22, "pitch": 2, "win": 0, "tm": 2805, "na": 47, "wins": [], "pitches": [{"facility": "社会福祉法人愛知県厚生事業団特別養護老人ホーム愛厚ホーム岡崎苑", "client": "愛知県厚生事業団", "headcount": "100", "sales": "4,080,000", "profit": "150,000", "profit_rate": "3.7", "annual": "48,960,000", "open_date": "2026-10-01", "route": "既存顧客紹介（G）", "multi": false, "srep": "加藤剛", "sales_raw": 4080000, "annual_raw": 48960000}, {"facility": "社会福祉法人和松会身体障害者療護施設清松園", "client": "社会福祉法人和松会", "headcount": "50", "sales": "3,500,000", "profit": "150,000", "profit_rate": "4.3", "annual": "42,000,000", "open_date": "2027-04-01", "route": "既存顧客紹介（G）", "multi": false, "srep": "加藤剛", "sales_raw": 3500000, "annual_raw": 42000000}], "cases_d": [{"facility": "介護老人福祉施設第三岐阜老人ホーム", "client": "社会福祉法人岐阜老人ホーム", "headcount": "100", "sales": "4,080,000", "profit": "150,000", "profit_rate": "3.7", "annual": "48,960,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "加藤剛", "sales_raw": 4080000, "annual_raw": 48960000}, {"facility": "社会福祉法人王寿会特別養護老人ホーム王寿園", "client": "社会福祉法人王寿会", "headcount": "80", "sales": "4,200,000", "profit": "100,000", "profit_rate": "2.4", "annual": "50,400,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "加藤剛", "sales_raw": 4200000, "annual_raw": 50400000}, {"facility": "社会福祉法人富水会特別養護老人ホーム第二開寿園", "client": "社会福祉法人富水会特別養護老人ホーム第二開寿園", "headcount": "70", "sales": "3,570,000", "profit": "428,400", "profit_rate": "12.0", "annual": "42,840,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "加藤剛", "sales_raw": 3570000, "annual_raw": 42840000}, {"facility": "医療法人社団愛慈会介護老人保健施設さくらの苑", "client": "医療法人社団愛慈会介護老人保健施設さくらの苑", "headcount": "100", "sales": "4,500,000", "profit": "100,000", "profit_rate": "2.2", "annual": "54,000,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "加藤剛", "sales_raw": 4500000, "annual_raw": 54000000}, {"facility": "医療法人社団扇寿会老人保健施設なでしこの丘", "client": "医療法人社団扇寿会老人保健施設なでしこの丘", "headcount": "100", "sales": "4,080,000", "profit": "150,000", "profit_rate": "3.7", "annual": "48,960,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "加藤剛", "sales_raw": 4080000, "annual_raw": 48960000}, {"facility": "老人保健施設忘れな草", "client": "医療法人晴和会", "headcount": "100", "sales": "5,012,100", "profit": "240,000", "profit_rate": "4.8", "annual": "60,145,200", "open_date": "2027-10-01", "route": "その他/未入力", "multi": false, "srep": "加藤剛", "sales_raw": 5012100, "annual_raw": 60145200}, {"facility": "特別養護老人ホームレジデンス花", "client": "社会福祉法人花園会", "headcount": "100", "sales": "4,080,000", "profit": "150,000", "profit_rate": "3.7", "annual": "48,960,000", "open_date": "—", "route": "その他/未入力", "multi": false, "srep": "加藤剛", "sales_raw": 4080000, "annual_raw": 48960000}, {"facility": "特別養護老人ホーム光湖苑", "client": "社会福祉法人南浜名湖会", "headcount": "80", "sales": "3,570,000", "profit": "100,000", "profit_rate": "2.8", "annual": "42,840,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "加藤剛", "sales_raw": 3570000, "annual_raw": 42840000}, {"facility": "障害者支援施設碧の園", "client": "社会福祉法人城ヶ崎いこいの里", "headcount": "50", "sales": "3,131,000", "profit": "150,000", "profit_rate": "4.8", "annual": "37,572,000", "open_date": "2027-04-01", "route": "既存顧客紹介（G）", "multi": false, "srep": "加藤剛", "sales_raw": 3131000, "annual_raw": 37572000}, {"facility": "情報収集", "client": "社会福祉法人白寿苑", "headcount": "100", "sales": "4,080,000", "profit": "150,000", "profit_rate": "3.7", "annual": "48,960,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "加藤剛", "sales_raw": 4080000, "annual_raw": 48960000}, {"facility": "特別養護老人ホーム一空園", "client": "社会福祉法人八生会", "headcount": "80", "sales": "4,500,000", "profit": "150,000", "profit_rate": "3.3", "annual": "54,000,000", "open_date": "2027-04-01", "route": "飛び込み", "multi": false, "srep": "加藤剛", "sales_raw": 4500000, "annual_raw": 54000000}, {"facility": "社会福祉法人金沢西福祉会特別養護老人ホームやすはら苑", "client": "社会福祉法人金沢西福祉会", "headcount": "100", "sales": "4,080,000", "profit": "150,000", "profit_rate": "3.7", "annual": "48,960,000", "open_date": "2027-04-01", "route": "テレアポ", "multi": false, "srep": "加藤剛", "sales_raw": 4080000, "annual_raw": 48960000}, {"facility": "社会福祉法人成祥福祉会介護老人福祉施設ゆうあい", "client": "社会福祉法人成祥福祉会", "headcount": "100", "sales": "4,200,000", "profit": "150,000", "profit_rate": "3.6", "annual": "50,400,000", "open_date": "2027-04-01", "route": "飛び込み", "multi": false, "srep": "加藤剛", "sales_raw": 4200000, "annual_raw": 50400000}, {"facility": "社会福祉法人福思会特別養護老人ホームふるさとの丘", "client": "社会福祉法人福思会", "headcount": "80", "sales": "3,644,000", "profit": "150,000", "profit_rate": "4.1", "annual": "43,728,000", "open_date": "2027-04-01", "route": "テレアポ", "multi": false, "srep": "加藤剛", "sales_raw": 3644000, "annual_raw": 43728000}, {"facility": "老人保健施設九頭竜長生苑", "client": "社会福祉法人福泉会（福井）", "headcount": "100", "sales": "4,080,000", "profit": "150,000", "profit_rate": "3.7", "annual": "48,960,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "加藤剛", "sales_raw": 4080000, "annual_raw": 48960000}, {"facility": "特別養護老人ホーム菜の花", "client": "社会福祉法人聖啓会", "headcount": "70", "sales": "3,570,000", "profit": "428,400", "profit_rate": "12.0", "annual": "42,840,000", "open_date": "2027-04-01", "route": "飛び込み", "multi": false, "srep": "加藤剛", "sales_raw": 3570000, "annual_raw": 42840000}, {"facility": "特別養護老人ホームケアホームしあわせ", "client": "社会福祉法人公友会（静岡）", "headcount": "100", "sales": "4,200,000", "profit": "150,000", "profit_rate": "3.6", "annual": "50,400,000", "open_date": "2027-04-01", "route": "飛び込み", "multi": false, "srep": "加藤剛", "sales_raw": 4200000, "annual_raw": 50400000}, {"facility": "社会福祉法人公友会特別養護老人ホームしあわせの園", "client": "社会福祉法人公友会（静岡）", "headcount": "100", "sales": "3,720,000", "profit": "100,000", "profit_rate": "2.7", "annual": "44,640,000", "open_date": "2027-10-01", "route": "飛び込み", "multi": false, "srep": "加藤剛", "sales_raw": 3720000, "annual_raw": 44640000}, {"facility": "社会福祉法人みだらけ福祉会特別養護老人ホームあおい荘", "client": "社会福祉法人みだらけ福祉会", "headcount": "90", "sales": "5,296,000", "profit": "200,000", "profit_rate": "3.8", "annual": "63,552,000", "open_date": "2027-10-01", "route": "飛び込み", "multi": false, "srep": "加藤剛", "sales_raw": 5296000, "annual_raw": 63552000}, {"facility": "（仮）サービス付き高齢者向け住宅岡崎", "client": "株式会社アフェクトホールディングス", "headcount": "30", "sales": "2,071,888", "profit": "150,000", "profit_rate": "7.2", "annual": "24,862,656", "open_date": "—", "route": "Web問い合わせ", "multi": false, "srep": "加藤剛", "sales_raw": 2071888, "annual_raw": 24862656}]}, {"name": "若槻正吾", "div": "メディカル・グラライ", "visit": 14, "case": 8, "pitch": 2, "win": 0, "tm": 4515, "na": 38, "wins": [], "pitches": [{"facility": "特別養護老人ホーム博愛苑", "client": "社会福祉法人博愛会（鳥取）", "headcount": "100", "sales": "4,780,000", "profit": "377,000", "profit_rate": "7.9", "annual": "57,360,000", "open_date": "2026-10-01", "route": "テレアポ", "multi": false, "srep": "若槻正吾", "sales_raw": 4780000, "annual_raw": 57360000}, {"facility": "特別養護老人ホームサンシャイン南蟹屋", "client": "社会福祉法人サンシャイン（広島）", "headcount": "90", "sales": "4,200,000", "profit": "420,000", "profit_rate": "10.0", "annual": "50,400,000", "open_date": "2026-10-01", "route": "テレアポ", "multi": false, "srep": "若槻正吾", "sales_raw": 4200000, "annual_raw": 50400000}], "cases_d": [{"facility": "有料老人ホームエルム撫川", "client": "株式会社ライフクリエイト", "headcount": "98", "sales": "5,680,000", "profit": "490,000", "profit_rate": "8.6", "annual": "68,160,000", "open_date": "2026-10-01", "route": "DM（郵送）", "multi": false, "srep": "若槻正吾", "sales_raw": 5680000, "annual_raw": 68160000}, {"facility": "特別養護老人ホーム桃香の里", "client": "社会福祉法人旭水会", "headcount": "100", "sales": "4,860,000", "profit": "250,000", "profit_rate": "5.1", "annual": "58,320,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "若槻正吾", "sales_raw": 4860000, "annual_raw": 58320000}, {"facility": "特養アルカディアせんだ", "client": "社会福祉法人潤耀会", "headcount": "70", "sales": "3,600,000", "profit": "360,000", "profit_rate": "10.0", "annual": "43,200,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "若槻正吾", "sales_raw": 3600000, "annual_raw": 43200000}, {"facility": "老健ジョイトピアしんいち", "client": "社会福祉法人新市福祉会", "headcount": "60", "sales": "3,000,000", "profit": "300,000", "profit_rate": "10.0", "annual": "36,000,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "若槻正吾", "sales_raw": 3000000, "annual_raw": 36000000}, {"facility": "特養ジョイトピアおおさ", "client": "社会福祉法人新市福祉会", "headcount": "60", "sales": "3,400,000", "profit": "340,000", "profit_rate": "10.0", "annual": "40,800,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "若槻正吾", "sales_raw": 3400000, "annual_raw": 40800000}, {"facility": "特養アザレア", "client": "社会福祉法人玉野福祉会", "headcount": "80", "sales": "4,200,000", "profit": "400,000", "profit_rate": "9.5", "annual": "50,400,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "若槻正吾", "sales_raw": 4200000, "annual_raw": 50400000}]}, {"name": "戸田賢悟", "div": "メディカル・グラライ", "visit": 30, "case": 16, "pitch": 2, "win": 0, "tm": 15955, "na": 84, "wins": [], "pitches": [{"facility": "特養せんだんの里", "client": "社会福祉法人東北福祉会", "headcount": "177", "sales": "8,043,358", "profit": "566,816", "profit_rate": "7.0", "annual": "96,520,296", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "戸田賢悟", "sales_raw": 8043358, "annual_raw": 96520296}, {"facility": "特養慈恵園", "client": "社会福祉法人旭浦会特別養護老人ホーム慈恵園", "headcount": "60", "sales": "3,473,032", "profit": "278,313", "profit_rate": "8.0", "annual": "41,676,384", "open_date": "—", "route": "その他/未入力", "multi": true, "srep": "今野純一", "sales_raw": 3473032, "annual_raw": 41676384}], "cases_d": [{"facility": "よつば学園", "client": "社会福祉法人育栄会", "headcount": "60", "sales": "3,600,000", "profit": "432,000", "profit_rate": "12.0", "annual": "43,200,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "戸田賢悟", "sales_raw": 3600000, "annual_raw": 43200000}, {"facility": "特別養護老人ホーム誠徳園", "client": "社会福祉法人旭川福祉事業会", "headcount": "100", "sales": "4,200,000", "profit": "504,000", "profit_rate": "12.0", "annual": "50,400,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "戸田賢悟", "sales_raw": 4200000, "annual_raw": 50400000}, {"facility": "老健アートライフ恵庭", "client": "医療法人盟侑会", "headcount": "100", "sales": "4,042,376", "profit": "135,000", "profit_rate": "3.3", "annual": "48,508,512", "open_date": "—", "route": "Web問い合わせ", "multi": false, "srep": "戸田賢悟", "sales_raw": 4042376, "annual_raw": 48508512}, {"facility": "老健さつき苑", "client": "医療法人医徳会", "headcount": "100", "sales": "4,476,568", "profit": "540,602", "profit_rate": "12.1", "annual": "53,718,816", "open_date": "—", "route": "受電", "multi": true, "srep": "今野純一", "sales_raw": 4476568, "annual_raw": 53718816}, {"facility": "特別養護老人ホーム愛輪園", "client": "タナカメディカルグループ", "headcount": "90", "sales": "4,608,496", "profit": "140,000", "profit_rate": "3.0", "annual": "55,301,952", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "戸田賢悟", "sales_raw": 4608496, "annual_raw": 55301952}, {"facility": "介護老人保健施設フォーシーズン山鼻", "client": "医療法人社団栄会介護老人保健施設フォーシーズン山鼻", "headcount": "80", "sales": "4,600,000", "profit": "552,000", "profit_rate": "12.0", "annual": "55,200,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "戸田賢悟", "sales_raw": 4600000, "annual_raw": 55200000}, {"facility": "特養風の路", "client": "社会福祉法人登米市社会福祉協議会", "headcount": "29", "sales": "2,690,064", "profit": "323,043", "profit_rate": "12.0", "annual": "32,280,768", "open_date": "—", "route": "その他/未入力", "multi": true, "srep": "今野純一/戸田賢悟", "sales_raw": 2690064, "annual_raw": 32280768}, {"facility": "老健セージュ山の手", "client": "医療法人耕仁会", "headcount": "80", "sales": "3,800,000", "profit": "456,000", "profit_rate": "12.0", "annual": "45,600,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "戸田賢悟", "sales_raw": 3800000, "annual_raw": 45600000}, {"facility": "特別養護老人ホーム神愛園手稲", "client": "社会福祉法人神愛園", "headcount": "80", "sales": "3,600,000", "profit": "175,000", "profit_rate": "4.9", "annual": "43,200,000", "open_date": "2027-04-01", "route": "飛び込み", "multi": false, "srep": "戸田賢悟", "sales_raw": 3600000, "annual_raw": 43200000}, {"facility": "老健和多里ホーム", "client": "医療法人社団三上医院", "headcount": "80", "sales": "4,600,000", "profit": "552,000", "profit_rate": "12.0", "annual": "55,200,000", "open_date": "2026-11-01", "route": "Web問い合わせ", "multi": false, "srep": "戸田賢悟", "sales_raw": 4600000, "annual_raw": 55200000}, {"facility": "特養しのろ三清荘", "client": "社会福祉法人経山会", "headcount": "99", "sales": "4,800,000", "profit": "576,000", "profit_rate": "12.0", "annual": "57,600,000", "open_date": "2027-04-01", "route": "飛び込み", "multi": false, "srep": "戸田賢悟", "sales_raw": 4800000, "annual_raw": 57600000}, {"facility": "特養スターレイク仙台", "client": "社会福祉法人湖星会", "headcount": "200", "sales": "10,000,000", "profit": "1,200,000", "profit_rate": "12.0", "annual": "120,000,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "戸田賢悟", "sales_raw": 10000000, "annual_raw": 120000000}, {"facility": "特養聖芳園", "client": "社会福祉法人札幌厚生会", "headcount": "105", "sales": "5,600,000", "profit": "672,000", "profit_rate": "12.0", "annual": "67,200,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "戸田賢悟", "sales_raw": 5600000, "annual_raw": 67200000}, {"facility": "特養フローラルさつなえ", "client": "社会福祉法人札幌明啓院", "headcount": "80", "sales": "5,000,000", "profit": "600,000", "profit_rate": "12.0", "annual": "60,000,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "戸田賢悟", "sales_raw": 5000000, "annual_raw": 60000000}]}, {"name": "渡邊勇", "div": "メディカル・グラライ", "visit": 21, "case": 12, "pitch": 3, "win": 1, "tm": 6205, "na": 91, "wins": [{"facility": "特養ヒルズ鎌倉", "client": "社会福祉法人桜栄福祉会", "headcount": "100", "sales": "5,333,760", "profit": "190,000", "profit_rate": "3.6", "annual": "64,005,120", "open_date": "2026-06-01", "route": "既存顧客紹介（G）", "multi": false, "srep": "渡邊勇", "sales_raw": 5333760, "annual_raw": 64005120}], "pitches": [{"facility": "特別養護老人ホームリビエラテラス鎌倉", "client": "社会福祉法人桜栄福祉会", "headcount": "80", "sales": "4,570,000", "profit": "220,000", "profit_rate": "4.8", "annual": "54,840,000", "open_date": "2026-09-01", "route": "既存顧客紹介（G）", "multi": true, "srep": "池田季蓉子/渡邊勇", "sales_raw": 4570000, "annual_raw": 54840000}, {"facility": "信濃病院", "client": "医療法人碧水会", "headcount": "101", "sales": "3,893,000", "profit": "120,000", "profit_rate": "3.1", "annual": "46,716,000", "open_date": "2026-09-01", "route": "その他/未入力", "multi": false, "srep": "渡邊勇", "sales_raw": 3893000, "annual_raw": 46716000}], "cases_d": [{"facility": "介護老人保健施設甲府かわせみ苑", "client": "社会福祉法人清翔会", "headcount": "100", "sales": "4,400,000", "profit": "132,000", "profit_rate": "3.0", "annual": "52,800,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "渡邊勇", "sales_raw": 4400000, "annual_raw": 52800000}, {"facility": "介護老人保健施設玉穂ケアセンター", "client": "医療法人正寿会", "headcount": "100", "sales": "4,200,000", "profit": "123,000", "profit_rate": "2.9", "annual": "50,400,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "渡邊勇", "sales_raw": 4200000, "annual_raw": 50400000}, {"facility": "特別養護老人ホーム桜井寮", "client": "社会福祉法人甲府市民生活福祉会", "headcount": "80", "sales": "4,000,000", "profit": "120,000", "profit_rate": "3.0", "annual": "48,000,000", "open_date": "—", "route": "飛び込み", "multi": true, "srep": "池田季蓉子/渡邊勇", "sales_raw": 4000000, "annual_raw": 48000000}, {"facility": "特別養護老人ホーム風林荘", "client": "社会福祉法人さくら会", "headcount": "80", "sales": "4,000,000", "profit": "120", "profit_rate": "0.0", "annual": "48,000,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "渡邊勇", "sales_raw": 4000000, "annual_raw": 48000000}, {"facility": "特別養護老人ホームロイヤルあかし", "client": "社会福祉法人日新会", "headcount": "60", "sales": "3,500,000", "profit": "105,000", "profit_rate": "3.0", "annual": "42,000,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "渡邊勇", "sales_raw": 3500000, "annual_raw": 42000000}, {"facility": "介護老人保健施設ノイエス", "client": "医療法人立史会", "headcount": "100", "sales": "4,500,000", "profit": "135,000", "profit_rate": "3.0", "annual": "54,000,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "渡邊勇", "sales_raw": 4500000, "annual_raw": 54000000}, {"facility": "特別養護老人ホームソレイユ甲府", "client": "社会福祉法人富士厚生会", "headcount": "80", "sales": "4,200,000", "profit": "120,000", "profit_rate": "2.9", "annual": "50,400,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "渡邊勇", "sales_raw": 4200000, "annual_raw": 50400000}, {"facility": "特別養護老人ホームケアポートみまき", "client": "社会福祉法人みまき福祉会", "headcount": "86", "sales": "5,570,000", "profit": "390,000", "profit_rate": "7.0", "annual": "66,840,000", "open_date": "2027-04-01", "route": "飛び込み", "multi": false, "srep": "渡邊勇", "sales_raw": 5570000, "annual_raw": 66840000}, {"facility": "特別養護老人ホームトリアス", "client": "社会福祉法人和人会", "headcount": "80", "sales": "3,800,000", "profit": "114,000", "profit_rate": "3.0", "annual": "45,600,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "渡邊勇", "sales_raw": 3800000, "annual_raw": 45600000}]}, {"name": "池田季蓉子", "div": "メディカル・グラライ", "visit": 14, "case": 6, "pitch": 2, "win": 1, "tm": 15325, "na": 70, "wins": [{"facility": "障がい者支援施設第三上田ひもろ木園", "client": "社会福祉法人りんどうの会", "headcount": "30", "sales": "2,291,144", "profit": "232,293", "profit_rate": "10.1", "annual": "27,493,728", "open_date": "2026-06-01", "route": "飛び込み", "multi": true, "srep": "池田季蓉子/渡邊勇", "sales_raw": 2291144, "annual_raw": 27493728}], "pitches": [{"facility": "介護老人福祉施設ひだまり館", "client": "社会福祉法人栄光会（神奈川）", "headcount": "90", "sales": "5,000,000", "profit": "500,000", "profit_rate": "10.0", "annual": "60,000,000", "open_date": "2027-04-01", "route": "飛び込み", "multi": true, "srep": "池田季蓉子/大石貴彦", "sales_raw": 5000000, "annual_raw": 60000000}], "cases_d": [{"facility": "特別養護老人ホームてるてる園", "client": "社会福祉法人泰明会", "headcount": "90", "sales": "4,877,600", "profit": "585,312", "profit_rate": "12.0", "annual": "58,531,200", "open_date": "—", "route": "飛び込み", "multi": true, "srep": "白藤直哉", "sales_raw": 4877600, "annual_raw": 58531200}, {"facility": "指定介護老人福祉施設フォーシーズンズヴィラこもれび", "client": "社会福祉法人白鳳会", "headcount": "140", "sales": "5,617,920", "profit": "280,896", "profit_rate": "5.0", "annual": "67,415,040", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "池田季蓉子", "sales_raw": 5617920, "annual_raw": 67415040}, {"facility": "町田福祉園", "client": "みずき福祉会", "headcount": "80", "sales": "80,000,000", "profit": "800,000", "profit_rate": "1.0", "annual": "960,000,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "池田季蓉子", "sales_raw": 80000000, "annual_raw": 960000000}, {"facility": "特別養護老人ホーム青葉あさくら苑", "client": "社会福祉法人一乗谷友愛会", "headcount": "122", "sales": "4,000,000", "profit": "400,000", "profit_rate": "10.0", "annual": "48,000,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "池田季蓉子", "sales_raw": 4000000, "annual_raw": 48000000}]}, {"name": "平野奨", "div": "メディカル・グラライ", "visit": 42, "case": 9, "pitch": 0, "win": 0, "tm": 1070, "na": 50, "wins": [], "pitches": [], "cases_d": [{"facility": "介護付有料老人ホームケアタウンしらゆり", "client": "介護付有料老人ホームケアタウンしらゆり", "headcount": "55", "sales": "2,400,000", "profit": "120,000", "profit_rate": "5.0", "annual": "28,800,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "平野奨", "sales_raw": 2400000, "annual_raw": 28800000}, {"facility": "医療法人社団坂梨会阿蘇温泉病院", "client": "医療法人社団坂梨会阿蘇温泉病院", "headcount": "360", "sales": "20,000,000", "profit": "800,000", "profit_rate": "4.0", "annual": "240,000,000", "open_date": "—", "route": "その他/未入力", "multi": false, "srep": "平野奨", "sales_raw": 20000000, "annual_raw": 240000000}, {"facility": "有料老人ホームネオステージ博多", "client": "株式会社ファースト・ステップ", "headcount": "62", "sales": "3,000,000", "profit": "150,000", "profit_rate": "5.0", "annual": "36,000,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "平野奨", "sales_raw": 3000000, "annual_raw": 36000000}, {"facility": "特別養護老人ホームライフケア大手門", "client": "社会福祉法人桜花会（福岡）", "headcount": "129", "sales": "5,839,000", "profit": "290,000", "profit_rate": "5.0", "annual": "70,068,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "平野奨", "sales_raw": 5839000, "annual_raw": 70068000}, {"facility": "特別養護老人ホーム北九州シティホーム", "client": "社会福祉法人薫会", "headcount": "100", "sales": "4,336,000", "profit": "216,000", "profit_rate": "5.0", "annual": "52,032,000", "open_date": "2026-09-01", "route": "テレアポ", "multi": false, "srep": "平野奨", "sales_raw": 4336000, "annual_raw": 52032000}, {"facility": "テルウェル西日本株式会社有料老人ホームケアポート箱崎", "client": "テルウェル西日本株式会社", "headcount": "120", "sales": "4,500,000", "profit": "225,000", "profit_rate": "5.0", "annual": "54,000,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "平野奨", "sales_raw": 4500000, "annual_raw": 54000000}, {"facility": "社会福祉法人誠和会特別養護老人ホームたちばな", "client": "社会福祉法人誠和会", "headcount": "80", "sales": "3,500,000", "profit": "175,000", "profit_rate": "5.0", "annual": "42,000,000", "open_date": "—", "route": "DM（郵送）", "multi": false, "srep": "平野奨", "sales_raw": 3500000, "annual_raw": 42000000}, {"facility": "特別養護老人ホーム花みずき", "client": "社会福祉法人ゆりえ会", "headcount": "80", "sales": "4,000,000", "profit": "200,000", "profit_rate": "5.0", "annual": "48,000,000", "open_date": "—", "route": "DM（郵送）", "multi": false, "srep": "平野奨", "sales_raw": 4000000, "annual_raw": 48000000}, {"facility": "有料老人ホームパッセオ", "client": "有限会社俊生会", "headcount": "51", "sales": "2,150,000", "profit": "100,000", "profit_rate": "4.7", "annual": "25,800,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "平野奨", "sales_raw": 2150000, "annual_raw": 25800000}]}, {"name": "和田潔", "div": "メディカル・グラライ", "visit": 7, "case": 5, "pitch": 2, "win": 2, "tm": 690, "na": 7, "wins": [{"facility": "エイジングコート千里丘　食堂案件", "client": "エイジングコート千里丘管理組合", "headcount": "134", "sales": "3,069,920", "profit": "342,780", "profit_rate": "11.2", "annual": "36,839,040", "open_date": "2026-08-01", "route": "受電", "multi": false, "srep": "和田潔", "sales_raw": 3069920, "annual_raw": 36839040}, {"facility": "住宅型有料老人ホームカルチェ住吉川アネックス", "client": "特定医療法人仁悠会", "headcount": "64", "sales": "3,200,000", "profit": "250,000", "profit_rate": "7.8", "annual": "38,400,000", "open_date": "2026-10-01", "route": "既存顧客紹介（G）", "multi": false, "srep": "和田潔", "sales_raw": 3200000, "annual_raw": 38400000}], "pitches": [], "cases_d": [{"facility": "社会福祉法人神戸自興会ケアハウスかんで", "client": "社会福祉法人神戸自興会ケアハウスかんで", "headcount": "50", "sales": "4,000,000", "profit": "400,000", "profit_rate": "10.0", "annual": "48,000,000", "open_date": "—", "route": "その他/未入力", "multi": false, "srep": "和田潔", "sales_raw": 4000000, "annual_raw": 48000000}, {"facility": "特養さつまの里", "client": "社会福祉法人高嶺福祉会", "headcount": "120", "sales": "6,879,928", "profit": "800,000", "profit_rate": "11.6", "annual": "82,559,136", "open_date": "2027-04-01", "route": "飛び込み", "multi": true, "srep": "宇垣亮", "sales_raw": 6879928, "annual_raw": 82559136}, {"facility": "サ高住　桃寿苑枚方", "client": "医療法人貴和会", "headcount": "80", "sales": "5,400,000", "profit": "540,000", "profit_rate": "10.0", "annual": "64,800,000", "open_date": "—", "route": "その他/未入力", "multi": false, "srep": "和田潔", "sales_raw": 5400000, "annual_raw": 64800000}]}, {"name": "臼井瞭太", "div": "メディカル・グラライ", "visit": 7, "case": 6, "pitch": 0, "win": 0, "tm": 14525, "na": 41, "wins": [], "pitches": [], "cases_d": [{"facility": "特別養護老人ホームくにたち苑", "client": "社会福祉法人弥生会", "headcount": "70", "sales": "3,617,600", "profit": "253,232", "profit_rate": "7.0", "annual": "43,411,200", "open_date": "—", "route": "飛び込み", "multi": true, "srep": "渡邊勇", "sales_raw": 3617600, "annual_raw": 43411200}, {"facility": "サン・ラポール調布", "client": "株式会社サン・ラポール調布", "headcount": "130", "sales": "7,000,000", "profit": "700,000", "profit_rate": "10.0", "annual": "84,000,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "臼井瞭太", "sales_raw": 7000000, "annual_raw": 84000000}, {"facility": "慈秀病院", "client": "医療法人社団大慈会", "headcount": "88", "sales": "5,215,000", "profit": "625,000", "profit_rate": "12.0", "annual": "62,580,000", "open_date": "—", "route": "飛び込み", "multi": true, "srep": "加藤香織", "sales_raw": 5215000, "annual_raw": 62580000}, {"facility": "介護老人保健施設三鷹ロイヤルの丘", "client": "医療法人啓仁会", "headcount": "120", "sales": "6,951,360", "profit": "834,160", "profit_rate": "12.0", "annual": "83,416,320", "open_date": "2026-04-01", "route": "飛び込み", "multi": false, "srep": "臼井瞭太", "sales_raw": 6951360, "annual_raw": 83416320}, {"facility": "特別養護老人ホームつきみの園", "client": "社会福祉法人東京聖労院", "headcount": "93", "sales": "5,715,200", "profit": "571,520", "profit_rate": "10.0", "annual": "68,582,400", "open_date": "—", "route": "飛び込み", "multi": true, "srep": "臼井瞭太/渡邊勇", "sales_raw": 5715200, "annual_raw": 68582400}, {"facility": "特別養護老人ホームみたか紫水園", "client": "社会福祉法人たま紫水会", "headcount": "132", "sales": "7,353,000", "profit": "735,300", "profit_rate": "10.0", "annual": "88,236,000", "open_date": "—", "route": "飛び込み", "multi": false, "srep": "臼井瞭太", "sales_raw": 7353000, "annual_raw": 88236000}]}, {"name": "大石貴彦", "div": "メディカル・グラライ", "visit": 4, "case": 1, "pitch": 1, "win": 0, "tm": 10950, "na": 22, "wins": [], "pitches": [{"facility": "湘南グリーン介護老人保健施設葉山", "client": "医療法人社団相光会", "headcount": "70", "sales": "3,298,400", "profit": "329,840", "profit_rate": "10.0", "annual": "39,580,800", "open_date": "2026-07-01", "route": "テレアポ", "multi": false, "srep": "大石貴彦", "sales_raw": 3298400, "annual_raw": 39580800}], "cases_d": []}, {"name": "越村寧々", "div": "メディカル・グラライ", "visit": 11, "case": 2, "pitch": 1, "win": 0, "tm": 12065, "na": 71, "wins": [], "pitches": [{"facility": "(老健)ブース記念老人保健施設グレイス", "client": "社会福祉法人救世軍社会事業団", "headcount": "100", "sales": "51,557,084", "profit": "302,000", "profit_rate": "0.6", "annual": "618,685,008", "open_date": "2026-08-01", "route": "飛び込み", "multi": true, "srep": "細川和輝", "sales_raw": 51557084, "annual_raw": 618685008}], "cases_d": [{"facility": "特養ケアタウン成増", "client": "社会福祉法人みその福祉会", "headcount": "84", "sales": "4,800,000", "profit": "192,000", "profit_rate": "4.0", "annual": "57,600,000", "open_date": "2026-11-01", "route": "受電", "multi": true, "srep": "細川和輝", "sales_raw": 4800000, "annual_raw": 57600000}]}, {"name": "内山誉志", "div": "メディカル・グラライ", "visit": 2, "case": 1, "pitch": 0, "win": 0, "tm": 0, "na": 0, "wins": [], "pitches": [], "cases_d": [{"facility": "特別養護老人ホーム末広たいせつの郷", "client": "社会福祉法人旭川たいせつ福祉会", "headcount": "100", "sales": "4,800,000", "profit": "576,000", "profit_rate": "12.0", "annual": "57,600,000", "open_date": "—", "route": "飛び込み", "multi": true, "srep": "戸田賢悟", "sales_raw": 4800000, "annual_raw": 57600000}]}, {"name": "石井翔太", "div": "メディカル・グラライ", "visit": 2, "case": 0, "pitch": 0, "win": 0, "tm": 0, "na": 0, "wins": [], "pitches": [], "cases_d": []}, {"name": "伊知地崇明", "div": "メディカル・グラライ", "visit": 3, "case": 3, "pitch": 0, "win": 0, "tm": 4355, "na": 10, "wins": [], "pitches": [], "cases_d": [{"facility": "社会福祉法人清風会特別養護老人ホームとそ清風園", "client": "社会福祉法人清風会（鹿児島）", "headcount": "87", "sales": "4,000,000", "profit": "100,000", "profit_rate": "2.5", "annual": "48,000,000", "open_date": "—", "route": "飛び込み", "multi": true, "srep": "大野雄一郎", "sales_raw": 4000000, "annual_raw": 48000000}, {"facility": "特別養護老人ホームにじの郷たにやま", "client": "社会福祉法人鹿児島虹の福祉会", "headcount": "110", "sales": "45,000,000", "profit": "450,000", "profit_rate": "1.0", "annual": "540,000,000", "open_date": "—", "route": "受電", "multi": true, "srep": "大野雄一郎", "sales_raw": 45000000, "annual_raw": 540000000}, {"facility": "琉生病院", "client": "一般財団法人　琉球生命済生会", "headcount": "80", "sales": "2,710,000", "profit": "271,000", "profit_rate": "10.0", "annual": "32,520,000", "open_date": "2026-10-01", "route": "受電", "multi": false, "srep": "伊知地崇明", "sales_raw": 2710000, "annual_raw": 32520000}]}, {"name": "大野雄一郎", "div": "メディカル・グラライ", "visit": 1, "case": 1, "pitch": 1, "win": 1, "tm": 0, "na": 0, "wins": [{"facility": "医療法人仁愛会横山病院", "client": "医療法人仁愛会横山病院", "headcount": "47", "sales": "2,400,000", "profit": "125,000", "profit_rate": "5.2", "annual": "28,800,000", "open_date": "2026-04-01", "route": "飛び込み", "multi": true, "srep": "伊知地崇明", "sales_raw": 2400000, "annual_raw": 28800000}], "pitches": [], "cases_d": []}, {"name": "笹岡圭三", "div": "保育給食", "visit": 143, "case": 4, "pitch": 2, "win": 2, "tm": 7260, "na": 173, "wins": [{"facility": "高松西保育園", "client": "社会福祉法人　高松南福祉会", "headcount": "130", "sales": "2,258,800", "profit": "225,000", "profit_rate": "10.0", "annual": "27,105,600", "open_date": "2026-04-01", "route": "テレアポ", "multi": true, "srep": "西村純彦", "sales_raw": 2258800, "annual_raw": 27105600}, {"facility": "高師東こども園", "client": "社会福祉法人高師東保育園", "headcount": "225", "sales": "3,053,938", "profit": "237,000", "profit_rate": "7.8", "annual": "36,647,256", "open_date": "2026-04-01", "route": "Web問い合わせ", "multi": false, "srep": "", "sales_raw": 3053938, "annual_raw": 36647256}], "pitches": [], "cases_d": [{"facility": "みらいの森保育園", "client": "社会福祉法人　球美福祉会", "headcount": "80", "sales": "2,000,000", "profit": "200,000", "profit_rate": "10.0", "annual": "24,000,000", "open_date": "2023-04-01", "route": "既存顧客紹介（その他）", "multi": true, "srep": "橋本賢司", "sales_raw": 2000000, "annual_raw": 24000000}, {"facility": "曽池ひかり幼稚園", "client": "学校法人曽池学園_1", "headcount": "135", "sales": "1,824,129", "profit": "183,000", "profit_rate": "10.0", "annual": "21,889,548", "open_date": "—", "route": "受電", "multi": false, "srep": "", "sales_raw": 1824129, "annual_raw": 21889548}]}, {"name": "吉田睦", "div": "保育給食", "visit": 29, "case": 15, "pitch": 11, "win": 2, "tm": 19340, "na": 93, "wins": [{"facility": "岡山紫雲こどもみらい園", "client": "社会福祉法人紫雲会", "headcount": "190", "sales": "2,766,920", "profit": "180,000", "profit_rate": "6.5", "annual": "33,203,040", "open_date": "2026-04-01", "route": "Web問い合わせ", "multi": false, "srep": "", "sales_raw": 2766920, "annual_raw": 33203040}, {"facility": "小曽根幼稚園", "client": "学校法人小曽根学院", "headcount": "166", "sales": "2,879,380", "profit": "289,000", "profit_rate": "10.0", "annual": "34,552,560", "open_date": "2028-04-01", "route": "その他/未入力", "multi": false, "srep": "", "sales_raw": 2879380, "annual_raw": 34552560}], "pitches": [{"facility": "五反田幼稚園", "client": "学校法人高岸学園", "headcount": "77", "sales": "1,340,350", "profit": "134,000", "profit_rate": "10.0", "annual": "16,084,200", "open_date": "2027-04-01", "route": "テレアポ", "multi": true, "srep": "吾郷瑠美", "sales_raw": 1340350, "annual_raw": 16084200}, {"facility": "生野幼児園", "client": "社会福祉法人　真光福祉会_1", "headcount": "80", "sales": "2,394,090", "profit": "240,000", "profit_rate": "10.0", "annual": "28,729,080", "open_date": "2026-07-01", "route": "既存顧客紹介（その他）", "multi": false, "srep": "", "sales_raw": 2394090, "annual_raw": 28729080}, {"facility": "はな保育園ひろじほんまち", "client": "株式会社はな保育", "headcount": "66", "sales": "1,358,398", "profit": "110,000", "profit_rate": "8.1", "annual": "16,300,776", "open_date": "2026-07-01", "route": "テレアポ", "multi": false, "srep": "", "sales_raw": 1358398, "annual_raw": 16300776}, {"facility": "はな保育園せきとり", "client": "株式会社はな保育", "headcount": "66", "sales": "1,358,398", "profit": "110,000", "profit_rate": "8.1", "annual": "16,300,776", "open_date": "2026-07-01", "route": "テレアポ", "multi": false, "srep": "", "sales_raw": 1358398, "annual_raw": 16300776}, {"facility": "はな保育園あらこ", "client": "株式会社はな保育", "headcount": "75", "sales": "1,418,988", "profit": "114,000", "profit_rate": "8.0", "annual": "17,027,856", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "", "sales_raw": 1418988, "annual_raw": 17027856}, {"facility": "はな保育園じょうしん駅前", "client": "株式会社はな保育", "headcount": "75", "sales": "1,418,988", "profit": "114,000", "profit_rate": "8.0", "annual": "17,027,856", "open_date": "2026-07-01", "route": "テレアポ", "multi": false, "srep": "", "sales_raw": 1418988, "annual_raw": 17027856}, {"facility": "はな保育園 せんのんじ", "client": "株式会社はな保育", "headcount": "60", "sales": "1,358,398", "profit": "110,000", "profit_rate": "8.1", "annual": "16,300,776", "open_date": "2026-07-01", "route": "その他/未入力", "multi": false, "srep": "", "sales_raw": 1358398, "annual_raw": 16300776}, {"facility": "はな保育園 ほりた通", "client": "株式会社はな保育", "headcount": "75", "sales": "1,418,988", "profit": "114,000", "profit_rate": "8.0", "annual": "17,027,856", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "", "sales_raw": 1418988, "annual_raw": 17027856}, {"facility": "はな保育園くるまみち", "client": "株式会社はな保育", "headcount": "75", "sales": "1,418,988", "profit": "114,000", "profit_rate": "8.0", "annual": "17,027,856", "open_date": "2026-07-01", "route": "テレアポ", "multi": false, "srep": "", "sales_raw": 1418988, "annual_raw": 17027856}], "cases_d": [{"facility": "しば保育園", "client": "社会福祉法人みなみ福祉会", "headcount": "60", "sales": "1,603,305", "profit": "128,000", "profit_rate": "8.0", "annual": "19,239,660", "open_date": "2026-12-01", "route": "その他/未入力", "multi": false, "srep": "", "sales_raw": 1603305, "annual_raw": 19239660}, {"facility": "北津守保育所", "client": "大阪市", "headcount": "60", "sales": "600,000", "profit": "0", "profit_rate": "0.0", "annual": "7,200,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "", "sales_raw": 600000, "annual_raw": 7200000}, {"facility": "笠寺幼児園", "client": "社会福祉法人みなみ福祉会_2", "headcount": "350", "sales": "4,791,412", "profit": "380,000", "profit_rate": "7.9", "annual": "57,496,944", "open_date": "2026-12-01", "route": "その他/未入力", "multi": false, "srep": "", "sales_raw": 4791412, "annual_raw": 57496944}, {"facility": "平子幼児園", "client": "社会福祉法人みなみ福祉会_3", "headcount": "60", "sales": "1,603,305", "profit": "128,000", "profit_rate": "8.0", "annual": "19,239,660", "open_date": "2026-12-01", "route": "その他/未入力", "multi": false, "srep": "", "sales_raw": 1603305, "annual_raw": 19239660}]}, {"name": "戸高杏", "div": "保育給食", "visit": 15, "case": 5, "pitch": 3, "win": 0, "tm": 14405, "na": 72, "wins": [], "pitches": [{"facility": "アポロ鷺洲保育園", "client": "社会福祉法人　博樹会", "headcount": "84", "sales": "2,512,003", "profit": "185,400", "profit_rate": "7.4", "annual": "30,144,036", "open_date": "—", "route": "テレアポ", "multi": true, "srep": "吾郷瑠美", "sales_raw": 2512003, "annual_raw": 30144036}, {"facility": "神戸エンゼル認定こども園", "client": "社会福祉法人釜城会_1", "headcount": "58", "sales": "2,000,000", "profit": "300,000", "profit_rate": "15.0", "annual": "24,000,000", "open_date": "—", "route": "テレアポ", "multi": false, "srep": "", "sales_raw": 2000000, "annual_raw": 24000000}, {"facility": "アポロ南堀江保育園", "client": "社会福祉法人　博樹会_1", "headcount": "117", "sales": "2,900,000", "profit": "148,800", "profit_rate": "5.1", "annual": "34,800,000", "open_date": "—", "route": "その他/未入力", "multi": false, "srep": "", "sales_raw": 2900000, "annual_raw": 34800000}], "cases_d": [{"facility": "幼保連携型認定こども園生駒ピュアこども園", "client": "香久山会_1", "headcount": "120", "sales": "2,000,000", "profit": "240,000", "profit_rate": "12.0", "annual": "24,000,000", "open_date": "—", "route": "既存顧客紹介（G）", "multi": false, "srep": "", "sales_raw": 2000000, "annual_raw": 24000000}, {"facility": "学研奈良ピュア保育園", "client": "香久山会_2", "headcount": "90", "sales": "2,000,000", "profit": "180,000", "profit_rate": "9.0", "annual": "24,000,000", "open_date": "—", "route": "既存顧客紹介（その他）", "multi": false, "srep": "", "sales_raw": 2000000, "annual_raw": 24000000}]}, {"name": "西村純彦", "div": "保育給食", "visit": 2, "case": 0, "pitch": 0, "win": 0, "tm": 0, "na": 0, "wins": [], "pitches": [], "cases_d": []}, {"name": "杉浦威友", "div": "保育給食", "visit": 2, "case": 2, "pitch": 2, "win": 1, "tm": 2215, "na": 6, "wins": [{"facility": "あずさ保育園", "client": "社会福祉法人杏樹会", "headcount": "130", "sales": "2,724,595", "profit": "480,000", "profit_rate": "17.6", "annual": "32,695,140", "open_date": "2026-04-01", "route": "その他/未入力", "multi": false, "srep": "", "sales_raw": 2724595, "annual_raw": 32695140}], "pitches": [{"facility": "うつのみやこども園　石川幼稚園", "client": "社会福祉法人大惠会", "headcount": "260", "sales": "3,500,000", "profit": "174,000", "profit_rate": "5.0", "annual": "42,000,000", "open_date": "2027-04-01", "route": "飛び込み", "multi": false, "srep": "", "sales_raw": 3500000, "annual_raw": 42000000}], "cases_d": []}, {"name": "相澤新歌", "div": "保育給食", "visit": 9, "case": 9, "pitch": 9, "win": 8, "tm": 11335, "na": 62, "wins": [{"facility": "保育園アルペジオ昭島昭和町園", "client": "株式会社アルペジオ_1", "headcount": "14", "sales": "461,215", "profit": "46,000", "profit_rate": "10.0", "annual": "5,534,580", "open_date": "2026-05-01", "route": "Web問い合わせ", "multi": false, "srep": "", "sales_raw": 461215, "annual_raw": 5534580}, {"facility": "保育園アルペジオ昭島中神町園", "client": "株式会社アルペジオ_1", "headcount": "30", "sales": "1,248,310", "profit": "124,000", "profit_rate": "9.9", "annual": "14,979,720", "open_date": "2026-05-01", "route": "Web問い合わせ", "multi": false, "srep": "", "sales_raw": 1248310, "annual_raw": 14979720}, {"facility": "おともだち保育園駒留", "client": "社会福祉法人　日本フレンズ奉仕団_1", "headcount": "36", "sales": "1,083,210", "profit": "108,000", "profit_rate": "10.0", "annual": "12,998,520", "open_date": "2026-09-01", "route": "その他/未入力", "multi": false, "srep": "", "sales_raw": 1083210, "annual_raw": 12998520}, {"facility": "おともだち保育園分園こまつなぎ", "client": "社会福祉法人　日本フレンズ奉仕団_1", "headcount": "19", "sales": "903,444", "profit": "90,000", "profit_rate": "10.0", "annual": "10,841,328", "open_date": "2026-09-01", "route": "飛び込み", "multi": false, "srep": "", "sales_raw": 903444, "annual_raw": 10841328}, {"facility": "おともだち保育園", "client": "社会福祉法人　日本フレンズ奉仕団_2", "headcount": "90", "sales": "2,386,977", "profit": "238,000", "profit_rate": "10.0", "annual": "28,643,724", "open_date": "2026-09-01", "route": "その他/未入力", "multi": false, "srep": "", "sales_raw": 2386977, "annual_raw": 28643724}, {"facility": "有馬川はなみずき保育園", "client": "社会福祉法人子の神福祉会", "headcount": "60", "sales": "1,508,985", "profit": "101,000", "profit_rate": "6.7", "annual": "18,107,820", "open_date": "2026-04-01", "route": "Web問い合わせ", "multi": false, "srep": "", "sales_raw": 1508985, "annual_raw": 18107820}, {"facility": "向丘はなみずき保育園", "client": "社会福祉法人子の神福祉会", "headcount": "124", "sales": "2,334,085", "profit": "117,000", "profit_rate": "5.0", "annual": "28,009,020", "open_date": "2026-04-01", "route": "Web問い合わせ", "multi": false, "srep": "", "sales_raw": 2334085, "annual_raw": 28009020}, {"facility": "杉の子育英幼稚園", "client": "学校法人須賀学園", "headcount": "290", "sales": "2,705,809", "profit": "136,666", "profit_rate": "5.1", "annual": "32,469,708", "open_date": "2026-04-01", "route": "Web問い合わせ", "multi": true, "srep": "田中重人", "sales_raw": 2705809, "annual_raw": 32469708}], "pitches": [{"facility": "エンジェル高円寺保育園", "client": "社会福祉法人スミや_1", "headcount": "48", "sales": "1,274,650", "profit": "127,000", "profit_rate": "10.0", "annual": "15,295,800", "open_date": "2027-04-01", "route": "その他/未入力", "multi": false, "srep": "", "sales_raw": 1274650, "annual_raw": 15295800}], "cases_d": []}, {"name": "池田正人", "div": "メディカル・グラライ", "visit": 1, "case": 0, "pitch": 0, "win": 0, "tm": 7550, "na": 33, "wins": [], "pitches": [], "cases_d": []}, {"name": "細川和輝", "div": "メディカル・グラライ", "visit": 1, "case": 0, "pitch": 0, "win": 0, "tm": 900, "na": 5, "wins": [], "pitches": [], "cases_d": []}];
+var PLAN    = {"メディカル・グラライ": {"visit": 4040, "case": 1200, "pitch": 416, "win": 50, "tactics": [{"name": "施策① OBコール（内製）", "q1": 28, "apr": 0, "may": 12, "jun": 16}, {"name": "施策② OBコール (外部)", "q1": 12, "apr": 0, "may": 0, "jun": 12}, {"name": "施策③ 賛助会員", "q1": 10, "apr": 0, "may": 0, "jun": 10}, {"name": "施策⑧ web", "q1": 3, "apr": 0, "may": 0, "jun": 3}]}, "コントラクト": {"visit": 1062, "case": 288, "pitch": 95, "win": 30, "tactics": [{"name": "施策① OB委託", "q1": 1, "apr": 0, "may": 0, "jun": 1}, {"name": "施策② 既存紹介", "q1": 6, "apr": 0, "may": 1, "jun": 5}, {"name": "施策③ DM", "q1": 5, "apr": 0, "may": 0, "jun": 5}, {"name": "施策④ アライアンス", "q1": 4, "apr": 0, "may": 0, "jun": 4}, {"name": "施策⑥ web", "q1": 14, "apr": 0, "may": 6, "jun": 8}]}, "保育給食": {"visit": 1161, "case": 635, "pitch": 128, "win": 60, "tactics": [{"name": "施策① OBコール", "q1": 9, "apr": 1, "may": 2, "jun": 6}, {"name": "施策⑥ Web問合せ Webコンテンツ", "q1": 19, "apr": 1, "may": 9, "jun": 9}, {"name": "施策⑦ 公式SNS", "q1": 2, "apr": 0, "may": 0, "jun": 2}, {"name": "大手", "q1": 30, "apr": 0, "may": 0, "jun": 30}]}};
+var INIT    = {"メディカル・グラライ": {"visit": 531, "case": 165, "pitch": 23, "win": 7}, "コントラクト": {"visit": 181, "case": 89, "pitch": 51, "win": 26}, "保育給食": {"visit": 200, "case": 35, "pitch": 27, "win": 13}};
+var SCOLS   = ['#378ADD','#1D9E75','#BA7517','#D4537E'];
+var SLBLS   = ['訪問','案件化','試合中','獲得'];
+var SKEYS   = ['visit','case','pitch','win'];
+var selDiv  = 'all';
+var amtMode = 0;
+var DC      = null;
+
+// ===== パスワード =====
+document.addEventListener('DOMContentLoaded', function() {
+  var authed = false;
+  try { authed = sessionStorage.getItem('auth') === '1'; } catch(e) {}
+  if (authed) { show(); } else { document.getElementById('pw').style.display = 'flex'; }
+  document.getElementById('pwi').addEventListener('keydown', function(e) { if (e.key === 'Enter') chkPW(); });
+  document.getElementById('pwb').addEventListener('click', chkPW);
+  if (!authed) setTimeout(function(){ document.getElementById('pwi').focus(); }, 100);
+});
+function show() {
+  document.getElementById('pw').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+}
+function chkPW() {
+  var v = document.getElementById('pwi').value;
+  if (v === 'eigyochantoka') {
+    try { sessionStorage.setItem('auth','1'); } catch(e) {}
+    show();
+  } else {
+    document.getElementById('pwe').textContent = v ? 'パスワードが正しくありません' : 'パスワードを入力してください';
+    document.getElementById('pwi').value = '';
+    document.getElementById('pwi').focus();
+  }
+}
+
+// ===== ゲージ =====
+function buildGauges(acts) {
+  var teams = ['メディカル・グラライ','コントラクト','保育給食'];
+  var sg = [{k:'visit',l:'訪問',c:'#378ADD'},{k:'case',l:'案件化',c:'#1D9E75'},{k:'pitch',l:'試合中',c:'#BA7517'},{k:'win',l:'獲得',c:'#D4537E'}];
+  var html = '';
+  for (var i = 0; i < teams.length; i++) {
+    var tm = teams[i], p = PLAN[tm]||{}, a = acts[tm]||{};
+    var wp = Math.round((a.win||0)/(p.win||1)*100);
+    var hc = wp>=100?'#3B6D11':wp>=70?'#854F0B':'#A32D2D';
+    var hbg= wp>=100?'#EAF3DE':wp>=70?'#FAEEDA':'#FCEBEB';
+    var rows = '';
+    for (var j = 0; j < sg.length; j++) {
+      var s=sg[j],pv=p[s.k]||1,av=a[s.k]||0,pc=Math.min(Math.round(av/pv*100),100),over=av>=pv;
+      var bc=over?'#1D9E75':pc>=70?'#EF9F27':s.c, tc=over?'#3B6D11':pc>=70?'#854F0B':'#A32D2D';
+      rows += '<div class="g-row"><div class="g-lbl">'+s.l+'</div><div class="g-track"><div class="g-fill" style="width:'+pc+'%;background:'+bc+'"></div></div><div class="g-nums">'+av.toLocaleString()+' / '+pv.toLocaleString()+'</div><div class="g-pct" style="color:'+tc+'">'+(over?'✓':pc+'%')+'</div></div>';
+    }
+    // 施策別ゲージ
+    var tactics = (p.tactics||[]).filter(function(t){return t.q1>0;});
+    var tacHtml = '';
+    if (tactics.length > 0) {
+      tacHtml = '<div class="tactic-sec"><div class="tactic-ttl">施策別 獲得計画（1Q）</div>';
+      var maxQ = Math.max.apply(null, tactics.map(function(t){return t.q1;})) || 1;
+      for (var k = 0; k < tactics.length; k++) {
+        var t = tactics[k], bw = Math.round(t.q1/maxQ*100);
+        tacHtml += '<div class="tactic-row"><div class="tactic-name">'+t.name+'</div><div class="tactic-bar-bg"><div class="tactic-bar" style="width:'+bw+'%"></div></div><div class="tactic-val">'+t.q1+'件</div></div>';
+      }
+      tacHtml += '</div>';
+    }
+    html += '<div class="gc"><div class="gc-name">'+tm+'<span class="gc-badge" style="color:'+hc+';background:'+hbg+'">獲得 '+(wp>=100?'超過':wp+'%')+'</span></div>'+rows+tacHtml+'</div>';
+  }
+  document.getElementById('gauges').innerHTML = html;
+}
+buildGauges(INIT);
+
+// ===== ファイル読み込み =====
+window.addEventListener('load', function() {
+  fetch('./data.csv').then(function(r){if(!r.ok)throw 0;return r.arrayBuffer();}).then(function(b){
+    parseCSV(new TextDecoder('shift-jis').decode(b),'data.csv（自動）');
+    document.getElementById('dlbl').textContent = 'データを更新するには新しいCSVをドロップ';
+  }).catch(function(){});
+});
+var drop = document.getElementById('drop'), fi = document.getElementById('fi');
+drop.addEventListener('dragover',function(e){e.preventDefault();drop.classList.add('over');});
+drop.addEventListener('dragleave',function(){drop.classList.remove('over');});
+drop.addEventListener('drop',function(e){e.preventDefault();drop.classList.remove('over');var f=e.dataTransfer.files[0];if(f)readF(f);});
+fi.addEventListener('change',function(e){if(e.target.files[0])readF(e.target.files[0]);fi.value='';});
+function readF(f){var r=new FileReader();r.onload=function(e){parseCSV(new TextDecoder('shift-jis').decode(e.target.result),f.name);};r.readAsArrayBuffer(f);}
+
+// ===== CSV解析 =====
+var SM2={'H':1,'G':1,'F':2,'D':2,'C':3,'B':3,'A':4};
+function getOrd(v){var c=(v||'').trim().split(',')[0].trim();return SM2[c]||0;}
+function nDiv(v){
+  if(!v)return'';
+  var gl=['メディカル','グランドライフ','グラライ','SFM','SFG'];
+  for(var i=0;i<gl.length;i++){if(v.indexOf(gl[i])>=0)return 'メディカル・グラライ';}
+  if(v.indexOf('コントラクト')>=0||v.indexOf('SCF')>=0)return 'コントラクト';
+  if(v.indexOf('保育')>=0)return '保育給食';
+  return '';
+}
+function nRoute(v){
+  if(!v)return 'その他/未入力';
+  if(v.indexOf('グループ')>=0||v.indexOf('系列')>=0)return '既存顧客紹介（G）';
+  if(v.indexOf('SDX')>=0||v.indexOf('従業員')>=0)return 'SDX従業員紹介';
+  if(v.indexOf('既存顧客')>=0)return '既存顧客紹介（その他）';
+  if(v.indexOf('テレアポ')>=0)return 'テレアポ';
+  if(v.indexOf('DM')>=0)return 'DM（郵送）';
+  var vl=v.toLowerCase();if(vl.indexOf('web')>=0)return 'Web問い合わせ';
+  if(v.indexOf('飛込')>=0||v.indexOf('飛び込み')>=0)return '飛び込み';
+  if(v.indexOf('受電')>=0)return '受電';
+  return 'その他/未入力';
+}
+function spl(ln){var r=[],c='',q=false;for(var i=0;i<ln.length;i++){var ch=ln[i];if(ch==='"'){q=!q;}else if(ch===','&&!q){r.push(c);c='';}else c+=ch;}r.push(c);return r;}
+function splLines(t){var res=[],cur='';for(var i=0;i<t.length;i++){var ch=t[i];if(ch==='\r'){if(i+1<t.length&&t[i+1]==='\n')i++;res.push(cur);cur='';}else if(ch==='\n'){res.push(cur);cur='';}else cur+=ch;}if(cur)res.push(cur);return res;}
+
+function parseCSV(text, fn) {
+  var lines = splLines(text);
+  if(lines.length<2)return;
+  var hdr=spl(lines[0]),ci={},pc=[];
+  for(var i=0;i<hdr.length;i++){var h=hdr[i].trim();
+    if(h==='事業本部')ci.div=i;
+    if(h==='報告者')ci.reporter=i;
+    if(h==='顧客名（法人/自治体名）'||h==='顧客名')ci.client=i;
+    if(h==='活動時間（分）')ci.min=i;
+    if(h==='進捗状況')pc.push(i);
+    if(h==='主担当者')ci.mainrep=i;
+    if(h==='自社担当者')ci.selfrep=i;
+    if(h==='案件名')ci.casename=i;
+    if(h==='社員/生徒/病床数')ci.hd=i;
+    if(h==='単月売上（円）')ci.sales=i;
+    if(h==='単月粗利（円）')ci.profit=i;
+    if(h==='粗利率（％）')ci.prate=i;
+    if(h==='年度貢献（円）（単月売上×12ヶ月）')ci.annual=i;
+    if(h==='OPEN（予定）日')ci.open=i;
+    if(h==='獲得／紹介経路')ci.route=i;
+  }
+  ci.prog=pc.length>1?pc[pc.length-1]:pc[0];
+  if(ci.reporter===undefined||ci.prog===undefined){
+    // Sales-report形式の場合
+    if(ci.mainrep!==undefined&&ci.prog!==undefined){
+      ci.reporter=ci.mainrep;
+    } else {
+      alert('CSVのカラム構造を認識できませんでした');return;
+    }
+  }
+
+  var led={};
+  for(var i=1;i<lines.length;i++){
+    if(!lines[i].trim())continue;
+    var row=spl(lines[i]);
+    var rep=(row[ci.reporter]||'').trim();
+    var prog=(row[ci.prog]||'').trim();
+    var cli=ci.client!==undefined?(row[ci.client]||'').trim():'';
+    if(!rep||!prog||!cli)continue;
+    var ord=getOrd(prog);if(!ord)continue;
+    var div=nDiv(ci.div!==undefined?(row[ci.div]||'').trim():'');
+    var srep=ci.selfrep!==undefined?(row[ci.selfrep]||'').trim():'';
+    var isMulti=srep&&srep!==rep;
+    var key=rep+'|||'+cli;
+    if(!led[key])led[key]={mo:0,rep:rep,div:div,times:[],wins:[],pitches:[],cases_d:[]};
+    var e=led[key];
+    if(!e.div&&div)e.div=div;
+
+    function fmtN(v){try{return parseInt(v).toLocaleString();}catch(ex){return v||'—';}}
+    var detail={
+      facility:ci.casename!==undefined?(row[ci.casename]||'').trim():cli,
+      client:cli,
+      headcount:ci.hd!==undefined?(row[ci.hd]||'').trim():'—',
+      sales:fmtN(ci.sales!==undefined?row[ci.sales]:''),
+      profit:fmtN(ci.profit!==undefined?row[ci.profit]:''),
+      profit_rate:ci.prate!==undefined?(row[ci.prate]||'').trim():'—',
+      annual:fmtN(ci.annual!==undefined?row[ci.annual]:''),
+      open_date:ci.open!==undefined?(row[ci.open]||'').trim().substring(0,10):'—',
+      route:nRoute(ci.route!==undefined?(row[ci.route]||'').trim():''),
+      sales_raw:ci.sales!==undefined?parseInt(row[ci.sales])||0:0,
+      annual_raw:ci.annual!==undefined?parseInt(row[ci.annual])||0:0,
+      multi:isMulti, srep:srep
+    };
+
+    if(ord>e.mo){
+      e.mo=ord;
+      if(ord===4){e.wins=[detail];}
+      else if(ord===3){e.pitches=[detail];}
+      else if(ord===2){e.cases_d=[detail];}
+    }
+    var m=parseInt(row[ci.min]||'');if(!isNaN(m)&&m>0)e.times.push(m);
+  }
+
+  var pm={};
+  for(var k in led){
+    var e=led[k],n=e.rep;
+    if(!pm[n])pm[n]={name:n,div:e.div,visit:0,case:0,pitch:0,win:0,tm:0,na:0,wins:e.wins,pitches:e.pitches,cases_d:e.cases_d};
+    var p2=pm[n];
+    var sk2={1:'visit',2:'case',3:'pitch',4:'win'};
+    for(var o=1;o<=e.mo;o++)p2[sk2[o]]++;
+    for(var t=0;t<e.times.length;t++){p2.tm+=e.times[t];p2.na++;}
+    if(e.mo===4&&e.wins.length)p2.wins=p2.wins.concat(e.wins);
+    if(e.mo===3&&e.pitches.length)p2.pitches=p2.pitches.concat(e.pitches);
+    if(e.mo===2&&e.cases_d.length)p2.cases_d=p2.cases_d.concat(e.cases_d);
+  }
+
+  PERSONS=[];
+  for(var n in pm){if(pm[n].visit+pm[n].win>0)PERSONS.push(pm[n]);}
+
+  var ds={};
+  for(var i=0;i<PERSONS.length;i++){
+    var p2=PERSONS[i],d=p2.div||'その他';
+    if(!ds[d])ds[d]={visit:0,case:0,pitch:0,win:0};
+    for(var j=0;j<SKEYS.length;j++)ds[d][SKEYS[j]]+=p2[SKEYS[j]]||0;
+  }
+  var acts={};
+  var tms=['メディカル・グラライ','コントラクト','保育給食'];
+  for(var i=0;i<tms.length;i++){acts[tms[i]]=ds[tms[i]]||{visit:0,case:0,pitch:0,win:0};}
+  buildGauges(acts);
+  document.getElementById('upd').textContent='更新: '+fn+' ('+new Date().toLocaleDateString('ja-JP')+')';
+  document.getElementById('gnote').textContent='実績: CSVより集計 '+new Date().toLocaleDateString('ja-JP');
+  selDiv='all';renderAll();
+}
+
+// ===== ユーティリティ =====
+function pct(a,b){return b?Math.round(a/b*100):0;}
+function sum(arr,k){var s=0;for(var i=0;i<arr.length;i++)s+=arr[i][k]||0;return s;}
+function ST(id,btn){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});document.querySelectorAll('.pane').forEach(function(p){p.classList.remove('on');});btn.classList.add('on');document.getElementById('pane-'+id).classList.add('on');}
+function gF(){return selDiv==='all'?PERSONS:PERSONS.filter(function(p){return p.div===selDiv;});}
+function fmtYen(n){return n?'¥'+n.toLocaleString():'¥—';}
+
+// ===== ツールチップ =====
+var tip=document.getElementById('tip');
+function showTip(ev,w,stage){
+  var sc=stage==='win'?'#D4537E':stage==='pitch'?'#BA7517':'#1D9E75';
+  var sl=stage==='win'?'A 獲得':stage==='pitch'?'B/C 試合中':'D 案件化';
+  tip.innerHTML='<div class="tip-h">'+w.facility+(w.multi?'<span class="tip-stage" style="background:'+sc+'">🔀 按分</span>':'<span class="tip-stage" style="background:'+sc+'">'+sl+'</span>')+'</div>'
+    +'<div class="tr2"><span class="tl2">顧客</span><span class="tv2" style="max-width:160px;text-align:right;word-break:break-all">'+w.client+'</span></div>'
+    +'<div class="tr2"><span class="tl2">規模</span><span class="tv2">'+(w.headcount&&w.headcount!=='—'?Number(w.headcount).toLocaleString()+'名/床':'—')+'</span></div>'
+    +'<div class="tr2"><span class="tl2">単月売上</span><span class="tv2">¥'+w.sales+'</span></div>'
+    +'<div class="tr2"><span class="tl2">単月粗利</span><span class="tv2">¥'+w.profit+'</span></div>'
+    +'<div class="tr2"><span class="tl2">粗利率</span><span class="tv2">'+w.profit_rate+'%</span></div>'
+    +'<div class="tr2"><span class="tl2">年度貢献</span><span class="tv2">¥'+w.annual+'</span></div>'
+    +(w.multi?'<div class="tr2"><span class="tl2">按分前担当</span><span class="tv2">'+w.srep+'</span></div>':'')
+    +'<div class="tr2"><span class="tl2">紹介経路</span><span class="tv2">'+w.route+'</span></div>'
+    +'<span class="tip-open">OPEN '+w.open_date+'</span>';
+  tip.classList.add('on');posTip(ev);
+}
+function posTip(ev){var x=ev.clientX+12,y=ev.clientY-8;tip.style.left=(x+300>window.innerWidth?x-312:x)+'px';tip.style.top=(y+250>window.innerHeight?y-250:y)+'px';}
+function hideTip(){tip.classList.remove('on');}
+document.addEventListener('mousemove',function(ev){if(tip.classList.contains('on'))posTip(ev);});
+
+function mkDots(arr,stage,color){
+  if(!arr||!arr.length)return '<span style="font-size:10px;color:#9a9892">-</span>';
+  var wrap=document.createElement('div');
+  wrap.className='wdots';
+  for(var i=0;i<arr.length;i++){
+    var w=arr[i];
+    var dot=document.createElement('div');
+    dot.className=stage==='win'?'wdot':'bdot';
+    dot.style.background=color;
+    dot.textContent=w.multi?String.fromCodePoint(0x1F500):(i+1);
+    (function(ww,ss){
+      dot.addEventListener('mouseenter',function(ev){showTip(ev,ww,ss);});
+    })(w,stage);
+    dot.addEventListener('mouseleave',hideTip);
+    wrap.appendChild(dot);
+  }
+  var tmp=document.createElement('div');
+  tmp.appendChild(wrap);
+  return tmp.innerHTML;
+}
+
+// ===== renderAll =====
+function renderAll(){
+  ['funnel','person','insight'].forEach(function(id){
+    document.getElementById(id.charAt(0)+'e').style.display='none';
+    document.getElementById(id.charAt(0)+'c').style.display='block';
+  });
+  renderFunnel();renderPerson();renderInsight();
+}
+
+// ===== 金額サマリー =====
+function setAmt(mode,btn){
+  amtMode=mode;
+  document.querySelectorAll('.atbtn').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  renderAmtSummary();
+}
+function renderAmtSummary(){
+  var fp=gF();
+  var totA=0,totBC=0,totD=0;
+  for(var i=0;i<fp.length;i++){
+    var p=fp[i];
+    for(var j=0;j<p.wins.length;j++)totA+=p.wins[j].annual_raw||0;
+    if(amtMode>=1)for(var j=0;j<(p.pitches||[]).length;j++)totBC+=(p.pitches[j].annual_raw||0);
+    if(amtMode>=2)for(var j=0;j<(p.cases_d||[]).length;j++)totD+=(p.cases_d[j].annual_raw||0);
+  }
+  var total=totA+(amtMode>=1?totBC:0)+(amtMode>=2?totD:0);
+  var html='<div style="font-size:22px;font-weight:700;color:#1a1916;margin-bottom:8px">'+fmtYen(total)+'<span style="font-size:11px;font-weight:400;color:#9a9892;margin-left:6px">年度貢献見込合計</span></div>';
+  html+='<div style="font-size:11px;color:#5f5e5a;line-height:2">';
+  html+='<span style="color:#D4537E;font-weight:700">①A獲得:</span> '+fmtYen(totA)+'<br>';
+  if(amtMode>=1)html+='<span style="color:#BA7517;font-weight:700">②BC試合中:</span> +'+fmtYen(totBC)+'<br>';
+  if(amtMode>=2)html+='<span style="color:#1D9E75;font-weight:700">③D案件化:</span> +'+fmtYen(totD)+'<br>';
+  html+='</div>';
+  document.getElementById('amt-display').innerHTML=html;
+}
+
+// ===== FUNNEL =====
+function renderFunnel(){
+  var divSet={};for(var i=0;i<PERSONS.length;i++){if(PERSONS[i].div)divSet[PERSONS[i].div]=1;}
+  var divs=Object.keys(divSet).sort();
+  var df=document.getElementById('df');df.innerHTML='';
+  var mkB=function(d){var b=document.createElement('button');b.className='fbtn'+(selDiv===d?' on':'');b.textContent=d==='all'?'全部門':d;b.onclick=function(){selDiv=d;renderFunnel();renderAmtSummary();};df.appendChild(b);};
+  mkB('all');for(var i=0;i<divs.length;i++)mkB(divs[i]);
+  var fp=gF(),v=sum(fp,'visit'),c=sum(fp,'case'),p=sum(fp,'pitch'),w=sum(fp,'win');
+  var kd=[
+    {v:v,l:'訪問リード数',s:null},
+    {v:c,l:'案件化数',s:'案件化率 '+pct(c,v)+'% (目標30%)',up:pct(c,v)>=30},
+    {v:p,l:'試合中',s:'試合化率 '+pct(p,c)+'% (目標30%)',up:pct(p,c)>=30},
+    {v:w,l:'獲得数',s:'成約率 '+pct(w,p)+'% (目標50%)',up:pct(w,p)>=50},
+    {v:pct(w,v)+'%',l:'訪問成約率',s:'目標4.5%',up:pct(w,v)>=4.5}
+  ];
+  var kh='';for(var i=0;i<kd.length;i++){var k=kd[i];kh+='<div class="kc"><div class="kv">'+k.v+'</div><div class="kl">'+k.l+'</div>'+(k.s?'<div class="ks '+(k.up?'up':'dn')+'">'+k.s+'</div>':'')+'</div>';}
+  document.getElementById('kpi').innerHTML=kh;
+
+  var vals=[v,c,p,w],mx=0;for(var i=0;i<vals.length;i++)if(vals[i]>mx)mx=vals[i];if(!mx)mx=1;
+  var rl=['','案件化率','試合化率','成約率'],tgt=[0,30,30,50],fh='';
+  for(var i=0;i<SLBLS.length;i++){
+    var w2=Math.round(vals[i]/mx*100);
+    var rate=i===0?pct(w,v):pct(vals[i],vals[i-1]);
+    var tg=i===0?4.5:tgt[i],up=rate>=tg;
+    var rt=i===0?'訪問成約率 '+rate+'%':rl[i]+' '+rate+'%'+(up?'':'  目標'+tg+'%');
+    fh+='<div class="fn-row"><div class="fn-lbl">'+SLBLS[i]+'</div><div class="fn-bg"><div class="fn-bar" style="width:'+w2+'%;background:'+SCOLS[i]+'"><span>'+vals[i]+'</span></div></div><div class="fn-n">'+vals[i]+'</div><div class="fn-r" style="color:'+(i>0?(up?'#3B6D11':'#A32D2D'):'#9a9892')+'">'+rt+'</div></div>';
+  }
+  document.getElementById('fviz').innerHTML=fh;
+  renderAmtSummary();
+
+  var wt=fp.filter(function(p){return p.win>0;}).sort(function(a,b){return b.win-a.win;}).slice(0,10);
+  var mw=wt.length?wt[0].win:1,wh='';
+  for(var i=0;i<wt.length;i++){var p2=wt[i];wh+='<div class="rr"><div class="rn">'+(i+1)+'</div><div class="rnm">'+p2.name+'</div><div class="rbg"><div class="rf" style="width:'+Math.round(p2.win/mw*100)+'%;background:#D4537E"></div></div><div style="display:flex;align-items:center;gap:4px">'+mkDots(p2.wins,'win','#D4537E')+'<span class="rv">'+p2.win+'件</span></div></div>';}
+  document.getElementById('wrank').innerHTML=wh||'<div class="empty">データなし</div>';
+
+  if(DC)DC.destroy();
+  var ds2={};for(var i=0;i<PERSONS.length;i++){var p2=PERSONS[i];if(!ds2[p2.div])ds2[p2.div]={visit:0,case:0,pitch:0,win:0};for(var j=0;j<SKEYS.length;j++)ds2[p2.div][SKEYS[j]]+=p2[SKEYS[j]]||0;}
+  var dn=Object.keys(ds2).sort();
+  DC=new Chart(document.getElementById('dchart'),{type:'bar',data:{labels:dn,datasets:[
+    {label:'案件化率',data:dn.map(function(d){return pct(ds2[d].case,ds2[d].visit);}),backgroundColor:'#9FE1CB',borderColor:'#1D9E75',borderWidth:1,borderRadius:3},
+    {label:'試合化率',data:dn.map(function(d){return pct(ds2[d].pitch,ds2[d].case);}),backgroundColor:'#FAC775',borderColor:'#BA7517',borderWidth:1,borderRadius:3},
+    {label:'成約率',data:dn.map(function(d){return pct(ds2[d].win,ds2[d].pitch);}),backgroundColor:'#F4C0D1',borderColor:'#D4537E',borderWidth:1,borderRadius:3}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},callback:function(v){return v+'%';}},max:110,beginAtZero:true}}}});
+}
+
+// ===== PERSON =====
+function renderPerson(){
+  var divSet={};for(var i=0;i<PERSONS.length;i++){if(PERSONS[i].div)divSet[PERSONS[i].div]=1;}
+  var divs=Object.keys(divSet).sort();
+  var pf=document.getElementById('pf');pf.innerHTML='';
+  var mkP=function(d){var b=document.createElement('button');b.className='fbtn'+(selDiv===d?' on':'');b.textContent=d==='all'?'全部門':d;b.onclick=function(){selDiv=d;renderPT();};pf.appendChild(b);};
+  mkP('all');for(var i=0;i<divs.length;i++)mkP(divs[i]);
+  renderPT();
+}
+function renderPT(){
+  document.querySelectorAll('#pf .fbtn').forEach(function(b){b.classList.toggle('on',b.textContent===(selDiv==='all'?'全部門':selDiv));});
+  var fp=gF(),sk=document.getElementById('psort').value;
+  var sorted=fp.slice().sort(function(a,b){if(sk==='rate')return pct(b.win,b.visit)-pct(a.win,a.visit);return(b[sk]||0)-(a[sk]||0);});
+  var rows='';
+  for(var i=0;i<sorted.length;i++){
+    var p2=sorted[i],r=pct(p2.win,p2.visit),am=p2.na?Math.round(p2.tm/p2.na):'-';
+    rows+='<tr><td>'+p2.name+'</td><td style="color:#5f5e5a;font-weight:400">'+p2.div+'</td>'
+      +'<td>'+p2.visit+'</td>'
+      +'<td>'+p2.case+' <small style="color:#9a9892">('+pct(p2.case,p2.visit)+'%)</small></td>'
+      +'<td>'+mkDots(p2.pitches,'pitch','#BA7517')+'<span style="font-size:10px;color:#9a9892;margin-left:3px">('+p2.pitch+'件)</span></td>'
+      +'<td>'+mkDots(p2.wins,'win','#D4537E')+'<span style="font-size:10px;color:#9a9892;margin-left:3px">('+p2.win+'件)</span></td>'
+      +'<td><b>'+r+'%</b></td><td>'+am+'</td></tr>';
+  }
+  document.getElementById('ptbl').innerHTML='<table><thead><tr><th>担当者</th><th>部門</th><th>訪問</th><th>案件化 <small style="font-weight:400">(率)</small></th><th>試合中</th><th>獲得</th><th>訪問成約率</th><th>分/件</th></tr></thead><tbody>'+rows+'</tbody></table>';
+}
+
+// ===== INSIGHT =====
+function renderInsight(){
+  var ps=PERSONS,tv=sum(ps,'visit'),tc=sum(ps,'case'),tp=sum(ps,'pitch'),tw=sum(ps,'win');
+  var fp5=ps.filter(function(p){return p.visit>=5;}).sort(function(a,b){return pct(b.win,b.visit)-pct(a.win,a.visit);});
+  var topR=fp5.length?fp5[0]:null;
+  var zW=ps.filter(function(p){return p.win===0&&p.visit>=5;});
+  var rates=[pct(tc,tv),pct(tp,tc),pct(tw,tp)],minR=rates[0],minIdx=0;
+  for(var i=1;i<rates.length;i++){if(rates[i]<minR){minR=rates[i];minIdx=i;}}
+  var bottle=['案件化','試合化','成約'][minIdx];
+  var totAnnual=0;for(var i=0;i<ps.length;i++)for(var j=0;j<ps[i].wins.length;j++)totAnnual+=ps[i].wins[j].annual_raw||0;
+  var planWin=PLAN['メディカル・グラライ'].win+PLAN['コントラクト'].win+PLAN['保育給食'].win;
+  var gap=planWin-tw;
+  var ins=[
+    {em:'📊',bg:'#E6F1FB',tag:'A',tt:'目標/実績/GAP',
+     title:'1Q獲得: 実績'+tw+'件 / 計画'+planWin+'件 (GAP: '+(gap>0?'-':'+')+(Math.abs(gap))+'件)',
+     desc:'案件化率'+pct(tc,tv)+'%(目標30%) / 試合化率'+pct(tp,tc)+'%(目標30%) / 成約率'+pct(tw,tp)+'%(目標50%) / 訪問成約率'+pct(tw,tv)+'%(目標4.5%)。年度貢献実績合計: ¥'+totAnnual.toLocaleString()+'。'},
+    {em:'🔍',bg:'#FAEEDA',tag:'B',tt:'ボトルネック特定',
+     title:'最大ボトルネック: 「'+bottle+'」ステージ (転換率'+minR+'%)',
+     desc:'【空】案件化率'+pct(tc,tv)+'% / 試合化率'+pct(tp,tc)+'% / 成約率'+pct(tw,tp)+'%。【雨】「'+bottle+'」の転換率が最も低い。【傘】'+bottle+'ステージの改善に集中することが全体獲得数の向上に最も効果的。'},
+    {em:'🏆',bg:'#EAF3DE',tag:'S',tt:'ノウハウ横展',
+     title:topR?'最高訪問成約率: '+topR.name+' ('+pct(topR.win,topR.visit)+'%)':'高効率担当者なし',
+     desc:topR?'【空】訪問'+topR.visit+'件で'+topR.win+'件成約。案件化率'+pct(topR.case,topR.visit)+'% / 試合化率'+pct(topR.pitch,topR.case)+'% / 成約率'+pct(topR.win,topR.pitch)+'%。【雨】ターゲット精度と商談クロージングに強みがある。【傘】振り返りMtgで手法を言語化し横展する。':''},
+    {em:'⚠️',bg:'#FCEBEB',tag:'C',tt:'緊急対応',
+     title:'訪問多・獲得ゼロ: '+zW.length+'名',
+     desc:'【空】'+zW.slice(0,5).map(function(p){return p.name+'('+p.visit+'件)';}).join('・')+'。【雨】案件化・試合化のどちらかにボトルネックがある。【傘】1on1で個別にファネルを確認し、案件化できていない理由を深掘りする。'},
+  ];
+  var h='';
+  for(var i=0;i<ins.length;i++){
+    var it=ins[i];if(!it.desc)continue;
+    h+='<div style="display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f0ede6">'
+      +'<div style="width:30px;height:30px;border-radius:8px;background:'+it.bg+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px">'+it.em+'</div>'
+      +'<div><div style="font-size:12px;font-weight:700;margin-bottom:3px">'+it.title+'<span class="bdg '+it.tag+'" style="margin-left:6px">'+it.tt+'</span></div>'
+      +'<div style="font-size:11px;color:#5f5e5a;line-height:1.7">'+it.desc+'</div></div></div>';
+  }
+  document.getElementById('ins').innerHTML=h;
+}
+</script>
+</body>
+</html>
